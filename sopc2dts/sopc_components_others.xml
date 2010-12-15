@@ -1,0 +1,6 @@
+<SOPC2DTS_COMPONENTLIB>
+	<S2DComponent classname="eth_ocm" group="ethernet" compatVendor="opencores" compatDevice="ocores_mac"></S2DComponent>
+	<S2DComponent classname="opencores_i2c_master"
+		compatVendor="opencores" compatDevice="i2c-ocores" group="i2c">
+	<parameter dtsName="regstep"></parameter>
+	<parameter dtsName="clock-frequency"></parameter></S2DComponent></SOPC2DTS_COMPONENTLIB>
