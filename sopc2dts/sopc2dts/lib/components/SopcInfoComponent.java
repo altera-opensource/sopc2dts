@@ -214,4 +214,12 @@ public class SopcInfoComponent extends SopcInfoElement {
 		}
 		return rate;
 	}
+	public boolean hasMemoryMaster()
+	{
+		for(SopcInfoInterface intf : vInterfaces)
+		{
+			if(intf.isMemoryMaster()) return true;
+		}
+		return false;
+	}
 }

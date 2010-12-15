@@ -14,6 +14,7 @@ import sopc2dts.generators.DTSGenerator;
 import sopc2dts.generators.KernelHeadersGenerator;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
 import sopc2dts.lib.SopcInfoSystem;
+import sopc2dts.lib.components.SopcInfoComponent;
 
 
 public class Sopc2DTS {
@@ -24,6 +25,9 @@ public class Sopc2DTS {
 	protected CLParameter verbose = new CLParameter("" + false);
 	protected CLParameter mimicAlteraTools = new CLParameter("" + false);
 	protected CLParameter inputFileName = new CLParameter("");
+	protected CLParameter outputFileName = new CLParameter("");
+	protected CLParameter outputType = new CLParameter("dts");
+	protected CLParameter pov = new CLParameter("");
 	
 	protected String programName;
 
@@ -38,31 +42,77 @@ public class Sopc2DTS {
 	
 	public Sopc2DTS(String pName) {
 		programName = pName;
-		vOptions.add(new CommandLineOption("help"		,"h", showHelp,		false,false,"Show this usage info and exit",null));
-		vOptions.add(new CommandLineOption("verbose"	,"v", verbose,		false,false,"Show Lots of debugging info", null));
-		vOptions.add(new CommandLineOption("version"	,null,showVersion,	false,false,"Show version information and exit", null));
+		vOptions.add(new CommandLineOption("help"		,"h", showHelp,			false,false,"Show this usage info and exit",null));
+		vOptions.add(new CommandLineOption("verbose"	,"v", verbose,			false,false,"Show Lots of debugging info", null));
+		vOptions.add(new CommandLineOption("version"	,null,showVersion,		false,false,"Show version information and exit", null));
 		vOptions.add(new CommandLineOption("mimic-sopc-create-header-files"	,"m", mimicAlteraTools,		false,false,"Try to (mis)behave like sopc-create-header-files does", null));
-		vOptions.add(new CommandLineOption("input", "i", inputFileName, 	true, false, "The sopcinfo file (if not supplied the current dir is scanned for one)", "sopcinfo file"));
+		vOptions.add(new CommandLineOption("input", 	"i", inputFileName, 	true, true, "The sopcinfo file (if not supplied the current dir is scanned for one)", "sopcinfo file"));
+		vOptions.add(new CommandLineOption("output",	"o", outputFileName,	true, false,"The output filename","filename"));
+		vOptions.add(new CommandLineOption("pov", 		"p", pov,		 		true, false,"The point of view to generate from. Defaults to the first cpu found", "component name"));
+		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dts,uboot,kernel,kernel-full}"));
 	}
 	protected void go()
 	{
+		if(inputFileName.value.length()==0)
+		{
+			System.out.println("No input file specified!");
+			printUsage();
+		}
 		File f = new File(inputFileName.value);
 		if(f.exists())
 		{
 			try {
-				SopcInfoSystem sys = new SopcInfoSystem(new InputSource(new BufferedReader(new FileReader(f))));
+				SopcInfoSystem sys = new SopcInfoSystem(new InputSource(new BufferedReader(new FileReader(f))), bVerbose);
+				if(pov.value.length()==0)
+				{
+					for(int i=0; (i<sys.getSystemComponents().size()) && (pov.value.length()==0); i++)
+					{
+						if(sys.getSystemComponents().get(i).getScd().getGroup().equalsIgnoreCase("cpu"))
+						{
+							pov.value = sys.getSystemComponents().get(i).getInstanceName();
+						}
+					}
+				}
 				if(Boolean.parseBoolean(mimicAlteraTools.value)) {
 					SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
-					BufferedWriter out = new BufferedWriter(new FileWriter("output.h"));
-					out.write(fake.getOutput("cpu"));
-					out.close();
+					Vector<SopcInfoComponent> vMasters = sys.getMasterComponents();
+					for(SopcInfoComponent master : vMasters)
+					{
+						BufferedWriter out = new BufferedWriter(new FileWriter(master.getInstanceName()+".h"));
+						out.write(fake.getOutput(master.getInstanceName()));
+						out.close();
+					}
 				} else {
-					KernelHeadersGenerator kGen = new KernelHeadersGenerator(sys);
-					DTSGenerator dGen = new DTSGenerator(sys);
-					System.out.println("Kernel headers\n\n\n" + kGen.getOutput(null));
-					BufferedWriter out = new BufferedWriter(new FileWriter("output.dts"));
-					out.write(dGen.getOutput(null));
-					out.close();
+					String generatedData = null;
+					if(outputType.value.equalsIgnoreCase("dts"))
+					{
+						DTSGenerator dGen = new DTSGenerator(sys);
+						generatedData = dGen.getOutput(pov.value);
+					} else if(outputType.value.equalsIgnoreCase("uboot"))
+					{
+						generatedData = "Whoops, I guess I was bluffing. uboot support is not yet done";
+					} else if(outputType.value.equalsIgnoreCase("kernel"))
+					{
+						KernelHeadersGenerator kGen = new KernelHeadersGenerator(sys);
+						generatedData = kGen.getOutput(null);
+					} else if(outputType.value.equalsIgnoreCase("kernel-full"))
+					{
+						SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
+						generatedData = fake.getOutput(pov.value);
+					} else {
+						System.out.println("Unsupported output type: " + outputType.value);
+					}
+					if(generatedData!=null)
+					{
+						if(outputFileName.value.length()==0)
+						{
+							System.out.println(generatedData);
+						} else {
+							BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName.value));
+							out.write(generatedData);
+							out.close();
+						}
+					}
 				}
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -71,6 +121,8 @@ public class Sopc2DTS {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		} else {
+			System.out.println("Inputfile " + inputFileName.value + " not found");
 		}
 	}
 	
@@ -140,7 +192,7 @@ public class Sopc2DTS {
 	
 	public void printVersion()
 	{
-		System.out.println("0.1");
+		System.out.println(programName + " - 0.1");
 	}
 	
 	public static boolean isVerbose() {
@@ -216,12 +268,15 @@ public class Sopc2DTS {
 							parameter.value = "" + true;
 						}
 					}
-					System.out.print("Scanned option " + option + "(" + shortOption + ") with");
-					if(hasValue)
+					if(bVerbose)
 					{
-						System.out.println(" value " + parameter.value);
-					} else {
-						System.out.println("out value.");
+						System.out.print("Scanned option " + option + "(" + shortOption + ") with");
+						if(hasValue)
+						{
+							System.out.println(" value " + parameter.value);
+						} else {
+							System.out.println("out value.");
+						}
 					}
 					index++;
 				}

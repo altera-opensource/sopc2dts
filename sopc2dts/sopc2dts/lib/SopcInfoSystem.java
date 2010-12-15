@@ -33,8 +33,9 @@ public class SopcInfoSystem implements ContentHandler {
 	SopcComponentLib lib = new SopcComponentLib();
 	SopcComponentDescription currComp = null;
 	XMLReader xmlReader;
+	boolean bVerbose;
 	
-	public SopcInfoSystem(InputSource in)
+	public SopcInfoSystem(InputSource in, boolean verbose)
 	{
 		try {
 			xmlReader = XMLReaderFactory.createXMLReader();
@@ -190,5 +191,15 @@ public class SopcInfoSystem implements ContentHandler {
 	public String getSystemName() {
 		return systemName;
 	}
-
+	public Vector<SopcInfoComponent> getMasterComponents() {
+		Vector<SopcInfoComponent> vRes = new Vector<SopcInfoComponent>();
+		for(SopcInfoComponent comp : vSystemComponents)
+		{
+			if(comp.hasMemoryMaster())
+			{
+				vRes.add(comp);
+			}
+		}
+		return vRes;
+	}
 }

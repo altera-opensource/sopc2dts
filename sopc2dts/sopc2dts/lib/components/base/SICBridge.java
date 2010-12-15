@@ -15,7 +15,6 @@ public class SICBridge extends SopcInfoComponent {
 	public SICBridge(ContentHandler p, XMLReader xr,
 			SopcComponentDescription scd, String iName) {
 		super(p, xr, scd, iName);
-//		vAutoParams.add(new SICAutoParam("clock-frequency", ""));
 	}
 	protected String getDtsRanges(int indentLevel, SopcInfoConnection conn)
 	{

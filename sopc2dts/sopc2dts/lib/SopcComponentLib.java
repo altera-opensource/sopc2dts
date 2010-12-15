@@ -27,8 +27,15 @@ public class SopcComponentLib implements ContentHandler {
 	private boolean ignoreInput = true;
 	SopcComponentDescription unknownComponent = new SICUnknown();
 	Vector<SopcComponentDescription> vLibComponents = new Vector<SopcComponentDescription>();
+	boolean bVerbose = false;
+	
 	public SopcComponentLib()
 	{
+		this(false);
+	}
+	public SopcComponentLib(boolean verbose)
+	{
+		bVerbose = verbose;
 		try {
 			int oldSize = 0;
 			XMLReader xr = XMLReaderFactory.createXMLReader();
@@ -41,7 +48,7 @@ public class SopcComponentLib implements ContentHandler {
 		    		if(f.getName().startsWith("sopc_components_")&&f.getName().endsWith(".xml"))
 		    		{
 						xr.parse(new InputSource(new BufferedReader(new FileReader(f))));
-						System.out.println("Loaded " + (vLibComponents.size() - oldSize) + " components from " + f);
+						if(bVerbose) System.out.println("Loaded " + (vLibComponents.size() - oldSize) + " components from " + f);
 						oldSize = vLibComponents.size();
 		    		}
 		    	}
@@ -127,12 +134,6 @@ public class SopcComponentLib implements ContentHandler {
 			}
 		}
 	}
-	
-	
-	
-	
-	
-	
 	
 	public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
 		// TODO Auto-generated method stub
