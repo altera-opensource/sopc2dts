@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import org.xml.sax.InputSource;
 
+import sopc2dts.Logger;
 import sopc2dts.generators.DTSGenerator;
 import sopc2dts.generators.KernelHeadersGenerator;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
@@ -19,7 +20,6 @@ import sopc2dts.lib.components.SopcInfoComponent;
 
 public class Sopc2DTS {
 	protected Vector<CommandLineOption> vOptions = new Vector<CommandLineOption>();
-	protected static boolean bVerbose = false;
 	protected CLParameter showHelp = new CLParameter(""+false);
 	protected CLParameter showVersion = new CLParameter("" + false);
 	protected CLParameter verbose = new CLParameter("" + false);
@@ -62,7 +62,7 @@ public class Sopc2DTS {
 		if(f.exists())
 		{
 			try {
-				SopcInfoSystem sys = new SopcInfoSystem(new InputSource(new BufferedReader(new FileReader(f))), bVerbose);
+				SopcInfoSystem sys = new SopcInfoSystem(new InputSource(new BufferedReader(new FileReader(f))));
 				if(pov.value.length()==0)
 				{
 					for(int i=0; (i<sys.getSystemComponents().size()) && (pov.value.length()==0); i++)
@@ -155,7 +155,7 @@ public class Sopc2DTS {
 			printVersion();
 			System.exit(0);
 		}
-		bVerbose = Boolean.parseBoolean(verbose.value);
+		Logger.setVerbose(Boolean.parseBoolean(verbose.value));
 	}
 
 	protected void printUsage()
@@ -195,9 +195,6 @@ public class Sopc2DTS {
 		System.out.println(programName + " - 0.1");
 	}
 	
-	public static boolean isVerbose() {
-		return bVerbose;
-	}
 	protected class CLParameter
 	{
 		public String value;
@@ -268,7 +265,7 @@ public class Sopc2DTS {
 							parameter.value = "" + true;
 						}
 					}
-					if(bVerbose)
+					if(Logger.isVerbose())
 					{
 						System.out.print("Scanned option " + option + "(" + shortOption + ") with");
 						if(hasValue)

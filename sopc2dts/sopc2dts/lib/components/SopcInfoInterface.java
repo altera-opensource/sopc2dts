@@ -17,11 +17,12 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 	private Vector<SopcInfoConnection> vMasterConnections = new Vector<SopcInfoConnection>();
 	private Vector<SopcInfoConnection> vSlaveConnections = new Vector<SopcInfoConnection>();
 	private Vector<SopcInfoMemoryBlock> vMemoryMap = new Vector<SopcInfoMemoryBlock>();
-
-	public SopcInfoInterface(ContentHandler p, XMLReader xr, String iName, String kind) {
+	private SopcInfoComponent owner;
+	public SopcInfoInterface(ContentHandler p, XMLReader xr, String iName, String kind, SopcInfoComponent owner) {
 		super(p, xr);
 		this.setName(iName);
 		this.kind = kind;
+		this.owner = owner;
 	}
 
 	public void startElement(String uri, String localName, String qName,
@@ -77,11 +78,11 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 		return kind;
 	}
 
-	public void setvSlaveConnections(Vector<SopcInfoConnection> vSlaveConnections) {
+	public void setSlaveConnections(Vector<SopcInfoConnection> vSlaveConnections) {
 		this.vSlaveConnections = vSlaveConnections;
 	}
 
-	public Vector<SopcInfoConnection> getvSlaveConnections() {
+	public Vector<SopcInfoConnection> getSlaveConnections() {
 		return vSlaveConnections;
 	}
 
@@ -99,5 +100,13 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 
 	public String getName() {
 		return name;
+	}
+
+	public SopcInfoComponent getOwner() {
+		return owner;
+	}
+
+	public void setOwner(SopcInfoComponent owner) {
+		this.owner = owner;
 	}
 }

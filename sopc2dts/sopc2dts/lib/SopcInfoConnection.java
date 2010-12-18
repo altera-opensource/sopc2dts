@@ -4,17 +4,43 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import sopc2dts.lib.components.SopcInfoComponent;
 import sopc2dts.lib.components.SopcInfoInterface;
 
 
 public class SopcInfoConnection extends SopcInfoElementWithParams {
 	private String startModuleName;
-	private String startInterfaceName;
 	private String endModuleName;
-	private String endInterfaceName;
+	SopcInfoInterface masterInterface;
+	SopcInfoInterface slaveInterface;	
 	String currTag;
 	SopcInfoSystem sys;
+	
+	public SopcInfoInterface getMasterInterface() {
+		return masterInterface;
+	}
+
+	public void setMasterInterface(SopcInfoInterface masterInterface) {
+		this.masterInterface = masterInterface;
+	}
+
+	public SopcInfoInterface getSlaveInterface() {
+		return slaveInterface;
+	}
+
+	public void setSlaveInterface(SopcInfoInterface slaveInterface) {
+		this.slaveInterface = slaveInterface;
+	}
+
+	public SopcInfoConnection(SopcInfoConnection org)
+	{
+		super(org.parentElement,org.xmlReader);
+		sys = org.sys;
+		this.endModuleName = org.endModuleName;
+		this.masterInterface = org.masterInterface;
+		this.slaveInterface = org.slaveInterface;
+		this.startModuleName = org.startModuleName;
+		this.vParams = org.vParams;
+	}
 
 	public SopcInfoConnection(ContentHandler p, XMLReader xr, SopcInfoSystem s) {
 		super(p, xr);
@@ -38,31 +64,13 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 	public String getElementName() {
 		return "connection";
 	}
-	
-	public SopcInfoComponent getEndModule() {
-		return sys.getComponentByName(endModuleName);
-	}
-	public String getEndModuleName() {
-		return endModuleName;
-	}
-
-	public SopcInfoInterface getEndInterface() {
-		SopcInfoComponent comp = getEndModule();
-		if(comp!=null)
-		{
-			return comp.getInterfaceByName(endInterfaceName);
-		}
-		return null;
-	}
-	public String getEndInterfaceName() {
-		return endInterfaceName;
-	}
 
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		currTag = localName;
 		super.startElement(uri, localName, qName, atts);
 	}
+
 	public void endElement(String uri, String localName, String qName)
 		throws SAXException {
 		// TODO Auto-generated method stub
@@ -83,33 +91,16 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 				startModuleName = String.copyValueOf(ch, start, length);
 			} else if(currTag.equalsIgnoreCase("startConnectionPoint"))
 			{
-				startInterfaceName = String.copyValueOf(ch, start, length);
+				String startInterfaceName = String.copyValueOf(ch, start, length);
+				masterInterface = sys.getComponentByName(startModuleName).getInterfaceByName(startInterfaceName);
 			} else if(currTag.equalsIgnoreCase("endModule"))
 			{
 				endModuleName = String.copyValueOf(ch, start, length);
 			} else if(currTag.equalsIgnoreCase("endConnectionPoint"))
 			{
-				endInterfaceName = String.copyValueOf(ch, start, length);
+				String endInterfaceName = String.copyValueOf(ch, start, length);
+				slaveInterface = sys.getComponentByName(endModuleName).getInterfaceByName(endInterfaceName);
 			}
 		}
-	}
-
-	public SopcInfoComponent getStartModule() {
-		return sys.getComponentByName(startModuleName);
-	}
-	public String getStartModuleName() {
-		return startModuleName;
-	}
-
-	public SopcInfoInterface getStartInterface() {
-		SopcInfoComponent comp = getStartModule();
-		if(comp!=null)
-		{
-			return comp.getInterfaceByName(startInterfaceName);
-		}
-		return null;
-	}
-	public String getStartInterfaceName() {
-		return startInterfaceName;
 	}
 }

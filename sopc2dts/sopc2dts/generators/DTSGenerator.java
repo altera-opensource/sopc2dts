@@ -126,7 +126,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					res += indent(indentLevel) + "//Port " + intf.getName() + " of " + master.getInstanceName() + "\n";
 					for(SopcInfoConnection conn : intf.getMasterConnections())
 					{
-						SopcInfoComponent slave = conn.getEndModule();						
+						SopcInfoComponent slave = conn.getSlaveInterface().getOwner();						
 						if(slave!=null)
 						{
 							if(!vHandled.contains(slave))

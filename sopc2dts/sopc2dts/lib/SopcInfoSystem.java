@@ -18,6 +18,7 @@ import sopc2dts.lib.SopcInfoElementIgnoreAll;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
 import sopc2dts.lib.components.SopcInfoInterface;
+import sopc2dts.lib.components.base.SICBridge;
 
 public class SopcInfoSystem implements ContentHandler {
 	public static final float MIN_SUPPORTED_VERSION	= 8.1f;
@@ -33,9 +34,8 @@ public class SopcInfoSystem implements ContentHandler {
 	SopcComponentLib lib = new SopcComponentLib();
 	SopcComponentDescription currComp = null;
 	XMLReader xmlReader;
-	boolean bVerbose;
 	
-	public SopcInfoSystem(InputSource in, boolean verbose)
+	public SopcInfoSystem(InputSource in)
 	{
 		try {
 			xmlReader = XMLReaderFactory.createXMLReader();
@@ -55,18 +55,38 @@ public class SopcInfoSystem implements ContentHandler {
 		SopcInfoConnection conn;
 		while(vConnections.size()>0)
 		{
+			boolean foundDuplicate = false;
 			conn = vConnections.firstElement();
-			SopcInfoInterface intf = conn.getStartInterface();
-			if(intf!=null)
+			SopcInfoInterface intfM = conn.getMasterInterface();
+			SopcInfoInterface intfS = conn.getSlaveInterface();
+			//Check for duplicate
+			for(SopcInfoConnection c : intfM.getMasterConnections())
 			{
-				intf.getMasterConnections().add(conn);
+				if((c.masterInterface == intfM)&&(c.slaveInterface == intfS))
+				{
+					foundDuplicate = true;
+				}
 			}
-			intf = conn.getEndInterface();
-			if(intf!=null)
+			if(!foundDuplicate)
 			{
-				intf.getvSlaveConnections().add(conn);
+				if(intfM!=null)
+				{
+					intfM.getMasterConnections().add(conn);
+				}
+				if(intfS!=null)
+				{
+					intfS.getSlaveConnections().add(conn);
+				}
 			}
 			vConnections.remove(conn);
+		}
+		//Now remove tristate bridges. If any.
+		for(SopcInfoComponent c : getSystemComponents())
+		{
+			if(c instanceof SICBridge)
+			{
+				((SICBridge)c).removeFromSystemIfPossible(this);
+			}
 		}
 	}
 	public SopcInfoComponent getComponentByName(String name)

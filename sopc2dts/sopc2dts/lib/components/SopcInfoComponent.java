@@ -38,7 +38,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 			getParams().add(new SopcInfoParameter(this, xmlReader, atts.getValue("name")));
 		} else if(localName.equalsIgnoreCase("interface"))
 		{
-			getInterfaces().add(new SopcInfoInterface(this, xmlReader, atts.getValue("name"), atts.getValue("kind")));
+			getInterfaces().add(new SopcInfoInterface(this, xmlReader, atts.getValue("name"), atts.getValue("kind"), this));
 		} else {
 			super.startElement(uri, localName, qName, atts);
 		}
@@ -62,8 +62,8 @@ public class SopcInfoComponent extends SopcInfoElement {
 		{
 			if(intf.getKind().equalsIgnoreCase("interrupt_sender"))
 			{
-				res = AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + intf.getvSlaveConnections().get(0).getStartModuleName() + " >;\n"
-					+ AbstractSopcGenerator.indent(indentLevel) + "interrupts = <" + intf.getvSlaveConnections().get(0).getParamValue("irqNumber").getValue() + ">;\n";
+				res = AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + intf.getSlaveConnections().get(0).getMasterInterface().getOwner().getInstanceName() + " >;\n"
+					+ AbstractSopcGenerator.indent(indentLevel) + "interrupts = <" + intf.getSlaveConnections().get(0).getParamValue("irqNumber").getValue() + ">;\n";
 			}
 		}
 		return res;
@@ -93,7 +93,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 			res += AbstractSopcGenerator.indent(indentLevel) + "reg = <" + getAddr() + ">;\n";
 		} else if(conn!=null)
 		{
-			res += getRegForDTS(indentLevel, conn, conn.getEndInterface());
+			res += getRegForDTS(indentLevel, conn, conn.getSlaveInterface());
 		}
 		res += getInterruptMasterDesc(indentLevel);
 		res += getInterruptsForDTS(indentLevel);
@@ -209,7 +209,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 		{
 			if(intf.isClockInput())
 			{
-				rate = Integer.decode(intf.getvSlaveConnections().get(0).getStartInterface().getParamValue("clockRate").getValue());
+				rate = Integer.decode(intf.getSlaveConnections().get(0).getMasterInterface().getParamValue("clockRate").getValue());
 			}
 		}
 		return rate;
