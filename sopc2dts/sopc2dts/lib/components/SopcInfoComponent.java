@@ -62,8 +62,8 @@ public class SopcInfoComponent extends SopcInfoElement {
 		{
 			if(intf.getKind().equalsIgnoreCase("interrupt_sender"))
 			{
-				res = AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + intf.getSlaveConnections().get(0).getMasterInterface().getOwner().getInstanceName() + " >;\n"
-					+ AbstractSopcGenerator.indent(indentLevel) + "interrupts = <" + intf.getSlaveConnections().get(0).getParamValue("irqNumber").getValue() + ">;\n";
+				res = AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + intf.getConnections().get(0).getMasterInterface().getOwner().getInstanceName() + " >;\n"
+					+ AbstractSopcGenerator.indent(indentLevel) + "interrupts = <" + intf.getConnections().get(0).getParamValue("irqNumber").getValue() + ">;\n";
 			}
 		}
 		return res;
@@ -209,7 +209,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 		{
 			if(intf.isClockInput())
 			{
-				rate = Integer.decode(intf.getSlaveConnections().get(0).getMasterInterface().getParamValue("clockRate").getValue());
+				rate = Integer.decode(intf.getConnections().get(0).getMasterInterface().getParamValue("clockRate").getValue());
 			}
 		}
 		return rate;

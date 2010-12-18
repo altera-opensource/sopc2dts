@@ -14,8 +14,7 @@ import sopc2dts.lib.SopcInfoElementWithParams;
 public class SopcInfoInterface extends SopcInfoElementWithParams {
 	private String name;
 	private String kind;
-	private Vector<SopcInfoConnection> vMasterConnections = new Vector<SopcInfoConnection>();
-	private Vector<SopcInfoConnection> vSlaveConnections = new Vector<SopcInfoConnection>();
+	private Vector<SopcInfoConnection> vConnections = new Vector<SopcInfoConnection>();
 	private Vector<SopcInfoMemoryBlock> vMemoryMap = new Vector<SopcInfoMemoryBlock>();
 	private SopcInfoComponent owner;
 	public SopcInfoInterface(ContentHandler p, XMLReader xr, String iName, String kind, SopcInfoComponent owner) {
@@ -70,20 +69,16 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 		return "interface";
 	}
 
-	public Vector<SopcInfoConnection> getMasterConnections() {
-		return vMasterConnections;
+	public Vector<SopcInfoConnection> getConnections() {
+		return vConnections;
 	}
 
 	public String getKind() {
 		return kind;
 	}
 
-	public void setSlaveConnections(Vector<SopcInfoConnection> vSlaveConnections) {
-		this.vSlaveConnections = vSlaveConnections;
-	}
-
-	public Vector<SopcInfoConnection> getSlaveConnections() {
-		return vSlaveConnections;
+	public void setConnections(Vector<SopcInfoConnection> connections) {
+		this.vConnections = connections;
 	}
 
 	public void setMemoryMap(Vector<SopcInfoMemoryBlock> vMemoryMap) {

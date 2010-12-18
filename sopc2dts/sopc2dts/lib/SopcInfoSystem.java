@@ -60,7 +60,7 @@ public class SopcInfoSystem implements ContentHandler {
 			SopcInfoInterface intfM = conn.getMasterInterface();
 			SopcInfoInterface intfS = conn.getSlaveInterface();
 			//Check for duplicate
-			for(SopcInfoConnection c : intfM.getMasterConnections())
+			for(SopcInfoConnection c : intfM.getConnections())
 			{
 				if((c.masterInterface == intfM)&&(c.slaveInterface == intfS))
 				{
@@ -71,11 +71,11 @@ public class SopcInfoSystem implements ContentHandler {
 			{
 				if(intfM!=null)
 				{
-					intfM.getMasterConnections().add(conn);
+					intfM.getConnections().add(conn);
 				}
 				if(intfS!=null)
 				{
-					intfS.getSlaveConnections().add(conn);
+					intfS.getConnections().add(conn);
 				}
 			}
 			vConnections.remove(conn);

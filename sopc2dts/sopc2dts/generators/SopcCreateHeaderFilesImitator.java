@@ -67,7 +67,7 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 		{
 			if(intf.isMemoryMaster())
 			{
-				for(SopcInfoConnection conn : intf.getMasterConnections())
+				for(SopcInfoConnection conn : intf.getConnections())
 				{
 					if(!vHandled.contains(conn.getSlaveInterface()))
 					{

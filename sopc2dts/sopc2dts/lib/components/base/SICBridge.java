@@ -25,7 +25,7 @@ public class SICBridge extends SopcInfoComponent {
 		{
 			if(master.isMemoryMaster())
 			{
-				for(SopcInfoConnection childConn : master.getMasterConnections())
+				for(SopcInfoConnection childConn : master.getConnections())
 				{
 					int size = 0;
 					SopcInfoInterface childIf=childConn.getSlaveInterface();
@@ -68,9 +68,9 @@ public class SICBridge extends SopcInfoComponent {
 				if(intf.isClockInput())
 				{
 					//Remove clocks
-					for(SopcInfoConnection conn : intf.getSlaveConnections())
+					for(SopcInfoConnection conn : intf.getConnections())
 					{
-						conn.getMasterInterface().getMasterConnections().remove(conn);
+						conn.getMasterInterface().getConnections().remove(conn);
 					}
 				} else if (intf.isMemoryMaster()) {
 					masterIntf = intf;
@@ -86,37 +86,37 @@ public class SICBridge extends SopcInfoComponent {
 				return;
 			}
 			SopcInfoConnection masterConn;
-			while(slaveIntf.getSlaveConnections().size()>0)
+			while(slaveIntf.getConnections().size()>0)
 			{
-				masterConn = slaveIntf.getSlaveConnections().firstElement();
+				masterConn = slaveIntf.getConnections().firstElement();
 				Logger.logln("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
-				for(SopcInfoConnection slaveConn : masterIntf.getMasterConnections())
+				for(SopcInfoConnection slaveConn : masterIntf.getConnections())
 				{
 					//Connect slaves to our masters
 					SopcInfoConnection conn = new SopcInfoConnection(slaveConn);
 					Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
 					conn.setMasterInterface(masterConn.getMasterInterface());
-					masterConn.getMasterInterface().getMasterConnections().add(conn);
-					conn.getSlaveInterface().getSlaveConnections().add(conn);
+					masterConn.getMasterInterface().getConnections().add(conn);
+					conn.getSlaveInterface().getConnections().add(conn);
 					Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
 				}
 				//Now remove connection to master
-				slaveIntf.getSlaveConnections().remove(masterConn);
-				Logger.logln("Master count: " + masterConn.getMasterInterface().getMasterConnections().size());
-				masterConn.getMasterInterface().getMasterConnections().remove(masterConn);
-				Logger.logln("Master count: " + masterConn.getMasterInterface().getMasterConnections().size());
+				slaveIntf.getConnections().remove(masterConn);
+				Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
+				masterConn.getMasterInterface().getConnections().remove(masterConn);
+				Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
 			}
 			//Now remove all slaves...
 			SopcInfoConnection slaveConn;
-			while(masterIntf.getSlaveConnections().size()>0)
+			while(masterIntf.getConnections().size()>0)
 			{
-				slaveConn = masterIntf.getMasterConnections().firstElement();
+				slaveConn = masterIntf.getConnections().firstElement();
 //				System.out.println("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
 				//Now remove connection to master
-				masterIntf.getMasterConnections().remove(slaveConn);
-				Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getSlaveConnections().size());
-				slaveConn.getSlaveInterface().getSlaveConnections().remove(slaveConn);
-				Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getSlaveConnections().size());
+				masterIntf.getConnections().remove(slaveConn);
+				Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
+				slaveConn.getSlaveInterface().getConnections().remove(slaveConn);
+				Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
 			}
 		}
 	}
