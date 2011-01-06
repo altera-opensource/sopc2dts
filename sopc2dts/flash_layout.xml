@@ -1,10 +1,8 @@
 <FlashPartitions>
 	<Partition name="dtb" address="0" size="0x20000">
 		<readonly></readonly></Partition>
-	<Partition name="factory" address="0x20000" size="0x3E0000">
+	<Partition name="fpga" address="0x20000" size="0x160000">
 		<readonly></readonly></Partition>
-	<Partition name="bootmode" address="0x400000" size="0x400000">
+	<Partition name="kernel" address="0x180000" size="0x280000">
 		<readonly></readonly></Partition>
-	<Partition name="app-fpga" address="0x800000" size="0x400000"></Partition>
-	<Partition name="app-kernel" address="0xC00000" size="0x400000"></Partition>
-	<Partition name="app-rootfs" address="0x1000000" size="0x1000000"></Partition></FlashPartitions>
+	<Partition name="rootfs" address="0x400000" size="0xC00000"></Partition></FlashPartitions>
