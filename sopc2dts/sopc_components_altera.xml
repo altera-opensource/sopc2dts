@@ -22,7 +22,7 @@
 		<parameter dtsName="clock-frequency"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_jtag_uart" group="serial"
-		compatVendor="altera" compatDevice="altjuart">
+		compatVendor="altera" compatDevice="altera_juart">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_spi" group="spi"
 		compatVendor="altera" compatDevice="spi_altera">
