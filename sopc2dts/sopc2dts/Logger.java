@@ -18,4 +18,11 @@ public class Logger {
 			System.out.println(log);
 		}
 	}
+	public static void log(String log)
+	{
+		if(bVerbose)
+		{
+			System.out.print(log);
+		}
+	}
 }
