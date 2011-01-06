@@ -8,6 +8,7 @@ SOURCES=Sopc2DTS.java sopc2dts/Logger.java sopc2dts/generators/AbstractSopcGener
 	sopc2dts/lib/SopcInfoSystem.java sopc2dts/lib/components/SopcComponentDescription.java \
 	sopc2dts/lib/components/SopcInfoComponent.java sopc2dts/lib/components/SopcInfoInterface.java \
 	sopc2dts/lib/components/SopcInfoMemoryBlock.java \
+	sopc2dts/lib/components/altera/SICSgdma.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
 	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
 	sopc2dts/lib/components/base/SICUnknown.java

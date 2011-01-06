@@ -17,6 +17,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.SICTrippleSpeedEthernet;
 import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICFlash;
@@ -78,6 +79,8 @@ public class SopcComponentLib implements ContentHandler {
 					return new SICFlash(p, xr, scd, instanceName);
 				} else if (scd.getClassName().equalsIgnoreCase("triple_speed_ethernet")) {
 					return new SICTrippleSpeedEthernet(p, xr, scd, instanceName);
+				} else if (scd.getClassName().equalsIgnoreCase("altera_avalon_sgdma")) {
+					return new SICSgdma(p, xr, scd, instanceName);
 				} else {
 					return new SopcInfoComponent(p,xr,scd,instanceName);
 				}
