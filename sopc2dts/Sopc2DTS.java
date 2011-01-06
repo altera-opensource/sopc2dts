@@ -28,6 +28,7 @@ public class Sopc2DTS {
 	protected CLParameter outputFileName = new CLParameter("");
 	protected CLParameter outputType = new CLParameter("dts");
 	protected CLParameter pov = new CLParameter("");
+	protected CLParameter bootargs = new CLParameter("");
 	
 	protected String programName;
 
@@ -50,6 +51,7 @@ public class Sopc2DTS {
 		vOptions.add(new CommandLineOption("output",	"o", outputFileName,	true, false,"The output filename","filename"));
 		vOptions.add(new CommandLineOption("pov", 		"p", pov,		 		true, false,"The point of view to generate from. Defaults to the first cpu found", "component name"));
 		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dts,uboot,kernel,kernel-full}"));
+		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
 	}
 	protected void go()
 	{
@@ -87,7 +89,7 @@ public class Sopc2DTS {
 					if(outputType.value.equalsIgnoreCase("dts"))
 					{
 						DTSGenerator dGen = new DTSGenerator(sys);
-						generatedData = dGen.getOutput(pov.value);
+						generatedData = dGen.getOutput(pov.value, bootargs.value);
 					} else if(outputType.value.equalsIgnoreCase("uboot"))
 					{
 						generatedData = "Whoops, I guess I was bluffing. uboot support is not yet done";
@@ -125,11 +127,51 @@ public class Sopc2DTS {
 			System.out.println("Inputfile " + inputFileName.value + " not found");
 		}
 	}
-	
+	protected String[] intelliSplit(String inp, int splitChar)
+	{
+		Vector<String> vRes = new Vector<String>();
+		boolean escape=false;
+		boolean quoted=false;
+		String tmp = new String("");
+		int i=0;
+		while(i<inp.length())
+		{
+			if(inp.charAt(i) == '\"') {
+				if(!escape) quoted = !quoted;
+				tmp+=inp.charAt(i);
+				escape=false;
+			} else if(inp.charAt(i) == '\\') {
+				escape=true;
+				tmp += inp.charAt(i);
+			} else if((inp.charAt(i) == splitChar)&& !escape && !quoted) {
+				if(tmp.length()>0)
+				{
+					vRes.add(tmp);
+					tmp = new String("");
+				}
+			} else {
+				tmp += inp.charAt(i);
+				escape=false;
+			}		
+			i++;
+		}
+		if(tmp.length()>0)
+		{
+			vRes.add(tmp);
+		}
+		return vRes.toArray(new String[0]);
+	}
 	protected void parseCmdLine(String[] args)
 	{
 		int argPos = 0;
 		int oldPos = 0;
+		String cmdLine = "";
+		while(argPos<args.length)
+		{
+			cmdLine += args[argPos++] + " "; 
+		}
+		argPos=0;
+		args=intelliSplit(cmdLine, ' ');
 		while(argPos<args.length)
 		{
 			oldPos = argPos;
@@ -238,7 +280,7 @@ public class Sopc2DTS {
 				scanned = true;
 				index++;
 			} else {
-				String[] tmpOpts = opts[index].split("=");
+				String[] tmpOpts = intelliSplit(opts[index],'=');
 				if((tmpOpts[0].equals("--" + option)) || 
 						((shortOption!=null)&&(tmpOpts[0].equals("-" + shortOption))))
 				{
@@ -265,15 +307,16 @@ public class Sopc2DTS {
 							parameter.value = "" + true;
 						}
 					}
-					if(Logger.isVerbose())
+					if(parameter==verbose)
 					{
-						System.out.print("Scanned option " + option + "(" + shortOption + ") with");
-						if(hasValue)
-						{
-							System.out.println(" value " + parameter.value);
-						} else {
-							System.out.println("out value.");
-						}
+						Logger.setVerbose(Boolean.parseBoolean(parameter.value));
+					}
+					Logger.log("Scanned option " + option + "(" + shortOption + ") with");
+					if(hasValue)
+					{
+						Logger.logln(" value " + parameter.value);
+					} else {
+						Logger.logln("out value.");
 					}
 					index++;
 				}
