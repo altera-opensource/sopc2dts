@@ -21,6 +21,9 @@ public class DTSGenerator extends AbstractSopcGenerator {
 
 	@Override
 	public String getOutput(String pov) {
+		return getOutput(pov, null);
+	}
+	public String getOutput(String pov, String bootArgs) {
 		int numCPUs = 0;
 		int indentLevel = 0;
 		vHandled.clear();
@@ -64,8 +67,14 @@ public class DTSGenerator extends AbstractSopcGenerator {
 			res += getDTSBusFrom(povComp, indentLevel);
 			res += indent(--indentLevel) + "}; //sopc\n";
 		}
+		if((bootArgs==null)||(bootArgs.length()==0))
+		{
+			bootArgs="debug console=ttyAL0,115200";
+		} else {
+			bootArgs = bootArgs.replaceAll("\"", "");
+		}
 		res += indent(indentLevel++) + "chosen {\n" +
-				indent(indentLevel) + "bootargs = \"debug console=ttyAL0,115200\";\n" +
+				indent(indentLevel) + "bootargs = \"" + bootArgs + "\";\n" +
 				indent(--indentLevel) + "};\n";
 		res += indent(--indentLevel) + "};\n";
 		return res;
