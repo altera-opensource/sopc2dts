@@ -7,5 +7,5 @@
 	<S2DComponent classname="tiny_spi" compatVendor="opencores"
 		compatDevice="oc_tiny_spi" group="spi">
 		<parameter dtsName="clock-frequency"></parameter>
-		<parameter dtsName="baud_width" sopcName="BAUD_WIDTH"></parameter>
+		<parameter dtsName="baud-width" sopcName="BAUD_WIDTH"></parameter>
 	</S2DComponent></SOPC2DTS_COMPONENTLIB>
