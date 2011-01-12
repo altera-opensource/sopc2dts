@@ -58,6 +58,9 @@
 	<S2DComponent classname="altmemddr2" group="memory"
 		compatVendor="altera" compatDevice="altmemddr2">
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_new_sdram_controller" group="memory"
+		compatVendor="altera" compatDevice="altera_sdram">
+	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sgdma" group="dma"
 		compatVendor="altera" compatDevice="alt_sgdma">
 	</S2DComponent>
