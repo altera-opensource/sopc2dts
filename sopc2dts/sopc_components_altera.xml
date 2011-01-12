@@ -9,6 +9,10 @@
 		compatVendor="altera" compatDevice="cfi_flash" group="flash">
 		<compatible name="cfi-flash"></compatible>
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_epcs_flash_controller"
+		compatVendor="altera" compatDevice="epcs_flash" group="flash">
+		<compatible name="epcs-flash"></compatible>
+	</S2DComponent>
 	<S2DComponent classname="gpio" group="gpio" compatVendor="altera" compatDevice="alt_pio">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_uart" group="serial"
