@@ -43,14 +43,6 @@ public class SopcInfoAssignment extends SopcInfoElement {
 			} else if(currTag.equalsIgnoreCase("value"))
 			{
 				setValue(String.copyValueOf(ch, start, length));
-				if(getValue().endsWith("u") && (getValue().length()>1))
-				{
-					String tmpVal = getValue().substring(0, getValue().length()-1); 
-					if(tmpVal.equalsIgnoreCase(Integer.decode(tmpVal).toString()))
-					{
-						setValue(tmpVal); 
-					}
-				}
 			}
 		}
 	}
