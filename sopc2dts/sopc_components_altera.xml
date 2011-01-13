@@ -9,6 +9,10 @@
 		compatVendor="altera" compatDevice="cfi_flash" group="flash">
 		<compatible name="cfi-flash"></compatible>
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_epcs_flash_controller"
+		compatVendor="altera" compatDevice="epcs_flash" group="flash">
+		<compatible name="epcs-flash"></compatible>
+	</S2DComponent>
 	<S2DComponent classname="gpio" group="gpio" compatVendor="altera" compatDevice="alt_pio">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_uart" group="serial"
@@ -53,6 +57,9 @@
 	</S2DComponent>
 	<S2DComponent classname="altmemddr2" group="memory"
 		compatVendor="altera" compatDevice="altmemddr2">
+	</S2DComponent>
+	<S2DComponent classname="altera_avalon_new_sdram_controller" group="memory"
+		compatVendor="altera" compatDevice="altera_sdram">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sgdma" group="dma"
 		compatVendor="altera" compatDevice="alt_sgdma">
