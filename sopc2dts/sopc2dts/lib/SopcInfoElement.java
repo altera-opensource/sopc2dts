@@ -7,7 +7,7 @@ import org.xml.sax.XMLReader;
 
 
 public abstract class SopcInfoElement implements ContentHandler {
-	ContentHandler parentElement = null;
+	protected ContentHandler parentElement = null;
 	protected XMLReader xmlReader = null;
 	
 	public SopcInfoElement(ContentHandler p, XMLReader xr)

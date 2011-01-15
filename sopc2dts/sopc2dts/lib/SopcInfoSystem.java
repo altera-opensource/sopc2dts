@@ -15,7 +15,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.SopcInfoElementIgnoreAll;
-import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
 import sopc2dts.lib.components.SopcInfoInterface;
 import sopc2dts.lib.components.base.SICBridge;
@@ -32,7 +31,6 @@ public class SopcInfoSystem implements ContentHandler {
 	private Vector<SopcInfoComponent> vSystemComponents = new Vector<SopcInfoComponent>();
 	Vector<SopcInfoConnection> vConnections = new Vector<SopcInfoConnection>();
 	SopcComponentLib lib = new SopcComponentLib();
-	SopcComponentDescription currComp = null;
 	XMLReader xmlReader;
 	
 	public SopcInfoSystem(InputSource in)
@@ -41,6 +39,7 @@ public class SopcInfoSystem implements ContentHandler {
 			xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setContentHandler(this);
 			xmlReader.parse(in);
+			recheckComponents();
 			connectComponents();
 		} catch (SAXException e) {
 			e.printStackTrace();
@@ -87,6 +86,13 @@ public class SopcInfoSystem implements ContentHandler {
 			{
 				((SICBridge)c).removeFromSystemIfPossible(this);
 			}
+		}
+	}
+	protected void recheckComponents()
+	{
+		for(SopcInfoComponent comp : vSystemComponents)
+		{
+			lib.finalCheckOnComponent(comp);
 		}
 	}
 	public SopcInfoComponent getComponentByName(String name)
@@ -146,10 +152,7 @@ public class SopcInfoSystem implements ContentHandler {
 				//System.out.println("End element " + localName);
 			}
 		}
-	}	
-	
-	
-	
+	}
 	
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		if(currTag!=null)

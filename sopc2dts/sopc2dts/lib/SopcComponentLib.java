@@ -89,6 +89,26 @@ public class SopcComponentLib implements ContentHandler {
 		System.out.println("Unknown class: " + className);
 		return new SopcInfoComponent(p, xr, unknownComponent, instanceName);
 	}
+	public SopcInfoComponent finalCheckOnComponent(SopcInfoComponent comp)
+	{
+		String className = comp.getScd().getClassName();
+		if(!comp.getScd().isRequiredParamsOk(comp))
+		{
+			for(SopcComponentDescription scd : vLibComponents)
+			{
+				if(scd.getClassName().equalsIgnoreCase(className))
+				{
+					if(scd.isRequiredParamsOk(comp))
+					{
+						comp.setScd(scd);
+						return comp;
+					}
+				}
+			}	
+			comp.setScd(unknownComponent);
+		}
+		return comp;
+	}
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		if(ignoreInput)
 		{
@@ -115,6 +135,9 @@ public class SopcComponentLib implements ContentHandler {
 			} else if((localName.equalsIgnoreCase("parameter"))&&(scd!=null))
 			{
 				scd.addAutoParam(atts.getValue("dtsName"), atts.getValue("sopcName"));
+			} else if((localName.equalsIgnoreCase("RequiredParameter"))&&(scd!=null))
+			{
+				scd.addRequiredParam(atts.getValue("name"), atts.getValue("value"));
 			} else {
 				System.out.println("New element " + localName);
 			}
@@ -131,6 +154,8 @@ public class SopcComponentLib implements ContentHandler {
 			} else if(localName.equalsIgnoreCase("compatible")) {
 				//mwa...
 			} else if(localName.equalsIgnoreCase("parameter")) {
+				//mwa...
+			} else if(localName.equalsIgnoreCase("RequiredParameter")) {
 				//mwa...
 			} else {
 				System.out.println("End element " + localName);
