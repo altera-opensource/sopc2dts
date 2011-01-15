@@ -79,6 +79,13 @@
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_timer" group="timer"
 		compatVendor="altera" compatDevice="timer">
+		<parameter dtsName="clock-frequency"></parameter>
+		<RequiredParameter name="timerPreset" value="FULL_FEATURED"></RequiredParameter>
+	</S2DComponent>
+	<S2DComponent classname="altera_avalon_timer" group="watchdog"
+		compatVendor="altera" compatDevice="altera_wdt">
+		<parameter dtsName="clock-frequency"></parameter>
+		<RequiredParameter name="timerPreset" value="WATCHDOG"></RequiredParameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_performance_counter"
 		group="perf_counter" compatVendor="altera" compatDevice="perf_counter">
