@@ -1,12 +1,11 @@
-<SOPC2DTS_COMPONENTLIB>
-	<S2DComponent classname="eth_ocm" group="ethernet" compatVendor="opencores" compatDevice="mac-ocores">
+<SOPC2DTS_COMPONENTLIB vendor="opencores">
+	<S2DComponent classname="eth_ocm" group="ethernet" compatDevice="mac-ocores">
 		<CompatibleVersion value="8.0.0"></CompatibleVersion></S2DComponent>
 	<S2DComponent classname="opencores_i2c_master"
-		compatVendor="opencores" compatDevice="i2c-ocores" group="i2c">
+		compatDevice="i2c-ocores" group="i2c">
 	<parameter dtsName="regstep"></parameter>
 	<parameter dtsName="clock-frequency"></parameter></S2DComponent>
-	<S2DComponent classname="tiny_spi" compatVendor="opencores"
-		compatDevice="tiny_spi" group="spi">
+	<S2DComponent classname="tiny_spi" compatDevice="tiny_spi" group="spi">
 		<parameter dtsName="clock-frequency"></parameter>
 		<parameter dtsName="baud-width" sopcName="BAUD_WIDTH"></parameter>
 	</S2DComponent></SOPC2DTS_COMPONENTLIB>

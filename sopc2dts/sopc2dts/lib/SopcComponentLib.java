@@ -26,6 +26,7 @@ import sopc2dts.lib.components.base.SICUnknown;
 public class SopcComponentLib implements ContentHandler {
 	private SopcComponentDescription scd;
 	private boolean ignoreInput = true;
+	private String currentVendor = null;
 	SopcComponentDescription unknownComponent = new SICUnknown();
 	Vector<SopcComponentDescription> vLibComponents = new Vector<SopcComponentDescription>();
 	boolean bVerbose = false;
@@ -115,6 +116,7 @@ public class SopcComponentLib implements ContentHandler {
 			if(localName.equalsIgnoreCase("SOPC2DTS_COMPONENTLIB"))
 			{
 				ignoreInput=false;
+				currentVendor=atts.getValue("vendor");
 			}
 		} else{
 			if(localName.equalsIgnoreCase("S2DComponent"))
@@ -122,7 +124,7 @@ public class SopcComponentLib implements ContentHandler {
 				scd = new SopcComponentDescription();
 				scd.setClassName(atts.getValue("classname"));
 				scd.setGroup(atts.getValue("group"));
-				scd.setVendor(atts.getValue("compatVendor"));
+				scd.setVendor(currentVendor);
 				scd.setDevice(atts.getValue("compatDevice"));
 				vLibComponents.add(scd);
 			} else if((localName.equalsIgnoreCase("compatible"))&&(scd!=null))
@@ -148,6 +150,7 @@ public class SopcComponentLib implements ContentHandler {
 			if(localName.equalsIgnoreCase("SOPC2DTS_COMPONENTLIB"))
 			{
 				ignoreInput=true;
+				currentVendor = null;
 			} else if(localName.equalsIgnoreCase("S2DComponent")) {
 				//mwa...
 			} else if(localName.equalsIgnoreCase("compatible")) {

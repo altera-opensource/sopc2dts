@@ -1,81 +1,79 @@
-<SOPC2DTS_COMPONENTLIB>
-	<S2DComponent classname="altera_nios2" group="cpu" compatVendor="altr" compatDevice="nios2">
+<SOPC2DTS_COMPONENTLIB vendor="altr">
+	<S2DComponent classname="altera_nios2" group="cpu" compatDevice="nios2">
 		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.CPU_FREQ"></parameter>
 		<parameter dtsName="d-cache-block-size" sopcName="embeddedsw.CMacro.DCACHE_LINE_SIZE"></parameter>
 		<parameter dtsName="i-cache-block-size" sopcName="embeddedsw.CMacro.ICACHE_LINE_SIZE"></parameter>
 		<parameter dtsName="d-cache-size" sopcName="embeddedsw.CMacro.DCACHE_SIZE"></parameter>
 		<parameter dtsName="i-cache-size" sopcName="embeddedsw.CMacro.ICACHE_SIZE"></parameter></S2DComponent>
 	<S2DComponent classname="altera_avalon_cfi_flash"
-		compatVendor="altr" compatDevice="cfi_flash" group="flash">
+		compatDevice="cfi_flash" group="flash">
 		<compatible name="cfi-flash"></compatible>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_epcs_flash_controller"
-		compatVendor="altr" compatDevice="epcs_flash" group="flash">
+	<S2DComponent classname="altera_avalon_epcs_flash_controller" compatDevice="epcs_flash" group="flash">
 		<compatible name="epcs-flash"></compatible>
 	</S2DComponent>
-	<S2DComponent classname="gpio" group="gpio" compatVendor="altr" compatDevice="pio">
+	<S2DComponent classname="gpio" group="gpio" compatDevice="pio">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_uart" group="serial"
-		compatVendor="altr" compatDevice="uart">
+		compatDevice="uart">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 		<parameter dtsName="current-speed" sopcName="embeddedsw.CMacro.BAUD"></parameter>
 		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.FREQ"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="fifoed_avalon_uart_classic" group="serial"
-		compatVendor="altr" compatDevice="uart">
+		compatDevice="uart">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 		<parameter dtsName="current-speed" sopcName="embeddedsw.CMacro.BAUD"></parameter>
 		<parameter dtsName="clock-frequency"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_jtag_uart" group="serial"
-		compatVendor="altr" compatDevice="juart">
+		compatDevice="juart">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_spi" group="spi"
-		compatVendor="altr" compatDevice="spi">
+		compatDevice="spi">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 		<CompatibleVersion value="9.1"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pio" group="gpio"
-		compatVendor="altr" compatDevice="pio">
+		compatDevice="pio">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 		<CompatibleVersion value="9.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_up_avalon_ps2_classic" group="ps2"
-		compatVendor="altr" compatDevice="ps2">
+		compatDevice="ps2">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pipeline_bridge"
-		group="bridge" compatVendor="altr" compatDevice="avalon">
+		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_tri_state_bridge"
-		group="bridge" compatVendor="altr" compatDevice="avalon">
+		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_clock_crossing"
-		group="bridge" compatVendor="altr" compatDevice="avalon">
+		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_cy7c1380_ssram" group="memory" compatVendor="altr"
-		compatDevice="ssram">
+	<S2DComponent classname="altera_avalon_cy7c1380_ssram" group="memory" compatDevice="ssram">
 	</S2DComponent>
 	<S2DComponent classname="altmemddr" group="memory"
-		compatVendor="altr" compatDevice="altmemddr">
+		compatDevice="altmemddr">
 	</S2DComponent>
 	<S2DComponent classname="altmemddr2" group="memory"
-		compatVendor="altr" compatDevice="altmemddr2">
+		compatDevice="altmemddr2">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_new_sdram_controller" group="memory"
-		compatVendor="altr" compatDevice="sdram">
+		compatDevice="sdram">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sgdma" group="dma"
-		compatVendor="altr" compatDevice="sgdma">
+		compatDevice="sgdma">
 		<CompatibleVersion value="7.1"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="clock_source" group="ignore"></S2DComponent>
 	<S2DComponent classname="timing_adapter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_fifo" group="fifo"
-		compatVendor="altr" compatDevice="fifo">
+		compatDevice="fifo">
 		<CompatibleVersion value="7.1"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="data_format_adapter" group="ignore"></S2DComponent>
@@ -84,39 +82,39 @@
 		group="ignore">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pll" group="clock"
-		compatVendor="altr" compatDevice="pll">
+		compatDevice="pll">
 		<CompatibleVersion value="5.1"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_timer" group="timer"
-		compatVendor="altr" compatDevice="timer">
+		compatDevice="timer">
 		<parameter dtsName="clock-frequency"></parameter>
 		<RequiredParameter name="timerPreset" value="FULL_FEATURED"></RequiredParameter>
 		<CompatibleVersion value="8.0"></CompatibleVersion>
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_timer" group="watchdog"
-		compatVendor="altr" compatDevice="wdt">
+		compatDevice="wdt">
 		<parameter dtsName="clock-frequency"></parameter>
 		<RequiredParameter name="timerPreset" value="WATCHDOG"></RequiredParameter>
 		<CompatibleVersion value="8.0"></CompatibleVersion>
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_performance_counter"
-		group="perf_counter" compatVendor="altr" compatDevice="perf_counter">
+		group="perf_counter" compatDevice="perf_counter">
 		<CompatibleVersion value="5.1"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sysid" group="sysid"
-		compatVendor="altr" compatDevice="sysid">
+		compatDevice="sysid">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_remote_update_cycloneiii"
-		group="altremote" compatVendor="altr" compatDevice="altremote">
+		group="altremote" compatDevice="altremote">
 		<CompatibleVersion value="8.1"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_onchip_memory2"
-		group="memory" compatVendor="altr" compatDevice="onchipmem">
+		group="memory" compatDevice="onchipmem">
 	</S2DComponent>
 	<S2DComponent classname="triple_speed_ethernet"
-		group="ethernet" compatVendor="altr" compatDevice="tse">
+		group="ethernet" compatDevice="tse">
 	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
