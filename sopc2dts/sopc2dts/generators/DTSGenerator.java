@@ -61,7 +61,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					indent(indentLevel) + "#address-cells = <1>;\n" +
 					indent(indentLevel) + "#size-cells = <1>;\n" +
 					indent(indentLevel) + "device-type = \"soc\";\n" +
-					indent(indentLevel) + "compatible = \"altera,avalon\",\"simple-bus\";\n" +
+					indent(indentLevel) + "compatible = \"altr,avalon\",\"simple-bus\";\n" +
 					indent(indentLevel) + "ranges ;\n" +
 					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
 			res += getDTSBusFrom(povComp, indentLevel);

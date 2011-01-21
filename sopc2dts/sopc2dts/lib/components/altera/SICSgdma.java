@@ -7,7 +7,6 @@ import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
-import sopc2dts.lib.components.SopcInfoInterface;
 
 public class SICSgdma extends SopcInfoComponent {
 	public static final String[] TYPE_NAMES = {
@@ -19,8 +18,8 @@ public class SICSgdma extends SopcInfoComponent {
 	};
 	
 	public SICSgdma(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName) {
-		super(p, xr, scd, iName);
+			SopcComponentDescription scd, String iName, String version) {
+		super(p, xr, scd, iName, version);
 	}
 	public String toDtsExtras(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{

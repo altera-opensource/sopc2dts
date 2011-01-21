@@ -9,6 +9,5 @@ public class SICUnknown extends SopcComponentDescription {
 		setDevice("unknown");
 		setGroup("unknown");
 		setVendor("unknown");
-		getCompatible().add("unknown,unknown");
 	}
 }

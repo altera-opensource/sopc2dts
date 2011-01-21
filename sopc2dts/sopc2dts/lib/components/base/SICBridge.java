@@ -15,8 +15,8 @@ import sopc2dts.lib.components.SopcInfoInterface;
 public class SICBridge extends SopcInfoComponent {
 
 	public SICBridge(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName) {
-		super(p, xr, scd, iName);
+			SopcComponentDescription scd, String iName, String version) {
+		super(p, xr, scd, iName, version);
 	}
 	protected String getDtsRanges(int indentLevel, SopcInfoConnection conn)
 	{

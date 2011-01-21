@@ -23,8 +23,8 @@ public class SICFlash extends SopcInfoComponent {
 	Vector<FlashPartition> vPartitions = new Vector<FlashPartition>();
 	
 	public SICFlash(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName) {
-		super(p, xr, scd, iName);
+			SopcComponentDescription scd, String iName, String version) {
+		super(p, xr, scd, iName, version);
 	}
 	public String toDtsExtrasFirst(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{

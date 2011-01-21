@@ -65,7 +65,7 @@ public class SopcComponentLib implements ContentHandler {
 			e.printStackTrace();
 		}
 	}
-	public SopcInfoComponent getComponentForClass(String className, String instanceName, ContentHandler p, XMLReader xr)
+	public SopcInfoComponent getComponentForClass(String className, String instanceName, String version, ContentHandler p, XMLReader xr)
 	{
 		for(SopcComponentDescription scd : vLibComponents)
 		{
@@ -73,21 +73,21 @@ public class SopcComponentLib implements ContentHandler {
 			{
 				//Handle a few hardcoded special cases
 				if (scd.getGroup().equalsIgnoreCase("bridge")) {
-					return new SICBridge(p, xr, scd, instanceName);
+					return new SICBridge(p, xr, scd, instanceName, version);
 					//Handle a few hardcoded special cases
 				} else if (scd.getGroup().equalsIgnoreCase("flash")) {
-					return new SICFlash(p, xr, scd, instanceName);
+					return new SICFlash(p, xr, scd, instanceName, version);
 				} else if (scd.getClassName().equalsIgnoreCase("triple_speed_ethernet")) {
-					return new SICTrippleSpeedEthernet(p, xr, scd, instanceName);
+					return new SICTrippleSpeedEthernet(p, xr, scd, instanceName, version);
 				} else if (scd.getClassName().equalsIgnoreCase("altera_avalon_sgdma")) {
-					return new SICSgdma(p, xr, scd, instanceName);
+					return new SICSgdma(p, xr, scd, instanceName, version);
 				} else {
-					return new SopcInfoComponent(p,xr,scd,instanceName);
+					return new SopcInfoComponent(p,xr,scd,instanceName, version);
 				}
 			}
 		}
 		System.out.println("Unknown class: " + className);
-		return new SopcInfoComponent(p, xr, unknownComponent, instanceName);
+		return new SopcInfoComponent(p, xr, unknownComponent, instanceName, version);
 	}
 	public SopcInfoComponent finalCheckOnComponent(SopcInfoComponent comp)
 	{
@@ -124,20 +124,19 @@ public class SopcComponentLib implements ContentHandler {
 				scd.setGroup(atts.getValue("group"));
 				scd.setVendor(atts.getValue("compatVendor"));
 				scd.setDevice(atts.getValue("compatDevice"));
-				if((scd.getVendor()!=null)&&(scd.getDevice()!=null))
-				{
-					scd.getCompatible().add(scd.getVendor() + "," + scd.getDevice());
-				}
 				vLibComponents.add(scd);
 			} else if((localName.equalsIgnoreCase("compatible"))&&(scd!=null))
 			{
-				scd.getCompatible().add(atts.getValue("name"));
+				scd.addCompatible(atts.getValue("name"));
 			} else if((localName.equalsIgnoreCase("parameter"))&&(scd!=null))
 			{
 				scd.addAutoParam(atts.getValue("dtsName"), atts.getValue("sopcName"));
 			} else if((localName.equalsIgnoreCase("RequiredParameter"))&&(scd!=null))
 			{
 				scd.addRequiredParam(atts.getValue("name"), atts.getValue("value"));
+			} else if((localName.equalsIgnoreCase("CompatibleVersion"))&&(scd!=null))
+			{
+				scd.addCompatibleVersion(atts.getValue("value"));
 			} else {
 				System.out.println("New element " + localName);
 			}
@@ -156,6 +155,8 @@ public class SopcComponentLib implements ContentHandler {
 			} else if(localName.equalsIgnoreCase("parameter")) {
 				//mwa...
 			} else if(localName.equalsIgnoreCase("RequiredParameter")) {
+				//mwa...
+			} else if(localName.equalsIgnoreCase("CompatibleVersion")) {
 				//mwa...
 			} else {
 				System.out.println("End element " + localName);

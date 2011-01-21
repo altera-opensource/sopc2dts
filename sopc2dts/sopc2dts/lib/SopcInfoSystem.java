@@ -119,7 +119,7 @@ public class SopcInfoSystem implements ContentHandler {
 		} else{
 			if(localName.equalsIgnoreCase("module"))
 			{
-				SopcInfoComponent comp = lib.getComponentForClass(atts.getValue("kind"),atts.getValue("name"),this,xmlReader);
+				SopcInfoComponent comp = lib.getComponentForClass(atts.getValue("kind"),atts.getValue("name"), atts.getValue("version"),this,xmlReader);
 				if(comp==null)
 				{
 					System.out.println("Nothing known about modules of kind: " + atts.getValue("kind"));

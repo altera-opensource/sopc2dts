@@ -11,8 +11,8 @@ import sopc2dts.lib.components.SopcInfoComponent;
 public class SICTrippleSpeedEthernet extends SopcInfoComponent {
 
 	public SICTrippleSpeedEthernet(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName) {
-		super(p, xr, scd, iName);
+			SopcComponentDescription scd, String iName, String version) {
+		super(p, xr, scd, iName, version);
 	}
 	public String toDtsExtras(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{

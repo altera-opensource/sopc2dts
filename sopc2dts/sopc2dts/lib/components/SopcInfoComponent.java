@@ -17,16 +17,18 @@ import sopc2dts.lib.SopcInfoParameter;
 
 public class SopcInfoComponent extends SopcInfoElement {
 	private String instanceName;
+	private String version;
 	private int addr = 0;
 	public static Boolean verboseParams = false;
 	private Vector<SopcInfoAssignment> vParams = new Vector<SopcInfoAssignment>();
 	private Vector<SopcInfoInterface> vInterfaces = new Vector<SopcInfoInterface>();
 	private SopcComponentDescription scd;
-	public SopcInfoComponent(ContentHandler p, XMLReader xr, SopcComponentDescription scd, String iName)
+	public SopcInfoComponent(ContentHandler p, XMLReader xr, SopcComponentDescription scd, String iName, String ver)
 	{
 		super(p,xr);
 		this.setScd(scd);
 		this.setInstanceName(iName);
+		version = ver;
 	}
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
@@ -81,12 +83,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 		{
 			res += AbstractSopcGenerator.indent(indentLevel) + "device-type = \"" + getScd().getGroup() +"\";\n";
 		}
-		res += AbstractSopcGenerator.indent(indentLevel) + "compatible = ";
-		for(int i=0; i<getScd().getCompatible().size(); i++)
-		{
-			if(i>0) res += ", ";
-			res += "\"" + getScd().getCompatible().get(i) + "\"";
-		}
+		res += AbstractSopcGenerator.indent(indentLevel) + "compatible = " + getScd().getCompatible(version);
 		res += ";\n";
 		if (getScd().getGroup().equalsIgnoreCase("cpu"))
 		{
