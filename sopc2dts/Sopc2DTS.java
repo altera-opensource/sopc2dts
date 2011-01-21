@@ -29,7 +29,9 @@ public class Sopc2DTS {
 	protected CLParameter outputType = new CLParameter("dts");
 	protected CLParameter pov = new CLParameter("");
 	protected CLParameter bootargs = new CLParameter("");
-	
+	protected CLParameter sopcParameters = new CLParameter("none");
+	SopcInfoComponent.parameter_action dumpParameters = SopcInfoComponent.parameter_action.NONE;
+
 	protected String programName;
 
 	/**
@@ -52,6 +54,7 @@ public class Sopc2DTS {
 		vOptions.add(new CommandLineOption("pov", 		"p", pov,		 		true, false,"The point of view to generate from. Defaults to the first cpu found", "component name"));
 		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dts,uboot,kernel,kernel-full}"));
 		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
+		vOptions.add(new CommandLineOption("sopc-parameters", 	null,sopcParameters, true, false,"What sopc-parameters to include in DTS: none, cmacro or all.", "choice"));
 	}
 	protected void go()
 	{
@@ -89,7 +92,7 @@ public class Sopc2DTS {
 					if(outputType.value.equalsIgnoreCase("dts"))
 					{
 						DTSGenerator dGen = new DTSGenerator(sys);
-						generatedData = dGen.getOutput(pov.value, bootargs.value);
+						generatedData = dGen.getOutput(pov.value, dumpParameters, bootargs.value);
 					} else if(outputType.value.equalsIgnoreCase("uboot"))
 					{
 						generatedData = "Whoops, I guess I was bluffing. uboot support is not yet done";
@@ -198,6 +201,16 @@ public class Sopc2DTS {
 			System.exit(0);
 		}
 		Logger.setVerbose(Boolean.parseBoolean(verbose.value));
+		if(sopcParameters.value.equalsIgnoreCase("none"))
+		{
+			dumpParameters = SopcInfoComponent.parameter_action.NONE;
+		} else if(sopcParameters.value.equalsIgnoreCase("cmacro"))
+		{
+			dumpParameters = SopcInfoComponent.parameter_action.CMACRCO;
+		} else if(sopcParameters.value.equalsIgnoreCase("all"))
+		{
+			dumpParameters = SopcInfoComponent.parameter_action.ALL;
+		}
 	}
 
 	protected void printUsage()

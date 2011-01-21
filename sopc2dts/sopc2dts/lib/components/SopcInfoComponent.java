@@ -16,10 +16,10 @@ import sopc2dts.lib.SopcInfoParameter;
 
 
 public class SopcInfoComponent extends SopcInfoElement {
+	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;
 	private String version;
 	private int addr = 0;
-	public static Boolean verboseParams = false;
 	private Vector<SopcInfoAssignment> vParams = new Vector<SopcInfoAssignment>();
 	private Vector<SopcInfoInterface> vInterfaces = new Vector<SopcInfoInterface>();
 	private SopcComponentDescription scd;
@@ -70,11 +70,13 @@ public class SopcInfoComponent extends SopcInfoElement {
 		}
 		return res;
 	}
-	public String toDts(int indentLevel)
+	public String toDts(int indentLevel, SopcInfoComponent.parameter_action paramAction)
 	{
-		return toDts(indentLevel, null, true);
+		return toDts(indentLevel, paramAction, null, true);
 	}
-	public String toDts(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDts(int indentLevel, 
+						SopcInfoComponent.parameter_action paramAction, 
+						SopcInfoConnection conn, Boolean endComponent)
 	{
 		int tmpAddr = (conn==null ? getAddr() : conn.getBaseAddress());
 		String res = AbstractSopcGenerator.indent(indentLevel++) + getInstanceName() + ": " + getScd().getGroup() + "@0x" + Integer.toHexString(tmpAddr) + " {\n";
@@ -108,12 +110,23 @@ public class SopcInfoComponent extends SopcInfoElement {
 				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <4>;\n";
 			}
 		}		
-		if(verboseParams)
+		if((paramAction != parameter_action.NONE)&&(getParams().size()>0))
 		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "//Dumping all SOPC parameters...\n";
+			res += AbstractSopcGenerator.indent(indentLevel) + "//Dumping SOPC parameters...\n";
 			for(SopcInfoAssignment ass : getParams())
 			{
-				res += AbstractSopcGenerator.indent(indentLevel) + "altera," + ass.getName() + " = \"" + ass.getValue() + "\";\n";
+				String assName = ass.getName();
+				if(assName.startsWith("embeddedsw.CMacro.")) {
+					assName = assName.substring(18);
+				} else if(paramAction == parameter_action.CMACRCO) {
+					assName = null;
+				}
+				if(assName!=null)
+				{
+					assName.replace("_", "-");
+					res += AbstractSopcGenerator.indent(indentLevel) + 
+							scd.getVendor() + "," + assName + " = \"" + ass.getValue() + "\";\n";
+				}
 			}
 		}
 		res += toDtsExtras(indentLevel, conn, endComponent);

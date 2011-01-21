@@ -21,9 +21,9 @@ public class DTSGenerator extends AbstractSopcGenerator {
 
 	@Override
 	public String getOutput(String pov) {
-		return getOutput(pov, null);
+		return getOutput(pov, SopcInfoComponent.parameter_action.NONE, null);
 	}
-	public String getOutput(String pov, String bootArgs) {
+	public String getOutput(String pov, SopcInfoComponent.parameter_action paramAction, String bootArgs) {
 		int numCPUs = 0;
 		int indentLevel = 0;
 		vHandled.clear();
@@ -45,7 +45,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					if(pov==null) pov = comp.getInstanceName();
 				}
 				comp.setAddr(numCPUs);
-				res += comp.toDts(indentLevel);
+				res += comp.toDts(indentLevel, paramAction);
 				vHandled.add(comp);
 				numCPUs++;
 			}
@@ -64,7 +64,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					indent(indentLevel) + "compatible = \"altr,avalon\",\"simple-bus\";\n" +
 					indent(indentLevel) + "ranges ;\n" +
 					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
-			res += getDTSBusFrom(povComp, indentLevel);
+			res += getDTSBusFrom(povComp, paramAction, indentLevel);
 			res += indent(--indentLevel) + "}; //sopc\n";
 		}
 		if((bootArgs==null)||(bootArgs.length()==0))
@@ -123,7 +123,8 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		return res;
 	}
 
-	String getDTSBusFrom(SopcInfoComponent master, int indentLevel)
+	String getDTSBusFrom(SopcInfoComponent master, 
+				SopcInfoComponent.parameter_action paramAction, int indentLevel)
 	{
 		String res = "";
 		if(master!=null)
@@ -140,11 +141,11 @@ public class DTSGenerator extends AbstractSopcGenerator {
 						{
 							if(!vHandled.contains(slave))
 							{
-								res += slave.toDts(indentLevel,conn,false);
+								res += slave.toDts(indentLevel,paramAction, conn,false);
 								vHandled.add(slave);
 								if(slave.getScd().getGroup().equalsIgnoreCase("bridge"))
 								{
-									res += "\n" + getDTSBusFrom(slave, ++indentLevel);
+									res += "\n" + getDTSBusFrom(slave, paramAction, ++indentLevel);
 									indentLevel--;
 								}
 								res += indent(indentLevel) + "}; //end "+slave.getScd().getGroup()+" (" + slave.getInstanceName() + ")\n\n";
