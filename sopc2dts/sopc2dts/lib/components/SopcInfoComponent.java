@@ -96,10 +96,10 @@ public class SopcInfoComponent extends SopcInfoElement {
 		res += getInterruptsForDTS(indentLevel);
 		for(SopcComponentDescription.SICAutoParam ap : getScd().vAutoParams)
 		{
-			SopcInfoAssignment ass = getParamValue(ap.sopcInfoName);
+			String ass = getParamValue(ap.sopcInfoName);
 			if(ass!=null)
 			{
-				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + ass.getValue() + ">;\n";
+				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + ass + ">;\n";
 			} else if(ap.dtsName.equalsIgnoreCase("clock-frequency"))
 			{
 				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + getClockRate() + ">;\n";
@@ -143,13 +143,13 @@ public class SopcInfoComponent extends SopcInfoElement {
 	public String getElementName() {
 		return "module";
 	}
-	public SopcInfoAssignment getParamValue(String paramName)
+	public String getParamValue(String paramName)
 	{
 		for(SopcInfoAssignment ass : getParams())
 		{
 			if(ass.getName().equalsIgnoreCase(paramName))
 			{
-				return ass;
+				return ass.getValue();
 			}
 		}
 		return null;

@@ -46,7 +46,7 @@ public class SopcComponentDescription {
 		for(SICRequiredParam rp : vRequiredParams)
 		{
 			if(comp.getParamValue(rp.name)==null) return false;
-			if(!comp.getParamValue(rp.name).getValue().equalsIgnoreCase(rp.value)) return false;
+			if(!comp.getParamValue(rp.name).equalsIgnoreCase(rp.value)) return false;
 		}
 		return true;
 	}

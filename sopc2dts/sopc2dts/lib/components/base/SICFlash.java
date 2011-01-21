@@ -57,7 +57,7 @@ public class SICFlash extends SopcInfoComponent {
 	{
 		int bankw = 2;
 		try {
-			bankw = Integer.decode(getParamValue("dataWidth").getValue())/8;
+			bankw = Integer.decode(getParamValue("dataWidth"))/8;
 		}catch(Exception e) { } //ignore
 		String res = AbstractSopcGenerator.indent(indentLevel) + "bank-width = <"+bankw+">;\n" +
 					AbstractSopcGenerator.indent(indentLevel) + "device-width = <1>;\n";

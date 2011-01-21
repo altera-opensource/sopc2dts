@@ -27,7 +27,7 @@ public class SICSgdma extends SopcInfoComponent {
 		int iType = 0;
 		while(iType<(TYPE_NAMES.length-1))
 		{
-			if(TYPE_NAMES[iType].equals(getParamValue("transferMode").getValue()))
+			if(TYPE_NAMES[iType].equals(getParamValue("transferMode")))
 			{
 				break;
 			}
