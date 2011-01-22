@@ -123,7 +123,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 				}
 				if(assName!=null)
 				{
-					assName.replace("_", "-");
+					assName = assName.replace('_', '-');
 					res += AbstractSopcGenerator.indent(indentLevel) + 
 							scd.getVendor() + "," + assName + " = \"" + ass.getValue() + "\";\n";
 				}
