@@ -55,69 +55,81 @@ public class SICBridge extends SopcInfoComponent {
 				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n" +
 				getDtsRanges(indentLevel,conn);
 	}
+	private void removeFromSystem(SopcInfoSystem sys)
+	{
+		Logger.logln("Try to eliminate " + getScd().getClassName() + ": " + getInstanceName());
+		SopcInfoInterface masterIntf = null, slaveIntf = null;
+		for(SopcInfoInterface intf : getInterfaces())
+		{
+			if(intf.isClockInput())
+			{
+				//Remove clocks
+				for(SopcInfoConnection conn : intf.getConnections())
+				{
+					conn.getMasterInterface().getConnections().remove(conn);
+				}
+			} else if (intf.isMemoryMaster()) {
+				masterIntf = intf;
+			} else if (intf.isMemorySlave()) {
+				slaveIntf = intf;
+			}
+		}
+		//Now connect all our slaves to our masters and remove ourselves
+		if((masterIntf==null)||(slaveIntf==null))
+		{
+			//That shouldn't happen
+			Logger.logln("MasterIF " + masterIntf + " slaveIF " + slaveIntf);
+			return;
+		}
+		SopcInfoConnection masterConn;
+		while(slaveIntf.getConnections().size()>0)
+		{
+			masterConn = slaveIntf.getConnections().firstElement();
+			Logger.logln("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
+			for(SopcInfoConnection slaveConn : masterIntf.getConnections())
+			{
+				//Connect slaves to our masters
+				SopcInfoConnection conn = new SopcInfoConnection(slaveConn);
+				Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
+				conn.setMasterInterface(masterConn.getMasterInterface());
+				masterConn.getMasterInterface().getConnections().add(conn);
+				conn.getSlaveInterface().getConnections().add(conn);
+				Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
+			}
+			//Now remove connection to master
+			slaveIntf.getConnections().remove(masterConn);
+			Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
+			masterConn.getMasterInterface().getConnections().remove(masterConn);
+			Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
+		}
+		//Now remove all slaves...
+		SopcInfoConnection slaveConn;
+		while(masterIntf.getConnections().size()>0)
+		{
+			slaveConn = masterIntf.getConnections().firstElement();
+//			System.out.println("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
+			//Now remove connection to master
+			masterIntf.getConnections().remove(slaveConn);
+			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
+			slaveConn.getSlaveInterface().getConnections().remove(slaveConn);
+			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
+		}
+	}
 	public void removeFromSystemIfPossible(SopcInfoSystem sys)
 	{
+		boolean remove = false;
 		if(getScd().getClassName().equalsIgnoreCase("altera_avalon_tri_state_bridge"))
 		{
-			Logger.logln("Try to eliminate tristate-bridge " + getInstanceName());
-			SopcInfoInterface masterIntf = null, slaveIntf = null;
-//			Vector<SopcInfoInterface> vMasters = new Vector<SopcInfoInterface>();
-//			Vector<SopcInfoComponent> vSlaves = new Vector<SopcInfoComponent>();
-			for(SopcInfoInterface intf : getInterfaces())
-			{
-				if(intf.isClockInput())
-				{
-					//Remove clocks
-					for(SopcInfoConnection conn : intf.getConnections())
-					{
-						conn.getMasterInterface().getConnections().remove(conn);
-					}
-				} else if (intf.isMemoryMaster()) {
-					masterIntf = intf;
-				} else if (intf.isMemorySlave()) {
-					slaveIntf = intf;
-				}
-			}
-			//Now connect all our slaves to our masters and remove ourselves
-			if((masterIntf==null)||(slaveIntf==null))
-			{
-				//That shouldn't happen
-				Logger.logln("MasterIF " + masterIntf + " slaveIF " + slaveIntf);
-				return;
-			}
-			SopcInfoConnection masterConn;
-			while(slaveIntf.getConnections().size()>0)
-			{
-				masterConn = slaveIntf.getConnections().firstElement();
-				Logger.logln("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
-				for(SopcInfoConnection slaveConn : masterIntf.getConnections())
-				{
-					//Connect slaves to our masters
-					SopcInfoConnection conn = new SopcInfoConnection(slaveConn);
-					Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
-					conn.setMasterInterface(masterConn.getMasterInterface());
-					masterConn.getMasterInterface().getConnections().add(conn);
-					conn.getSlaveInterface().getConnections().add(conn);
-					Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
-				}
-				//Now remove connection to master
-				slaveIntf.getConnections().remove(masterConn);
-				Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
-				masterConn.getMasterInterface().getConnections().remove(masterConn);
-				Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
-			}
-			//Now remove all slaves...
-			SopcInfoConnection slaveConn;
-			while(masterIntf.getConnections().size()>0)
-			{
-				slaveConn = masterIntf.getConnections().firstElement();
-//				System.out.println("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
-				//Now remove connection to master
-				masterIntf.getConnections().remove(slaveConn);
-				Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
-				slaveConn.getSlaveInterface().getConnections().remove(slaveConn);
-				Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
-			}
+			//Always remove tristate bridges.
+			remove = true;
+		} else if((getScd().getClassName().equalsIgnoreCase("altera_avalon_pipeline_bridge")) &&
+				(getAddrFromMaster()==0))
+		{
+			remove = true;
+		}
+		if(remove)
+		{
+			removeFromSystem(sys);
 		}
 	}
 }

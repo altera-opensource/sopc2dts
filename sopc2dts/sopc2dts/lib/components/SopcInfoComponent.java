@@ -212,6 +212,24 @@ public class SopcInfoComponent extends SopcInfoElement {
 	public int getAddr() {
 		return addr;
 	}
+	public int getAddrFromMaster()
+	{
+		return getAddrFromMaster(0);
+	}
+	public int getAddrFromMaster(int index)
+	{
+		for(SopcInfoInterface intf : vInterfaces)
+		{
+			if(intf.isMemorySlave())
+			{
+				if(intf.getConnections().size()>index)
+				{
+					return intf.getConnections().get(index).getBaseAddress();
+				}
+			}
+		}
+		return -1;
+	}
 	public int getClockRate()
 	{
 		int rate = 0;
