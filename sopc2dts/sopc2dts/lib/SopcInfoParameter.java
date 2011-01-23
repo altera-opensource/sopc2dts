@@ -19,7 +19,8 @@ public class SopcInfoParameter extends SopcInfoAssignment {
 	public String getElementName() {
 		return "parameter";
 	}
-	public void setValue(String val) {
+	protected String parseValue(String val)
+	{
 		if(this.type!=null)
 		{
 			if(type.equalsIgnoreCase("int")||
@@ -35,6 +36,6 @@ public class SopcInfoParameter extends SopcInfoAssignment {
 				}			
 			}
 		}
-		super.setValue(val);
+		return val;
 	}
 }

@@ -46,8 +46,42 @@ public class SopcInfoAssignment extends SopcInfoElement {
 			}
 		}
 	}
+	/*
+	 * Note: This stuff is decimal ONLY
+	 */
+	protected String parseValue(String val)
+	{
+		int strip=0;
+		if(val.endsWith("u")||val.endsWith("U"))
+		{
+			strip = 1;
+		} else if(val.endsWith("UL"))
+		{
+			strip = 2;
+		} else if(val.endsWith("ULL"))
+		{
+			strip = 3;
+		}
+		if((strip>0)&&(val.length()>strip))
+		{
+			String tmpVal = val.substring(0, val.length() - strip);
+			boolean isAllNumber = true;
+			for(int i=0; i<tmpVal.length(); i++)
+			{
+				if((tmpVal.charAt(i)<'0')&&(tmpVal.charAt(i)>'9'))
+				{
+					isAllNumber = false;
+				}
+			}
+			if(isAllNumber)
+			{
+				val = tmpVal;
+			}
+		}
+		return val;
+	}
 	public void setValue(String value) {
-		this.value = value;
+		this.value = parseValue(value);
 	}
 	public String getValue() {
 		return value;
