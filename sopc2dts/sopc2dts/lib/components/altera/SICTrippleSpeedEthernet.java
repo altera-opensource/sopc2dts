@@ -20,8 +20,8 @@ public class SICTrippleSpeedEthernet extends SopcInfoComponent {
 		SopcInfoComponent compTX, compRX;
 		compTX = getInterfaceByName("transmit").getConnections().get(0).getMasterInterface().getOwner();
 		compRX = getInterfaceByName("receive").getConnections().get(0).getSlaveInterface().getOwner();
-		res += AbstractSopcGenerator.indent(indentLevel) + "altera,sgdma_tx = < &" + compTX.getInstanceName() + " >;\n";
-		res += AbstractSopcGenerator.indent(indentLevel) + "altera,sgdma_rx = < &" + compRX.getInstanceName() + " >;\n";
+		res += AbstractSopcGenerator.indent(indentLevel) + "altr,sgdma_tx = < &" + compTX.getInstanceName() + " >;\n";
+		res += AbstractSopcGenerator.indent(indentLevel) + "altr,sgdma_rx = < &" + compRX.getInstanceName() + " >;\n";
 		return res;
 	}
 }
