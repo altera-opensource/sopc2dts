@@ -1,6 +1,6 @@
 <SOPC2DTS_COMPONENTLIB vendor="opencores">
-	<S2DComponent classname="eth_ocm" group="ethernet" compatDevice="ethmac">
-		<CompatibleVersion value="1.0"></CompatibleVersion></S2DComponent>
+	<S2DComponent classname="eth_ocm" group="ethernet" compatDevice="ethoc">
+		<compatible name="opencores,ethoc"></compatible></S2DComponent>
 	<S2DComponent classname="opencores_i2c_master"
 		compatDevice="i2c-ocores" group="i2c">
 	<parameter dtsName="regstep"></parameter>
