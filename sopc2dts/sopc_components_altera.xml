@@ -9,10 +9,8 @@
 		compatDevice="cfi_flash" group="flash">
 		<compatible name="cfi-flash"></compatible>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_epcs_flash_controller" compatDevice="epcs_flash" group="flash">
-		<compatible name="epcs-flash"></compatible>
-	</S2DComponent>
-	<S2DComponent classname="gpio" group="gpio" compatDevice="pio">
+	<S2DComponent classname="altera_avalon_epcs_flash_controller" compatDevice="epcs-flash" group="flash">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_uart" group="serial"
 		compatDevice="uart">
@@ -33,15 +31,14 @@
 	<S2DComponent classname="altera_avalon_spi" group="spi"
 		compatDevice="spi">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
-		<CompatibleVersion value="9.1"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pio" group="gpio"
 		compatDevice="pio">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
-		<CompatibleVersion value="9.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_up_avalon_ps2_classic" group="ps2"
 		compatDevice="ps2">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pipeline_bridge"
 		group="bridge" compatDevice="avalon">
@@ -68,13 +65,13 @@
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sgdma" group="dma"
 		compatDevice="sgdma">
-		<CompatibleVersion value="7.1"></CompatibleVersion>
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="clock_source" group="ignore"></S2DComponent>
 	<S2DComponent classname="timing_adapter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_fifo" group="fifo"
 		compatDevice="fifo">
-		<CompatibleVersion value="7.1"></CompatibleVersion>
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="data_format_adapter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_pixel_converter" group="ignore"></S2DComponent>
@@ -83,38 +80,37 @@
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pll" group="clock"
 		compatDevice="pll">
-		<CompatibleVersion value="5.1"></CompatibleVersion>
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_timer" group="timer"
 		compatDevice="timer">
 		<parameter dtsName="clock-frequency"></parameter>
 		<RequiredParameter name="timerPreset" value="FULL_FEATURED"></RequiredParameter>
-		<CompatibleVersion value="8.0"></CompatibleVersion>
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_timer" group="watchdog"
 		compatDevice="wdt">
 		<parameter dtsName="clock-frequency"></parameter>
 		<RequiredParameter name="timerPreset" value="WATCHDOG"></RequiredParameter>
-		<CompatibleVersion value="8.0"></CompatibleVersion>
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_performance_counter"
-		group="perf_counter" compatDevice="perf_counter">
-		<CompatibleVersion value="5.1"></CompatibleVersion>
+		group="perf_counter" compatDevice="perf-counter">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sysid" group="sysid"
 		compatDevice="sysid">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_remote_update_cycloneiii"
-		group="altremote" compatDevice="altremote">
-		<CompatibleVersion value="8.1"></CompatibleVersion>
+		group="altremote" compatDevice="remote">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_onchip_memory2"
 		group="memory" compatDevice="onchipmem">
 	</S2DComponent>
 	<S2DComponent classname="triple_speed_ethernet"
 		group="ethernet" compatDevice="tse">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
