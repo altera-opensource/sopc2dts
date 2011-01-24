@@ -8,9 +8,12 @@ SOURCES=Sopc2DTS.java sopc2dts/Logger.java sopc2dts/generators/AbstractSopcGener
 	sopc2dts/lib/SopcInfoSystem.java sopc2dts/lib/components/SopcComponentDescription.java \
 	sopc2dts/lib/components/SopcInfoComponent.java sopc2dts/lib/components/SopcInfoInterface.java \
 	sopc2dts/lib/components/SopcInfoMemoryBlock.java \
+	sopc2dts/lib/components/altera/SICEpcs.java \
+	sopc2dts/lib/components/altera/SICLan91c111.java \
 	sopc2dts/lib/components/altera/SICSgdma.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
 	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
+	sopc2dts/lib/components/base/SICEthernet.java \
 	sopc2dts/lib/components/base/SICUnknown.java
 
 CLASSES=$(SOURCES:.java=.class)
@@ -26,4 +29,3 @@ sopc2dts.jar: $(CLASSES) manifest
 clean:
 	rm -f $(CLASSES)
 	rm -f sopc2dts.jar
-
