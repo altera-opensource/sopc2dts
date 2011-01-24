@@ -45,7 +45,7 @@ public class SICEpcs extends SopcInfoComponent {
 		//Yes this is REALLY ugly. But it just might work :)
 		int regOffset = 0;
 		try {
-			regOffset = Integer.parseInt(getParamValue("embeddedsw.CMacro.REGISTER_OFFSET"));
+			regOffset = Integer.decode(getParamValue("embeddedsw.CMacro.REGISTER_OFFSET"));
 		} catch(Exception e)
 		{
 			//Ignore errors and keep regOffset at 0
