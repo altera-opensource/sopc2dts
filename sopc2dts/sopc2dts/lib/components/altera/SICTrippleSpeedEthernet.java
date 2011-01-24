@@ -7,8 +7,9 @@ import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.base.SICEthernet;
 
-public class SICTrippleSpeedEthernet extends SopcInfoComponent {
+public class SICTrippleSpeedEthernet extends SICEthernet {
 
 	public SICTrippleSpeedEthernet(ContentHandler p, XMLReader xr,
 			SopcComponentDescription scd, String iName, String version) {
