@@ -17,6 +17,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.SICTrippleSpeedEthernet;
 import sopc2dts.lib.components.base.SICBridge;
@@ -24,7 +25,7 @@ import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.components.base.SICUnknown;
 
 public class SopcComponentLib implements ContentHandler {
-	private SopcComponentDescription scd;
+	private SopcComponentDescription currScd;
 	private boolean ignoreInput = true;
 	private String currentVendor = null;
 	SopcComponentDescription unknownComponent = new SICUnknown();
@@ -66,29 +67,42 @@ public class SopcComponentLib implements ContentHandler {
 			e.printStackTrace();
 		}
 	}
-	public SopcInfoComponent getComponentForClass(String className, String instanceName, String version, ContentHandler p, XMLReader xr)
+	protected SopcComponentDescription getScdByClassName(String className)
 	{
 		for(SopcComponentDescription scd : vLibComponents)
 		{
 			if(className.equalsIgnoreCase(scd.getClassName()))
 			{
-				//Handle a few hardcoded special cases
+				return scd;
+			}
+		}
+		return null;
+	}
+	public SopcInfoComponent getComponentForClass(String className, String instanceName, String version, ContentHandler p, XMLReader xr)
+	{
+		if(className.equalsIgnoreCase("triple_speed_ethernet"))
+		{
+			return new SICTrippleSpeedEthernet(p, xr, getScdByClassName(className), instanceName, version);			
+		} else if (className.equalsIgnoreCase("altera_avalon_sgdma")) {
+			return new SICSgdma(p, xr, getScdByClassName(className), instanceName, version);
+		} else if (className.equalsIgnoreCase("altera_avalon_epcs_flash_controller")) {
+			return new SICEpcs(p, xr, getScdByClassName("altera_avalon_spi"), instanceName, version);
+		} else {
+			SopcComponentDescription scd = getScdByClassName(className);
+			if(scd!=null)
+			{
 				if (scd.getGroup().equalsIgnoreCase("bridge")) {
-					return new SICBridge(p, xr, scd, instanceName, version);
-					//Handle a few hardcoded special cases
+					return new SICBridge(p, xr, getScdByClassName(className), instanceName, version);
 				} else if (scd.getGroup().equalsIgnoreCase("flash")) {
 					return new SICFlash(p, xr, scd, instanceName, version);
-				} else if (scd.getClassName().equalsIgnoreCase("triple_speed_ethernet")) {
-					return new SICTrippleSpeedEthernet(p, xr, scd, instanceName, version);
-				} else if (scd.getClassName().equalsIgnoreCase("altera_avalon_sgdma")) {
-					return new SICSgdma(p, xr, scd, instanceName, version);
 				} else {
 					return new SopcInfoComponent(p,xr,scd,instanceName, version);
 				}
+			} else {
+				System.out.println("Unknown class: " + className);
+				return new SopcInfoComponent(p, xr, unknownComponent, instanceName, version);
 			}
 		}
-		System.out.println("Unknown class: " + className);
-		return new SopcInfoComponent(p, xr, unknownComponent, instanceName, version);
 	}
 	public SopcInfoComponent finalCheckOnComponent(SopcInfoComponent comp)
 	{
@@ -121,24 +135,24 @@ public class SopcComponentLib implements ContentHandler {
 		} else{
 			if(localName.equalsIgnoreCase("S2DComponent"))
 			{
-				scd = new SopcComponentDescription();
-				scd.setClassName(atts.getValue("classname"));
-				scd.setGroup(atts.getValue("group"));
-				scd.setVendor(currentVendor);
-				scd.setDevice(atts.getValue("compatDevice"));
-				vLibComponents.add(scd);
-			} else if((localName.equalsIgnoreCase("compatible"))&&(scd!=null))
+				currScd = new SopcComponentDescription();
+				currScd.setClassName(atts.getValue("classname"));
+				currScd.setGroup(atts.getValue("group"));
+				currScd.setVendor(currentVendor);
+				currScd.setDevice(atts.getValue("compatDevice"));
+				vLibComponents.add(currScd);
+			} else if((localName.equalsIgnoreCase("compatible"))&&(currScd!=null))
 			{
-				scd.addCompatible(atts.getValue("name"));
-			} else if((localName.equalsIgnoreCase("parameter"))&&(scd!=null))
+				currScd.addCompatible(atts.getValue("name"));
+			} else if((localName.equalsIgnoreCase("parameter"))&&(currScd!=null))
 			{
-				scd.addAutoParam(atts.getValue("dtsName"), atts.getValue("sopcName"));
-			} else if((localName.equalsIgnoreCase("RequiredParameter"))&&(scd!=null))
+				currScd.addAutoParam(atts.getValue("dtsName"), atts.getValue("sopcName"));
+			} else if((localName.equalsIgnoreCase("RequiredParameter"))&&(currScd!=null))
 			{
-				scd.addRequiredParam(atts.getValue("name"), atts.getValue("value"));
-			} else if((localName.equalsIgnoreCase("CompatibleVersion"))&&(scd!=null))
+				currScd.addRequiredParam(atts.getValue("name"), atts.getValue("value"));
+			} else if((localName.equalsIgnoreCase("CompatibleVersion"))&&(currScd!=null))
 			{
-				scd.addCompatibleVersion(atts.getValue("value"));
+				currScd.addCompatibleVersion(atts.getValue("value"));
 			} else {
 				System.out.println("New element " + localName);
 			}

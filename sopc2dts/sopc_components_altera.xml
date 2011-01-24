@@ -9,9 +9,6 @@
 		compatDevice="cfi_flash" group="flash">
 		<compatible name="cfi-flash"></compatible>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_epcs_flash_controller" compatDevice="epcs-flash" group="flash">
-		<CompatibleVersion value="1.0"></CompatibleVersion>
-	</S2DComponent>
 	<S2DComponent classname="altera_avalon_uart" group="serial"
 		compatDevice="uart">
 		<CompatibleVersion value="1.0"></CompatibleVersion>

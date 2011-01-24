@@ -78,7 +78,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 						SopcInfoComponent.parameter_action paramAction, 
 						SopcInfoConnection conn, Boolean endComponent)
 	{
-		int tmpAddr = (conn==null ? getAddr() : conn.getBaseAddress());
+		int tmpAddr = getAddrFromConnection(conn);
 		String res = AbstractSopcGenerator.indent(indentLevel++) + getInstanceName() + ": " + getScd().getGroup() + "@0x" + Integer.toHexString(tmpAddr) + " {\n";
 		res += toDtsExtrasFirst(indentLevel, conn, endComponent);
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
@@ -229,6 +229,10 @@ public class SopcInfoComponent extends SopcInfoElement {
 			}
 		}
 		return -1;
+	}
+	protected int getAddrFromConnection(SopcInfoConnection conn)
+	{
+		return (conn==null ? getAddr() : conn.getBaseAddress());
 	}
 	public int getClockRate()
 	{
