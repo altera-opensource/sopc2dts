@@ -110,4 +110,9 @@
 		group="ethernet" compatDevice="tse">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_lan91c111"
+		group="ethernet" compatDevice="smc91x">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+		<compatible name="smsc,smc91x"></compatible>
+	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
