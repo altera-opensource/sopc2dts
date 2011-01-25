@@ -121,6 +121,5 @@
 	<S2DComponent classname="altera_avalon_cf"
 		group="ata" compatDevice="cf">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
-		<compatible name="pata_altera_cf"></compatible>
 	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
