@@ -120,7 +120,7 @@
 	<S2DComponent classname="altera_avalon_lan91c111"
 		group="ethernet" compatDevice="smc91x">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
-		<compatible name="smsc,smc91c111"></compatible>
+		<compatible name="smsc,lan91c111"></compatible>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cf"
 		group="ata" compatDevice="cf">
