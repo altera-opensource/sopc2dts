@@ -63,6 +63,10 @@
 	<S2DComponent classname="ddr_sdram_component_classic" group="memory"
 		compatDevice="sdram">
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_dma" group="dma"
+		compatDevice="dma">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sgdma" group="dma"
 		compatDevice="sgdma">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
