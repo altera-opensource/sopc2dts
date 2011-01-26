@@ -11,4 +11,6 @@
 		<CompatibleVersion value="rtlsvn2"></CompatibleVersion></S2DComponent>
 	<S2DComponent classname="gpio" compatDevice="bit-gpio" group="gpio">
 		<CompatibleVersion value="rtlsvn2"></CompatibleVersion>
+		<parameter dtsName="bidir-width" sopcName="BIDIR_WIDTH"></parameter>
+		<parameter dtsName="input-width" sopcName="INPUT_WIDTH"></parameter>
 	</S2DComponent></SOPC2DTS_COMPONENTLIB>
