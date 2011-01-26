@@ -32,6 +32,8 @@
 	<S2DComponent classname="altera_avalon_pio" group="gpio"
 		compatDevice="pio">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
+		<parameter dtsName="width" sopcName="WIDTH"></parameter>
+		<parameter dtsName="resetvalue" sopcName="resetValue"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_up_avalon_ps2_classic" group="ps2"
 		compatDevice="ps2">
