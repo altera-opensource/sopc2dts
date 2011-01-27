@@ -97,6 +97,7 @@
 	<S2DComponent classname="altera_avalon_timer" group="watchdog"
 		compatDevice="wdt">
 		<parameter dtsName="clock-frequency"></parameter>
+		<parameter dtsName="timeout" sopcName="embeddedsw.CMacro.LOAD_VALUE"></parameter>
 		<RequiredParameter name="timerPreset" value="WATCHDOG"></RequiredParameter>
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
