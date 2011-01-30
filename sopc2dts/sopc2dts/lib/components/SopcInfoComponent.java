@@ -38,15 +38,38 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 		}
 		
 	}
-	protected String getRegForDTS(int indentLevel, SopcInfoConnection conn, SopcInfoInterface intf)
+	protected String getRegForDTS(int indentLevel, SopcInfoComponent master)
 	{
-		if((conn!=null) && (intf!=null))
+		String res = "";
+		for(SopcInfoInterface intf : vInterfaces)
 		{
-			return AbstractSopcGenerator.indent(indentLevel) + "reg = <0x" + Integer.toHexString(conn.getBaseAddress()) + 
-					" 0x" + Integer.toHexString(intf.getAddressableSize()) + ">;\n";
-		} else {
-			return "";
+			if(intf.isMemorySlave())
+			{
+				//Check all interfaces for a connection to master
+				SopcInfoConnection conn = null;
+				for(int i=0; (i<intf.getConnections().size()) && (conn==null); i++)
+				{
+					if(intf.getConnections().get(i).getMasterModule().equals(master))
+					{
+						conn = intf.getConnections().get(i);
+					}
+				}
+				if((conn!=null) && (intf!=null))
+				{
+					if(res.length()==0)
+					{
+						res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
+					}
+					res += " 0x" + Integer.toHexString(conn.getBaseAddress()) + 
+							" 0x" + Integer.toHexString(intf.getAddressableSize());
+				}
+			}
 		}
+		if(res.length()>0)
+		{
+			res += ">;\n";
+		}
+		return res;
 	}
 
 	protected String getInterruptsForDTS(int indentLevel)
@@ -97,7 +120,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 			res += AbstractSopcGenerator.indent(indentLevel) + "reg = <" + getAddr() + ">;\n";
 		} else if(conn!=null)
 		{
-			res += getRegForDTS(indentLevel, conn, conn.getSlaveInterface());
+			res += getRegForDTS(indentLevel, conn.getMasterModule());
 		}
 		res += getInterruptMasterDesc(indentLevel);
 		res += getInterruptsForDTS(indentLevel);
