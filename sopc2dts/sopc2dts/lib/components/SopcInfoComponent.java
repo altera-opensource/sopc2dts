@@ -59,16 +59,29 @@ public class SopcInfoComponent extends SopcInfoElement {
 
 	protected String getInterruptsForDTS(int indentLevel)
 	{
-		String res="";
+		String interrupts =AbstractSopcGenerator.indent(indentLevel) + "interrupts = <";
+		SopcInfoComponent irqParent = null;
 		for(SopcInfoInterface intf : getInterfaces())
 		{
 			if(intf.getKind().equalsIgnoreCase("interrupt_sender"))
 			{
-				res = AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + intf.getConnections().get(0).getMasterInterface().getOwner().getInstanceName() + " >;\n"
-					+ AbstractSopcGenerator.indent(indentLevel) + "interrupts = <" + intf.getConnections().get(0).getParamValue("irqNumber").getValue() + ">;\n";
+				if(irqParent==null)
+				{
+					irqParent = intf.getConnections().get(0).getMasterInterface().getOwner();
+				}
+				if(intf.getConnections().get(0).getMasterInterface().getOwner().equals(irqParent))
+				{
+					interrupts += " " + intf.getConnections().get(0).getParamValue("irqNumber").getValue();
+				}
 			}
 		}
-		return res;
+		if(irqParent!=null)
+		{
+			return AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + irqParent.getInstanceName() + " >;\n" +
+					interrupts + " >;\n";
+		} else {
+			return "";
+		}
 	}
 	public String toDts(int indentLevel, SopcInfoComponent.parameter_action paramAction)
 	{
