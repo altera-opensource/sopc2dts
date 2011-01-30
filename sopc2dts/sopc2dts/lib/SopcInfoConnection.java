@@ -4,6 +4,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import sopc2dts.lib.components.SopcInfoComponent;
 import sopc2dts.lib.components.SopcInfoInterface;
 
 
@@ -18,13 +19,29 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 	public SopcInfoInterface getMasterInterface() {
 		return masterInterface;
 	}
-
+	public SopcInfoComponent getMasterModule() {
+		if(masterInterface!=null)
+		{
+			return masterInterface.getOwner();
+		} else {
+			return null;
+		}
+	}
 	public void setMasterInterface(SopcInfoInterface masterInterface) {
 		this.masterInterface = masterInterface;
 	}
 
 	public SopcInfoInterface getSlaveInterface() {
 		return slaveInterface;
+	}
+	
+	public SopcInfoComponent getSlaveModule() {
+		if(slaveInterface!=null)
+		{
+			return slaveInterface.getOwner();
+		} else {
+			return null;
+		}
 	}
 
 	public void setSlaveInterface(SopcInfoInterface slaveInterface) {

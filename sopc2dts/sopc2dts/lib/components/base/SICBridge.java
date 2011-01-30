@@ -85,16 +85,16 @@ public class SICBridge extends SopcInfoComponent {
 		while(slaveIntf.getConnections().size()>0)
 		{
 			masterConn = slaveIntf.getConnections().firstElement();
-			Logger.logln("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
+			Logger.logln("Master of bridge: " + masterConn.getMasterModule().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
 			for(SopcInfoConnection slaveConn : masterIntf.getConnections())
 			{
 				//Connect slaves to our masters
 				SopcInfoConnection conn = new SopcInfoConnection(slaveConn);
-				Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
+				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + " to " + conn.getSlaveModule().getInstanceName());
 				conn.setMasterInterface(masterConn.getMasterInterface());
 				masterConn.getMasterInterface().getConnections().add(conn);
 				conn.getSlaveInterface().getConnections().add(conn);
-				Logger.logln("Connection from " + conn.getMasterInterface().getOwner().getInstanceName() + " to " + conn.getSlaveInterface().getOwner().getInstanceName());
+				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + " to " + conn.getSlaveModule().getInstanceName());
 			}
 			//Now remove connection to master
 			slaveIntf.getConnections().remove(masterConn);
@@ -107,7 +107,7 @@ public class SICBridge extends SopcInfoComponent {
 		while(masterIntf.getConnections().size()>0)
 		{
 			slaveConn = masterIntf.getConnections().firstElement();
-//			System.out.println("Master of bridge: " + masterConn.getMasterInterface().getOwner().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
+//			System.out.println("Master of bridge: " + masterConn.getMasterModule().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
 			//Now remove connection to master
 			masterIntf.getConnections().remove(slaveConn);
 			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());

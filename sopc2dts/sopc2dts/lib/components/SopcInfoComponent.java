@@ -59,9 +59,9 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 			{
 				if(irqParent==null)
 				{
-					irqParent = intf.getConnections().get(0).getMasterInterface().getOwner();
+					irqParent = intf.getConnections().get(0).getMasterModule();
 				}
-				if(intf.getConnections().get(0).getMasterInterface().getOwner().equals(irqParent))
+				if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
 				{
 					interrupts += " " + intf.getConnections().get(0).getParamValue("irqNumber");
 				}

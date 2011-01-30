@@ -71,11 +71,11 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 				{
 					if(!vHandled.contains(conn.getSlaveInterface()))
 					{
-						if(!conn.getSlaveInterface().getOwner().getScd().getGroup().equals("bridge"))
+						if(!conn.getSlaveModule().getScd().getGroup().equals("bridge"))
 						{
-							res += dumpComponent(conn.getSlaveInterface().getOwner(), pov);
+							res += dumpComponent(conn.getSlaveModule(), pov);
 						} else {
-							res += dumpChildren(conn.getSlaveInterface().getOwner(), pov);
+							res += dumpChildren(conn.getSlaveModule(), pov);
 						}
 					}
 				}
