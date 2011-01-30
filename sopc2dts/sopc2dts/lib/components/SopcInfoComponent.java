@@ -10,17 +10,15 @@ import org.xml.sax.XMLReader;
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.SopcInfoAssignment;
 import sopc2dts.lib.SopcInfoConnection;
-import sopc2dts.lib.SopcInfoElement;
-import sopc2dts.lib.SopcInfoParameter;
+import sopc2dts.lib.SopcInfoElementWithParams;
 
 
 
-public class SopcInfoComponent extends SopcInfoElement {
+public class SopcInfoComponent extends SopcInfoElementWithParams {
 	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;
 	private String version;
 	private int addr = 0;
-	private Vector<SopcInfoAssignment> vParams = new Vector<SopcInfoAssignment>();
 	private Vector<SopcInfoInterface> vInterfaces = new Vector<SopcInfoInterface>();
 	private SopcComponentDescription scd;
 	public SopcInfoComponent(ContentHandler p, XMLReader xr, SopcComponentDescription scd, String iName, String ver)
@@ -32,13 +30,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 	}
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
-		if(localName.equalsIgnoreCase("assignment"))
-		{
-			getParams().add(new SopcInfoAssignment(this, xmlReader));
-		} else if(localName.equalsIgnoreCase("parameter"))
-		{
-			getParams().add(new SopcInfoParameter(this, xmlReader, atts.getValue("name")));
-		} else if(localName.equalsIgnoreCase("interface"))
+		if(localName.equalsIgnoreCase("interface"))
 		{
 			getInterfaces().add(new SopcInfoInterface(this, xmlReader, atts.getValue("name"), atts.getValue("kind"), this));
 		} else {
@@ -71,7 +63,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 				}
 				if(intf.getConnections().get(0).getMasterInterface().getOwner().equals(irqParent))
 				{
-					interrupts += " " + intf.getConnections().get(0).getParamValue("irqNumber").getValue();
+					interrupts += " " + intf.getConnections().get(0).getParamValue("irqNumber");
 				}
 			}
 		}
@@ -169,17 +161,6 @@ public class SopcInfoComponent extends SopcInfoElement {
 	public String getElementName() {
 		return "module";
 	}
-	public String getParamValue(String paramName)
-	{
-		for(SopcInfoAssignment ass : getParams())
-		{
-			if(ass.getName().equalsIgnoreCase(paramName))
-			{
-				return ass.getValue();
-			}
-		}
-		return null;
-	}
 	public SopcInfoInterface getInterfaceByName(String ifName)
 	{
 		for(SopcInfoInterface intf : getInterfaces())
@@ -206,12 +187,6 @@ public class SopcInfoComponent extends SopcInfoElement {
 	}
 	public String getInstanceName() {
 		return instanceName;
-	}
-	public void setParams(Vector<SopcInfoAssignment> vParams) {
-		this.vParams = vParams;
-	}
-	public Vector<SopcInfoAssignment> getParams() {
-		return vParams;
 	}
 	public void setInterfaces(Vector<SopcInfoInterface> vInterfaces) {
 		this.vInterfaces = vInterfaces;
@@ -254,7 +229,7 @@ public class SopcInfoComponent extends SopcInfoElement {
 		{
 			if(intf.isClockInput())
 			{
-				rate = Integer.decode(intf.getConnections().get(0).getMasterInterface().getParamValue("clockRate").getValue());
+				rate = Integer.decode(intf.getConnections().get(0).getMasterInterface().getParamValue("clockRate"));
 			}
 		}
 		return rate;

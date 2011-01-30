@@ -14,7 +14,19 @@ public abstract class SopcInfoElementWithParams extends SopcInfoElement {
 		super(p, xr);
 		// TODO Auto-generated constructor stub
 	}
-	public SopcInfoAssignment getParamValue(String paramName)
+	public String getParamValue(String paramName)
+	{
+		for(SopcInfoAssignment ass : vParams)
+		{
+			if(ass.getName().equalsIgnoreCase(paramName))
+			{
+				return ass.getValue();
+			}
+		}
+		return null;
+	}
+
+	public SopcInfoAssignment getParam(String paramName)
 	{
 		for(SopcInfoAssignment ass : vParams)
 		{
@@ -25,7 +37,10 @@ public abstract class SopcInfoElementWithParams extends SopcInfoElement {
 		}
 		return null;
 	}
-
+	public Vector<SopcInfoAssignment> getParams()
+	{
+		return vParams;
+	}
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		if(localName.equalsIgnoreCase("assignment"))

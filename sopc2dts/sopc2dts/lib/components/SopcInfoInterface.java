@@ -6,7 +6,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import sopc2dts.lib.SopcInfoAssignment;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.SopcInfoElementWithParams;
 
@@ -38,13 +37,10 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 	public int getAddressableSize()
 	{
 		int size = -1;
-		SopcInfoAssignment ass = getParamValue("addressSpan");
-		if(ass!=null)
+		String assVal = getParamValue("addressSpan");
+		if(assVal!=null)
 		{
-			if(ass.getValue()!=null) 
-			{
-				size = Integer.decode(ass.getValue());
-			}
+			size = Integer.decode(assVal);
 		}
 		return size;
 	}

@@ -50,13 +50,10 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 	public int getBaseAddress()
 	{
 		int base = -1;
-		SopcInfoAssignment ass = getParamValue("baseAddress");
-		if(ass!=null)
+		String assVal = getParamValue("baseAddress");
+		if(assVal!=null)
 		{
-			if(ass.getValue()!=null) 
-			{
-				base = Integer.decode(ass.getValue());
-			}
+			base = Integer.decode(assVal);
 		}
 		return base;
 	}
