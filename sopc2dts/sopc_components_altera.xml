@@ -1,10 +1,12 @@
 <SOPC2DTS_COMPONENTLIB vendor="altr">
 	<S2DComponent classname="altera_nios2" group="cpu" compatDevice="nios2">
 		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.CPU_FREQ"></parameter>
-		<parameter dtsName="altr,dcache-line-size" sopcName="embeddedsw.CMacro.DCACHE_LINE_SIZE"></parameter>
-		<parameter dtsName="altr,icache-line-size" sopcName="embeddedsw.CMacro.ICACHE_LINE_SIZE"></parameter>
-		<parameter dtsName="altr,dcache-size" sopcName="embeddedsw.CMacro.DCACHE_SIZE"></parameter>
-		<parameter dtsName="altr,icache-size" sopcName="embeddedsw.CMacro.ICACHE_SIZE"></parameter>
+		<parameter dtsName="dcache-line-size" sopcName="embeddedsw.CMacro.DCACHE_LINE_SIZE"></parameter>
+		<parameter dtsName="icache-line-size" sopcName="embeddedsw.CMacro.ICACHE_LINE_SIZE"></parameter>
+		<parameter dtsName="dcache-size" sopcName="embeddedsw.CMacro.DCACHE_SIZE"></parameter>
+		<parameter dtsName="icache-size" sopcName="embeddedsw.CMacro.ICACHE_SIZE"></parameter>
+		<parameter dtsName="altr,tlb-num-ways" sopcName="embeddedsw.CMacro.TLB_NUM_WAYS"></parameter>
+		<parameter dtsName="altr,tlb-num-entries" sopcName="embeddedsw.CMacro.TLB_NUM_ENTRIES"></parameter>
 		<parameter dtsName="altr,has-div" sopcName="embeddedsw.CMacro.HARDWARE_DIVIDE_PRESENT"></parameter>
 		<parameter dtsName="altr,has-mul" sopcName="embeddedsw.CMacro.HARDWARE_MULTIPLY_PRESENT"></parameter>
 		<parameter dtsName="altr,has-mulx" sopcName="embeddedsw.CMacro.HARDWARE_MULX_PRESENT"></parameter>
