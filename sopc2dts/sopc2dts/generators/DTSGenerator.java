@@ -60,7 +60,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 			res += indent(indentLevel++) + "sopc@0 {\n" +
 					indent(indentLevel) + "#address-cells = <1>;\n" +
 					indent(indentLevel) + "#size-cells = <1>;\n" +
-					indent(indentLevel) + "device-type = \"soc\";\n" +
+					indent(indentLevel) + "device_type = \"soc\";\n" +
 					indent(indentLevel) + "compatible = \"altr,avalon\",\"simple-bus\";\n" +
 					indent(indentLevel) + "ranges ;\n" +
 					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
@@ -101,7 +101,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 									if(res.length()==0)
 									{
 										res = indent(indentLevel++) + "memory@0 {\n" +
-												indent(indentLevel) + "device-type = \"memory\";\n" +
+												indent(indentLevel) + "device_type = \"memory\";\n" +
 												indent(indentLevel) + "reg = <" + 
 													String.format("0x%08X 0x%08X", mem.getBase(), mem.getSize());
 									} else {

@@ -111,7 +111,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 		res += toDtsExtrasFirst(indentLevel, conn, endComponent);
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "device-type = \"" + getScd().getGroup() +"\";\n";
+			res += AbstractSopcGenerator.indent(indentLevel) + "device_type = \"" + getScd().getGroup() +"\";\n";
 		}
 		res += AbstractSopcGenerator.indent(indentLevel) + "compatible = " + getScd().getCompatible(version);
 		res += ";\n";
