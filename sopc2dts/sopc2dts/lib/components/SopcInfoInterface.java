@@ -36,13 +36,24 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 
 	public int getAddressableSize()
 	{
-		int size = -1;
+		int span = -1;
+		int stepSize = 1;
 		String assVal = getParamValue("addressSpan");
 		if(assVal!=null)
 		{
-			size = Integer.decode(assVal);
+			span = Integer.decode(assVal);
 		}
-		return size;
+		assVal = getParamValue("addressUnits");
+		if(assVal!=null)
+		{
+			if(assVal.equalsIgnoreCase("WORDS"))
+			{
+				stepSize = 4;
+			} else {
+				System.out.println("Unsupported AddressUnits: " + assVal + " reverting to bytes");
+			}
+		}
+		return span * stepSize;
 	}
 	public Boolean isMemory()
 	{
