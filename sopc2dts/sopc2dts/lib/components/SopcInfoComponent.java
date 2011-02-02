@@ -129,7 +129,11 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 			String ass = getParamValue(ap.sopcInfoName);
 			if(ass!=null)
 			{
-				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + ass + ">;\n";
+				ass = ass.trim();
+				if (ass.startsWith("\"") && ass.endsWith("\""))
+				    res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = " + ass + ";\n";
+				else
+				    res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + ass + ">;\n";
 			} else if(ap.dtsName.equalsIgnoreCase("clock-frequency"))
 			{
 				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + getClockRate() + ">;\n";
