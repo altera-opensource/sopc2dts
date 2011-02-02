@@ -6,6 +6,7 @@
 		<parameter dtsName="dcache-size" sopcName="embeddedsw.CMacro.DCACHE_SIZE"></parameter>
 		<parameter dtsName="icache-size" sopcName="embeddedsw.CMacro.ICACHE_SIZE"></parameter>
 		<parameter dtsName="altr,implementation" sopcName="embeddedsw.CMacro.CPU_IMPLEMENTATION"></parameter>
+		<parameter dtsName="altr,pid-num-bits" sopcName="embeddedsw.CMacro.PROCESS_ID_NUM_BITS"></parameter>
 		<parameter dtsName="altr,tlb-num-ways" sopcName="embeddedsw.CMacro.TLB_NUM_WAYS"></parameter>
 		<parameter dtsName="altr,tlb-num-entries" sopcName="embeddedsw.CMacro.TLB_NUM_ENTRIES"></parameter>
 		<parameter dtsName="altr,has-div" sopcName="embeddedsw.CMacro.HARDWARE_DIVIDE_PRESENT"></parameter>
