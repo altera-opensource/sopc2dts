@@ -29,8 +29,8 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		vHandled.clear();
 		String res = copyRightNotice + "/dts-v1/;\n"
 			+ "/ {\n"
-			+ indent(++indentLevel) + "model = \"altera," + sys.getSystemName() + "\";\n"
-			+ indent(indentLevel) + "compatible = \"altera," + sys.getSystemName() + "\";\n"
+			+ indent(++indentLevel) + "model = \"ALTR," + sys.getSystemName() + "\";\n"
+			+ indent(indentLevel) + "compatible = \"ALTR," + sys.getSystemName() + "\";\n"
 			+ indent(indentLevel) + "#address-cells = <1>;\n"
 			+ indent(indentLevel) + "#size-cells = <1>;\n";
 		for(SopcInfoComponent comp : sys.getSystemComponents())
@@ -61,7 +61,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					indent(indentLevel) + "#address-cells = <1>;\n" +
 					indent(indentLevel) + "#size-cells = <1>;\n" +
 					indent(indentLevel) + "device_type = \"soc\";\n" +
-					indent(indentLevel) + "compatible = \"altr,avalon\",\"simple-bus\";\n" +
+					indent(indentLevel) + "compatible = \"ALTR,avalon\",\"simple-bus\";\n" +
 					indent(indentLevel) + "ranges ;\n" +
 					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
 			res += getDTSBusFrom(povComp, paramAction, indentLevel);

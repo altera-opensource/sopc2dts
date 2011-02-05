@@ -1,17 +1,17 @@
-<SOPC2DTS_COMPONENTLIB vendor="altr">
+<SOPC2DTS_COMPONENTLIB vendor="ALTR">
 	<S2DComponent classname="altera_nios2" group="cpu" compatDevice="nios2">
 		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.CPU_FREQ"></parameter>
 		<parameter dtsName="dcache-line-size" sopcName="embeddedsw.CMacro.DCACHE_LINE_SIZE"></parameter>
 		<parameter dtsName="icache-line-size" sopcName="embeddedsw.CMacro.ICACHE_LINE_SIZE"></parameter>
 		<parameter dtsName="dcache-size" sopcName="embeddedsw.CMacro.DCACHE_SIZE"></parameter>
 		<parameter dtsName="icache-size" sopcName="embeddedsw.CMacro.ICACHE_SIZE"></parameter>
-		<parameter dtsName="altr,implementation" sopcName="embeddedsw.CMacro.CPU_IMPLEMENTATION"></parameter>
-		<parameter dtsName="altr,pid-num-bits" sopcName="embeddedsw.CMacro.PROCESS_ID_NUM_BITS"></parameter>
-		<parameter dtsName="altr,tlb-num-ways" sopcName="embeddedsw.CMacro.TLB_NUM_WAYS"></parameter>
-		<parameter dtsName="altr,tlb-num-entries" sopcName="embeddedsw.CMacro.TLB_NUM_ENTRIES"></parameter>
-		<parameter dtsName="altr,has-div" sopcName="embeddedsw.CMacro.HARDWARE_DIVIDE_PRESENT"></parameter>
-		<parameter dtsName="altr,has-mul" sopcName="embeddedsw.CMacro.HARDWARE_MULTIPLY_PRESENT"></parameter>
-		<parameter dtsName="altr,has-mulx" sopcName="embeddedsw.CMacro.HARDWARE_MULX_PRESENT"></parameter>
+		<parameter dtsName="ALTR,implementation" sopcName="embeddedsw.CMacro.CPU_IMPLEMENTATION"></parameter>
+		<parameter dtsName="ALTR,pid-num-bits" sopcName="embeddedsw.CMacro.PROCESS_ID_NUM_BITS"></parameter>
+		<parameter dtsName="ALTR,tlb-num-ways" sopcName="embeddedsw.CMacro.TLB_NUM_WAYS"></parameter>
+		<parameter dtsName="ALTR,tlb-num-entries" sopcName="embeddedsw.CMacro.TLB_NUM_ENTRIES"></parameter>
+		<parameter dtsName="ALTR,has-div" sopcName="embeddedsw.CMacro.HARDWARE_DIVIDE_PRESENT"></parameter>
+		<parameter dtsName="ALTR,has-mul" sopcName="embeddedsw.CMacro.HARDWARE_MULTIPLY_PRESENT"></parameter>
+		<parameter dtsName="ALTR,has-mulx" sopcName="embeddedsw.CMacro.HARDWARE_MULX_PRESENT"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cfi_flash"
 		compatDevice="cfi_flash" group="flash">
