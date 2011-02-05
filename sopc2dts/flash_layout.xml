@@ -1,6 +1,4 @@
 <FlashPartitions>
-	<Partition name="dtb" address="0" size="0x20000">
-		<readonly></readonly></Partition>
 	<Partition name="fpga" address="0x20000" size="0x160000">
 		<readonly></readonly></Partition>
 	<Partition name="kernel" address="0x180000" size="0x280000">
