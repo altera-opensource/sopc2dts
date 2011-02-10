@@ -4,11 +4,16 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import sopc2dts.generators.AbstractSopcGenerator;
+
 
 public class SopcInfoAssignment extends SopcInfoElement {
+	enum DataType { NUMBER, BOOLEAN, STRING };
 	private String name;
-	private String value;
+	protected String value;
 	String currTag = null;
+	DataType dataType = DataType.BOOLEAN;
+	
 	public SopcInfoAssignment(ContentHandler p, XMLReader xr)
 	{
 		super(p,xr);
@@ -51,35 +56,75 @@ public class SopcInfoAssignment extends SopcInfoElement {
 	 */
 	protected String parseValue(String val)
 	{
-		int strip=0;
-		if(val.endsWith("u")||val.endsWith("U"))
+		if((val==null)||(val.length()==0))
 		{
-			strip = 1;
-		} else if(val.endsWith("UL"))
-		{
-			strip = 2;
-		} else if(val.endsWith("ULL"))
-		{
-			strip = 3;
-		}
-		if((strip>0)&&(val.length()>strip))
-		{
-			String tmpVal = val.substring(0, val.length() - strip);
-			boolean isAllNumber = true;
+			dataType = DataType.BOOLEAN;
+		} else {
+			int strip=0;
+			String tmpVal = val;
+			if(val.endsWith("u")||val.endsWith("U"))
+			{
+				strip = 1;
+			} else if(val.endsWith("UL"))
+			{
+				strip = 2;
+			} else if(val.endsWith("ULL"))
+			{
+				strip = 3;
+			}
+			if((strip>0)&&(val.length()>strip))
+			{
+				tmpVal = val.substring(0, val.length() - strip);
+			}
+			dataType = DataType.NUMBER;
 			for(int i=0; i<tmpVal.length(); i++)
 			{
 				if((tmpVal.charAt(i)<'0')&&(tmpVal.charAt(i)>'9'))
 				{
-					isAllNumber = false;
+					dataType = DataType.STRING;
 				}
 			}
-			if(isAllNumber)
+			if(dataType == DataType.NUMBER)
 			{
 				val = tmpVal;
 			}
 		}
 		return val;
 	}
+	public boolean isForDts()
+	{
+		return true;
+	}
+	public String toDts(int indentLevel, String dtsName)
+	{
+		String res;
+		if(isForDts())
+		{
+			res = AbstractSopcGenerator.indent(indentLevel) + dtsName;
+			switch(dataType)
+			{
+			case NUMBER: {
+				res += " = <" + value + ">";
+			} break;
+			case BOOLEAN: { 
+				//Nothing
+			} break;
+			case STRING: {
+				String tmpVal = value.trim();
+				if (!tmpVal.startsWith("\"") || !tmpVal.endsWith("\""))
+				{
+					tmpVal = "\"" + tmpVal + "\"";
+				}
+				res += " = " + tmpVal;
+			} break;
+			}
+			res += ";\t//" + name + " from sopcinfo\n";
+		} else {
+			res = "";
+		}
+		return res;
+	}
+	
 	public void setValue(String value) {
 		this.value = parseValue(value);
 	}
