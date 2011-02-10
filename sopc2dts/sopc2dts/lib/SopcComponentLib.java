@@ -152,7 +152,15 @@ public class SopcComponentLib implements ContentHandler {
 				currScd.addCompatible(atts.getValue("name"));
 			} else if((localName.equalsIgnoreCase("parameter"))&&(currScd!=null))
 			{
-				currScd.addAutoParam(atts.getValue("dtsName"), atts.getValue("sopcName"));
+				String dtsName = atts.getValue("dtsName");
+				if(dtsName==null)
+				{
+					dtsName = atts.getValue("dtsVName");
+					if(dtsName!=null) dtsName = currentVendor + "," + dtsName;
+				}
+				if(dtsName!=null) {
+					currScd.addAutoParam(dtsName, atts.getValue("sopcName"));
+				}
 			} else if((localName.equalsIgnoreCase("RequiredParameter"))&&(currScd!=null))
 			{
 				currScd.addRequiredParam(atts.getValue("name"), atts.getValue("value"));

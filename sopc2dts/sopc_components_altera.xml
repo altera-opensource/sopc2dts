@@ -5,13 +5,17 @@
 		<parameter dtsName="icache-line-size" sopcName="embeddedsw.CMacro.ICACHE_LINE_SIZE"></parameter>
 		<parameter dtsName="dcache-size" sopcName="embeddedsw.CMacro.DCACHE_SIZE"></parameter>
 		<parameter dtsName="icache-size" sopcName="embeddedsw.CMacro.ICACHE_SIZE"></parameter>
-		<parameter dtsName="ALTR,implementation" sopcName="embeddedsw.CMacro.CPU_IMPLEMENTATION"></parameter>
-		<parameter dtsName="ALTR,pid-num-bits" sopcName="embeddedsw.CMacro.PROCESS_ID_NUM_BITS"></parameter>
-		<parameter dtsName="ALTR,tlb-num-ways" sopcName="embeddedsw.CMacro.TLB_NUM_WAYS"></parameter>
-		<parameter dtsName="ALTR,tlb-num-entries" sopcName="embeddedsw.CMacro.TLB_NUM_ENTRIES"></parameter>
-		<parameter dtsName="ALTR,has-div" sopcName="embeddedsw.CMacro.HARDWARE_DIVIDE_PRESENT"></parameter>
-		<parameter dtsName="ALTR,has-mul" sopcName="embeddedsw.CMacro.HARDWARE_MULTIPLY_PRESENT"></parameter>
-		<parameter dtsName="ALTR,has-mulx" sopcName="embeddedsw.CMacro.HARDWARE_MULX_PRESENT"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.CPU_IMPLEMENTATION" dtsVName="implementation"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.PROCESS_ID_NUM_BITS" dtsVName="pid-num-bits"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.TLB_NUM_WAYS" dtsVName="tlb-num-ways"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.TLB_NUM_ENTRIES" dtsVName="tlb-num-entries"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.HARDWARE_DIVIDE_PRESENT" dtsVName="has-div"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.HARDWARE_MULTIPLY_PRESENT" dtsVName="has-mul"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.HARDWARE_MULX_PRESENT" dtsVName="has-mulx"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.INITDA_SUPPORTED" dtsVName="has-initda"></parameter>
+		<parameter dtsVName="has-flushda" sopcName="embeddedsw.CMacro.FLUSHDA_SUPPORTED"></parameter>
+		<parameter dtsVName="has-jmpi" sopcName="embeddedsw.CMacro.HAS_JMPI_INSTRUCTION"></parameter>
+		<parameter dtsVName="has-mmu" sopcName="embeddedsw.CMacro.MMU_PRESENT"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cfi_flash"
 		compatDevice="cfi_flash" group="flash">
