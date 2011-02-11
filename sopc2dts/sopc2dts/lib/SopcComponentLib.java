@@ -159,7 +159,8 @@ public class SopcComponentLib implements ContentHandler {
 					if(dtsName!=null) dtsName = currentVendor + "," + dtsName;
 				}
 				if(dtsName!=null) {
-					currScd.addAutoParam(dtsName, atts.getValue("sopcName"));
+					currScd.addAutoParam(dtsName, atts.getValue("sopcName"), 
+							atts.getValue("forceType"));
 				}
 			} else if((localName.equalsIgnoreCase("RequiredParameter"))&&(currScd!=null))
 			{

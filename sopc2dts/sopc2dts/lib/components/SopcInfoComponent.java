@@ -129,7 +129,8 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 			SopcInfoAssignment ass = getParam(ap.sopcInfoName);
 			if(ass!=null)
 			{
-				res += ass.toDts(indentLevel, ap.dtsName);
+				res += ass.toDts(indentLevel, ap.dtsName, 
+						SopcInfoAssignment.getDataTypeByName(ap.forceType));
 			} else if(ap.dtsName.equalsIgnoreCase("clock-frequency"))
 			{
 				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + getClockRate() + ">;\n";
@@ -152,7 +153,8 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 				if(assName!=null)
 				{
 					assName = assName.replace('_', '-');
-					res += ass.toDts(indentLevel, scd.getVendor() + "," + assName);
+					res += ass.toDts(indentLevel, 
+							scd.getVendor() + "," + assName, null);
 				}
 			}
 		}

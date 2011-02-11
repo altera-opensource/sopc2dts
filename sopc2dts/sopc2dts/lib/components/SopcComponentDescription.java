@@ -14,11 +14,13 @@ public class SopcComponentDescription {
 	protected class SICAutoParam {
 		String dtsName;
 		String sopcInfoName;
+		String forceType;
 		
-		public SICAutoParam(String dts, String sopcInfo)
+		public SICAutoParam(String dts, String sopcInfo, String type)
 		{
 			dtsName = dts;
 			sopcInfoName = sopcInfo;
+			forceType = type;
 		}
 	}
 	protected class SICRequiredParam {
@@ -30,8 +32,8 @@ public class SopcComponentDescription {
 			value = v;
 		}
 	}
-	public void addAutoParam(String dtsName, String sopcName) {
-		vAutoParams.add(new SICAutoParam(dtsName, sopcName));
+	public void addAutoParam(String dtsName, String sopcName, String type) {
+		vAutoParams.add(new SICAutoParam(dtsName, sopcName, type));
 	}
 
 	public void addRequiredParam(String dtsName, String sopcName) {

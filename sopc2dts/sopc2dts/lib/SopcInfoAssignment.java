@@ -22,7 +22,21 @@ public class SopcInfoAssignment extends SopcInfoElement {
 	public String getElementName() {
 		return "assignment";
 	}
-	
+	public static DataType getDataTypeByName(String dtName)
+	{
+		if(dtName == null) 
+		{
+			return null;
+		} else if(dtName.equalsIgnoreCase("BOOLEAN") ||
+				dtName.equalsIgnoreCase("BOOL"))
+		{
+			return DataType.BOOLEAN;
+		} else if(dtName.equalsIgnoreCase("NUMBER"))
+		{
+			return DataType.NUMBER;
+		}
+		return null;
+	}
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		currTag = localName;
@@ -51,6 +65,25 @@ public class SopcInfoAssignment extends SopcInfoElement {
 			}
 		}
 	}
+	protected String parseValueAsNumber(String val)
+	{
+		int strip = 0;
+		if(val.endsWith("u")||val.endsWith("U"))
+		{
+			strip = 1;
+		} else if(val.endsWith("UL"))
+		{
+			strip = 2;
+		} else if(val.endsWith("ULL"))
+		{
+			strip = 3;
+		}
+		if((strip>0)&&(val.length()>strip))
+		{
+			val = val.substring(0, val.length() - strip);
+		}
+		return val;
+	}
 	/*
 	 * Note: This stuff is decimal ONLY
 	 */
@@ -60,23 +93,8 @@ public class SopcInfoAssignment extends SopcInfoElement {
 		{
 			dataType = DataType.BOOLEAN;
 		} else {
-			int strip=0;
-			String tmpVal = val;
-			if(val.endsWith("u")||val.endsWith("U"))
-			{
-				strip = 1;
-			} else if(val.endsWith("UL"))
-			{
-				strip = 2;
-			} else if(val.endsWith("ULL"))
-			{
-				strip = 3;
-			}
-			if((strip>0)&&(val.length()>strip))
-			{
-				tmpVal = val.substring(0, val.length() - strip);
-			}
 			dataType = DataType.NUMBER;
+			String tmpVal = parseValueAsNumber(val);
 			for(int i=0; i<tmpVal.length(); i++)
 			{
 				if((tmpVal.charAt(i)<'0')||(tmpVal.charAt(i)>'9'))
@@ -91,17 +109,29 @@ public class SopcInfoAssignment extends SopcInfoElement {
 		}
 		return val;
 	}
-	public boolean isForDts()
+	public boolean isForDts(DataType dt)
 	{
-		return true;
+		if(dt == null) {
+			dt = dataType; 
+		}
+		if(dt == DataType.BOOLEAN)
+		{
+			return getValueAsBoolean();
+		} else {
+			return true;
+		}
 	}
-	public String toDts(int indentLevel, String dtsName)
+	public String toDts(int indentLevel, String dtsName, DataType dt)
 	{
 		String res;
-		if(isForDts())
+		if(dt==null)
+		{
+			dt = dataType;
+		}
+		if(isForDts(dt))
 		{
 			res = AbstractSopcGenerator.indent(indentLevel) + dtsName;
-			switch(dataType)
+			switch(dt)
 			{
 			case NUMBER: {
 				res += " = <" + value + ">";
@@ -130,6 +160,24 @@ public class SopcInfoAssignment extends SopcInfoElement {
 	}
 	public String getValue() {
 		return value;
+	}
+	public boolean getValueAsBoolean() {
+		if(value==null) return false;
+		if(value.length()==0) return false;
+		try {
+			if(Integer.decode(parseValueAsNumber(value))==0)
+			{
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			//Ignore.
+		}
+		if(value.equalsIgnoreCase("false"))
+		{
+			return false;
+		}
+		//Treat all other strings and numbers as true
+		return true;
 	}
 	public void setName(String name) {
 		this.name = name;
