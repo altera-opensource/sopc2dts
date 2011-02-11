@@ -132,6 +132,8 @@
 	<S2DComponent classname="triple_speed_ethernet"
 		group="ethernet" compatDevice="tse">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
+		<parameter dtsVName="rx-fifo-depth" sopcName="embeddedsw.CMacro.RECEIVE_FIFO_DEPTH"></parameter>
+		<parameter dtsVName="tx-fifo-depth" sopcName="embeddedsw.CMacro.TRANSMIT_FIFO_DEPTH"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_lan91c111"
 		group="ethernet" compatDevice="smc91x">
