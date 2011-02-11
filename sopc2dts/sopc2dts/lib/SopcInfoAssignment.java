@@ -79,7 +79,7 @@ public class SopcInfoAssignment extends SopcInfoElement {
 			dataType = DataType.NUMBER;
 			for(int i=0; i<tmpVal.length(); i++)
 			{
-				if((tmpVal.charAt(i)<'0')&&(tmpVal.charAt(i)>'9'))
+				if((tmpVal.charAt(i)<'0')||(tmpVal.charAt(i)>'9'))
 				{
 					dataType = DataType.STRING;
 				}
@@ -118,7 +118,7 @@ public class SopcInfoAssignment extends SopcInfoElement {
 				res += " = " + tmpVal;
 			} break;
 			}
-			res += ";\t//" + name + " from sopcinfo\n";
+			res += ";\t//" + name + " from sopcinfo type " + dataType + "\n";
 		} else {
 			res = "";
 		}
