@@ -9,6 +9,7 @@
 		<parameter sopcName="embeddedsw.CMacro.PROCESS_ID_NUM_BITS" dtsVName="pid-num-bits"></parameter>
 		<parameter sopcName="embeddedsw.CMacro.TLB_NUM_WAYS" dtsVName="tlb-num-ways"></parameter>
 		<parameter sopcName="embeddedsw.CMacro.TLB_NUM_ENTRIES" dtsVName="tlb-num-entries"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.TLB_PTR_SZ" dtsVName="tlb-ptr-sz"></parameter>
 		<parameter sopcName="embeddedsw.CMacro.HARDWARE_DIVIDE_PRESENT" dtsVName="has-div"></parameter>
 		<parameter sopcName="embeddedsw.CMacro.HARDWARE_MULTIPLY_PRESENT" dtsVName="has-mul"></parameter>
 		<parameter sopcName="embeddedsw.CMacro.HARDWARE_MULX_PRESENT" dtsVName="has-mulx"></parameter>
