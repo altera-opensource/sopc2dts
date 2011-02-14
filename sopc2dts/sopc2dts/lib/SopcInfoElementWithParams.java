@@ -41,6 +41,8 @@ public abstract class SopcInfoElementWithParams extends SopcInfoElement {
 	{
 		return vParams;
 	}
+
+	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		if(localName.equalsIgnoreCase("assignment"))
