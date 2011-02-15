@@ -32,7 +32,7 @@ public class SICBridge extends SopcInfoComponent {
 					int size = 0;
 					SopcInfoInterface childIf=childConn.getSlaveInterface();
 					if(childIf!=null) size = childIf.getAddressableSize();
-					if(res == "")
+					if(res.length()==0)
 					{
 						res = AbstractSopcGenerator.indent(indentLevel) + "ranges = <"; 
 					} else {
@@ -43,7 +43,7 @@ public class SICBridge extends SopcInfoComponent {
 				}
 			}
 		}
-		if(res=="")
+		if(res.length() == 0)
 		{
 			res = AbstractSopcGenerator.indent(indentLevel) + "ranges;\n";
 		} else {

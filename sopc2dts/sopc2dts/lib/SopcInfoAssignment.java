@@ -134,7 +134,7 @@ public class SopcInfoAssignment extends SopcInfoElement {
 			switch(dt)
 			{
 			case NUMBER: {
-				res += " = <" + value + ">";
+				res += " = <" + value + '>';
 			} break;
 			case BOOLEAN: { 
 				//Nothing
@@ -170,11 +170,10 @@ public class SopcInfoAssignment extends SopcInfoElement {
 				return false;
 			}
 		} catch (NumberFormatException e) {
-			//Ignore.
-		}
-		if(value.equalsIgnoreCase("false"))
-		{
-			return false;
+			if(value.equalsIgnoreCase("false"))
+			{
+				return false;
+			}
 		}
 		//Treat all other strings and numbers as true
 		return true;

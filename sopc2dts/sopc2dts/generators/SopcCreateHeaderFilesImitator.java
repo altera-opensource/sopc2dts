@@ -30,7 +30,7 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 		String prefix = "";
 		if(!comp.getInstanceName().equalsIgnoreCase(pov))
 		{
-			prefix = definenify(comp.getInstanceName()) + "_";
+			prefix = definenify(comp.getInstanceName()) + '_';
 		}
 		res += "/*\n" +
 				" * Macros for module '" + comp.getInstanceName() + "', class '" + comp.getScd().getClassName() + "'.\n";
@@ -51,7 +51,7 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 		{
 			if(ass.getName().toUpperCase().startsWith("EMBEDDEDSW.CMACRO."))
 			{
-				res += "#define " + prefix + definenify(ass.getName().substring(18)) + " ";
+				res += "#define " + prefix + definenify(ass.getName().substring(18)) + ' ';
 				if(ass.getValue()!=null) 
 				{
 					res += ass.getValue();

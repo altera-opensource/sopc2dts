@@ -143,14 +143,14 @@ public class SopcComponentDescription {
 		return compat;
 	}
 	public String getCompatible(String version) {
-		String res = "\"" + vendor + "," + device;
+		String res = "\"" + vendor + ',' + device;
 		if(version!=null)
 		{
-			res += "-" + version + "\"";
+			res += '-' + version + '\"';
 			String bwCompatVersion = getCompatibleVersion(version);
 			if(bwCompatVersion!=null)
 			{
-				res += ",\"" + vendor + "," + device + "-" + bwCompatVersion + "\"";
+				res += ",\"" + vendor + ',' + device + '-' + bwCompatVersion + "\"";
 			}
 		} else {
 			res += "\"";

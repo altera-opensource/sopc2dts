@@ -32,7 +32,7 @@ public class SopcComponentLib implements ContentHandler {
 	private String currentVendor = null;
 	SopcComponentDescription unknownComponent = new SICUnknown();
 	Vector<SopcComponentDescription> vLibComponents = new Vector<SopcComponentDescription>();
-	boolean bVerbose = false;
+	boolean bVerbose;
 	
 	public SopcComponentLib()
 	{
@@ -156,7 +156,7 @@ public class SopcComponentLib implements ContentHandler {
 				if(dtsName==null)
 				{
 					dtsName = atts.getValue("dtsVName");
-					if(dtsName!=null) dtsName = currentVendor + "," + dtsName;
+					if(dtsName!=null) dtsName = currentVendor + ',' + dtsName;
 				}
 				if(dtsName!=null) {
 					currScd.addAutoParam(dtsName, atts.getValue("sopcName"), 

@@ -24,8 +24,8 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 		SopcInfoComponent compTX, compRX;
 		compTX = getInterfaceByName("transmit").getConnections().get(0).getMasterModule();
 		compRX = getInterfaceByName("receive").getConnections().get(0).getSlaveModule();
-		res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,sgdma_tx = < &" + compTX.getInstanceName() + " >;\n";
-		res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,sgdma_rx = < &" + compRX.getInstanceName() + " >;\n";
+		res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,sgdma_tx = <&" + compTX.getInstanceName() + ">;\n";
+		res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,sgdma_rx = <&" + compRX.getInstanceName() + ">;\n";
 		return res;
 	}
 }

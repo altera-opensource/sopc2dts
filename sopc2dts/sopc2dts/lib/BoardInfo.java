@@ -84,8 +84,6 @@ public class BoardInfo implements ContentHandler {
 
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {

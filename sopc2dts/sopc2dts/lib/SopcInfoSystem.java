@@ -148,7 +148,7 @@ public class SopcInfoSystem implements ContentHandler {
 				ignoreInput=true;
 			} else if(localName.equals(currTag)) {
 				currTag = null;
-			} else {
+			//} else {
 				//System.out.println("End element " + localName);
 			}
 		}
@@ -168,39 +168,23 @@ public class SopcInfoSystem implements ContentHandler {
 		}
 	}
 	public void endDocument() throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void endPrefixMapping(String arg0) throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void ignorableWhitespace(char[] arg0, int arg1, int arg2)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void processingInstruction(String arg0, String arg1)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setDocumentLocator(Locator arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	public void skippedEntity(String arg0) throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void startDocument() throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void startPrefixMapping(String arg0, String arg1)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setvSystemComponents(Vector<SopcInfoComponent> vSystemComponents) {
 		this.vSystemComponents = vSystemComponents;

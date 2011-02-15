@@ -89,7 +89,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 				}
 				if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
 				{
-					interrupts += " " + intf.getConnections().get(0).getParamValue("irqNumber");
+					interrupts += ' ' + intf.getConnections().get(0).getParamValue("irqNumber");
 				}
 			}
 		}
@@ -157,7 +157,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 				{
 					assName = assName.replace('_', '-');
 					res += ass.toDts(indentLevel, 
-							scd.getVendor() + "," + assName, null);
+							scd.getVendor() + ',' + assName, null);
 				}
 			}
 		}

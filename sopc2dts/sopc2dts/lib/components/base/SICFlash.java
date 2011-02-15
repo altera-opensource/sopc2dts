@@ -37,10 +37,13 @@ public class SICFlash extends SopcInfoComponent {
 	@Override
 	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{
-		int bankw = 2;
+		int bankw;
 		try {
 			bankw = Integer.decode(getParamValue("dataWidth"))/8;
-		}catch(Exception e) { } //ignore
+		}catch(Exception e) {
+			//Default to 16bit on failure
+			bankw = 2;
+		}
 		String res = AbstractSopcGenerator.indent(indentLevel) + "bank-width = <"+bankw+">;\n" +
 					AbstractSopcGenerator.indent(indentLevel) + "device-width = <1>;\n" +
 					partitionsForDts(bi, indentLevel);
@@ -55,7 +58,7 @@ public class SICFlash extends SopcInfoComponent {
 		{
 			for(FlashPartition part : vPartitions)
 			{
-				res += AbstractSopcGenerator.indent(indentLevel++) + part.getName() + "@" + Integer.toHexString(part.getAddress()) + " {\n" +
+				res += AbstractSopcGenerator.indent(indentLevel++) + part.getName() + '@' + Integer.toHexString(part.getAddress()) + " {\n" +
 						AbstractSopcGenerator.indent(indentLevel) + String.format("reg = < 0x%08X 0x%08X >;\n", part.getAddress(),part.getSize());
 				if(part.isReadonly())
 				{

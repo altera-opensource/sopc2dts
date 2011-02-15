@@ -42,12 +42,12 @@ public class SICEpcs extends SICFlash {
 	protected int getAddrFromConnection(SopcInfoConnection conn)
 	{
 		//Yes this is REALLY ugly. But it just might work :)
-		int regOffset = 0;
+		int regOffset;
 		try {
 			regOffset = Integer.decode(getParamValue("embeddedsw.CMacro.REGISTER_OFFSET"));
 		} catch(Exception e)
 		{
-			//Ignore errors and keep regOffset at 0
+			regOffset = 0;
 		}
 		return (conn==null ? getAddr() : conn.getBaseAddress()) + regOffset;
 	}

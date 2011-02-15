@@ -42,8 +42,13 @@ public class Sopc2DTS {
 	 */
 	public static void main(String[] args) {
 		Sopc2DTS s2d = new Sopc2DTS("sopc2dts");
-		s2d.parseCmdLine(args);
-		s2d.go();
+		try {
+			s2d.parseCmdLine(args);
+			s2d.go();
+		} catch(Exception e) {
+			System.err.println(e);
+			s2d.printUsage();
+		}
 	}
 	
 	public Sopc2DTS(String pName) {
@@ -77,13 +82,10 @@ public class Sopc2DTS {
 				try {
 					bInfo = new BoardInfo(new InputSource(new BufferedReader(new FileReader(f))));
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (SAXException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -174,7 +176,7 @@ public class Sopc2DTS {
 		Vector<String> vRes = new Vector<String>();
 		boolean escape=false;
 		boolean quoted=false;
-		String tmp = new String("");
+		String tmp = "";
 		int i=0;
 		while(i<inp.length())
 		{
@@ -189,7 +191,7 @@ public class Sopc2DTS {
 				if(tmp.length()>0)
 				{
 					vRes.add(tmp);
-					tmp = new String("");
+					tmp = "";
 				}
 			} else {
 				tmp += inp.charAt(i);
@@ -203,14 +205,14 @@ public class Sopc2DTS {
 		}
 		return vRes.toArray(new String[0]);
 	}
-	protected void parseCmdLine(String[] args)
+	protected void parseCmdLine(String[] args) throws Exception
 	{
 		int argPos = 0;
 		int oldPos = 0;
 		String cmdLine = "";
 		while(argPos<args.length)
 		{
-			cmdLine += args[argPos++] + " "; 
+			cmdLine += args[argPos++] + ' '; 
 		}
 		argPos=0;
 		args=intelliSplit(cmdLine, ' ');
@@ -306,7 +308,7 @@ public class Sopc2DTS {
 		String parameterDesc;
 		boolean isRequired;
 		boolean hasValue;
-		boolean scanned = false;
+
 		public CommandLineOption(String opt, String shortOpt, CLParameter param, boolean hasVal, boolean req, String help, String paramDesc)
 		{
 			option = opt;
@@ -323,20 +325,18 @@ public class Sopc2DTS {
 				helpDesc += (" (Optional)");
 			}
 		}
-		int scanCmdLine(String[] opts, int index) throws RuntimeException
+		int scanCmdLine(String[] opts, int index) throws Exception
 		{
 			if(opts[index].charAt(0)!='-')
 			{
 				//Assume it's the sopcinfo file
 				inputFileName.value = opts[index];
-				scanned = true;
 				index++;
 			} else {
 				String[] tmpOpts = intelliSplit(opts[index],'=');
 				if((tmpOpts[0].equals("--" + option)) || 
-						((shortOption!=null)&&(tmpOpts[0].equals("-" + shortOption))))
+						((shortOption!=null)&&(tmpOpts[0].equals('-' + shortOption))))
 				{
-					scanned = true;
 					if(parameter!=null)
 					{
 						if(hasValue)
@@ -348,7 +348,7 @@ public class Sopc2DTS {
 								{
 									index++;
 								} else {
-									throw new RuntimeException("Missing argument");
+									throw new Exception("Missing argument");
 								}
 								val = opts[index];
 							} else {
@@ -363,7 +363,7 @@ public class Sopc2DTS {
 					{
 						Logger.setVerbose(Boolean.parseBoolean(parameter.value));
 					}
-					Logger.log("Scanned option " + option + "(" + shortOption + ") with");
+					Logger.log("Scanned option " + option + '(' + shortOption + ") with");
 					if(hasValue)
 					{
 						Logger.logln(" value " + parameter.value);
@@ -379,10 +379,7 @@ public class Sopc2DTS {
 		{
 			return isRequired;
 		}
-		boolean isScanned()
-		{
-			return scanned;
-		}
+		
 		String getDesc()
 		{
 			return "  --" + option + ((!hasValue ?"\t\t" : " <" + parameterDesc + ">\t")) + helpDesc + "\n";
