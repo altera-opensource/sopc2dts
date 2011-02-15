@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoAssignment;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.SopcInfoElementWithParams;
@@ -28,6 +29,8 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 		this.setInstanceName(iName);
 		version = ver;
 	}
+
+	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		if(localName.equalsIgnoreCase("interface"))
@@ -60,7 +63,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 					{
 						res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
 					}
-					res += " 0x" + Integer.toHexString(conn.getBaseAddress()) + 
+					res += " 0x" + Integer.toHexString(getAddrFromConnection(conn)) + 
 							" 0x" + Integer.toHexString(intf.getAddressableSize());
 				}
 			}
@@ -98,17 +101,17 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 			return "";
 		}
 	}
-	public String toDts(int indentLevel, SopcInfoComponent.parameter_action paramAction)
+	public String toDts(BoardInfo bi, int indentLevel, SopcInfoComponent.parameter_action paramAction)
 	{
-		return toDts(indentLevel, paramAction, null, true);
+		return toDts(bi, indentLevel, paramAction, null, true);
 	}
-	public String toDts(int indentLevel, 
+	public String toDts(BoardInfo bi, int indentLevel, 
 						SopcInfoComponent.parameter_action paramAction, 
 						SopcInfoConnection conn, Boolean endComponent)
 	{
 		int tmpAddr = getAddrFromConnection(conn);
 		String res = AbstractSopcGenerator.indent(indentLevel++) + getInstanceName() + ": " + getScd().getGroup() + "@0x" + Integer.toHexString(tmpAddr) + " {\n";
-		res += toDtsExtrasFirst(indentLevel, conn, endComponent);
+		res += toDtsExtrasFirst(bi, indentLevel, conn, endComponent);
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
 			res += AbstractSopcGenerator.indent(indentLevel) + "device_type = \"" + getScd().getGroup() +"\";\n";
@@ -158,7 +161,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 				}
 			}
 		}
-		res += toDtsExtras(indentLevel, conn, endComponent);
+		res += toDtsExtras(bi, indentLevel, conn, endComponent);
 		if(endComponent) res += AbstractSopcGenerator.indent(--indentLevel) + "};\n";
 		return res;
 	}
@@ -173,11 +176,11 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 		}
 		return "";
 	}
-	public String toDtsExtrasFirst(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{
 		return "";
 	}
-	public String toDtsExtras(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{
 		return "";
 	}
@@ -245,6 +248,10 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 	protected int getAddrFromConnection(SopcInfoConnection conn)
 	{
 		return (conn==null ? getAddr() : conn.getBaseAddress());
+	}
+	protected int getSizeFromInterface(SopcInfoInterface intf)
+	{
+		return (intf==null ? 0 : intf.getAddressableSize());
 	}
 	public int getClockRate()
 	{

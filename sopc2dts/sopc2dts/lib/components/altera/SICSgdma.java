@@ -4,6 +4,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.XMLReader;
 
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
@@ -21,7 +22,9 @@ public class SICSgdma extends SopcInfoComponent {
 			SopcComponentDescription scd, String iName, String version) {
 		super(p, xr, scd, iName, version);
 	}
-	public String toDtsExtras(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+
+	@Override
+	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{
 		String res = "";
 		int iType = 0;

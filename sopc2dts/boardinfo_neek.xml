@@ -1,0 +1,16 @@
+<BoardInfo pov="cpu">
+<FlashPartitions chip="ext_flash">
+	<Partition name="fpga" address="0x20000" size="0x160000">
+		<readonly></readonly></Partition>
+	<Partition name="kernel" address="0x180000" size="0x280000">
+		<readonly></readonly></Partition>
+	<Partition name="rootfs" address="0x400000" size="0xC00000"></Partition>
+</FlashPartitions>
+<Memory>
+	<Node chip="ddr_sdram"></Node>
+	<Node chip="onchip_memory2_0"></Node>
+</Memory>
+<Chosen>
+	<Bootargs val="console=ttyJ0 rootfstype=jffs2 root=mtdblock3"></Bootargs>
+</Chosen>
+</BoardInfo>

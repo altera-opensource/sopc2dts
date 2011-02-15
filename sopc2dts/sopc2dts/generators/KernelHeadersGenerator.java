@@ -1,5 +1,6 @@
 package sopc2dts.generators;
 
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoAssignment;
 import sopc2dts.lib.SopcInfoSystem;
 import sopc2dts.lib.components.SopcInfoComponent;
@@ -16,7 +17,7 @@ public class KernelHeadersGenerator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getOutput(String pov) {
+	public String getOutput(BoardInfo bi) {
 		String res = null;
 		for(SopcInfoComponent comp : sys.getSystemComponents())
 		{

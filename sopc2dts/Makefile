@@ -1,7 +1,8 @@
 
 SOURCES=Sopc2DTS.java sopc2dts/Logger.java sopc2dts/generators/AbstractSopcGenerator.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
-	sopc2dts/generators/SopcCreateHeaderFilesImitator.java sopc2dts/lib/SopcComponentLib.java \
+	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
+	sopc2dts/lib/BoardInfo.java sopc2dts/lib/SopcComponentLib.java \
 	sopc2dts/lib/SopcInfoAssignment.java sopc2dts/lib/SopcInfoConnection.java \
 	sopc2dts/lib/SopcInfoElement.java sopc2dts/lib/SopcInfoElementIgnoreAll.java \
 	sopc2dts/lib/SopcInfoElementWithParams.java sopc2dts/lib/SopcInfoParameter.java \
@@ -12,6 +13,7 @@ SOURCES=Sopc2DTS.java sopc2dts/Logger.java sopc2dts/generators/AbstractSopcGener
 	sopc2dts/lib/components/altera/SICLan91c111.java \
 	sopc2dts/lib/components/altera/SICSgdma.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
+	sopc2dts/lib/components/base/FlashPartition.java \
 	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
 	sopc2dts/lib/components/base/SICEthernet.java \
 	sopc2dts/lib/components/base/SICUnknown.java

@@ -2,6 +2,7 @@ package sopc2dts.generators;
 
 import java.util.Vector;
 
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.SopcInfoSystem;
 import sopc2dts.lib.components.SopcInfoComponent;
@@ -20,11 +21,10 @@ public class DTSGenerator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getOutput(String pov) {
-		return getOutput(pov, SopcInfoComponent.parameter_action.NONE, null);
+	public String getOutput(BoardInfo bi) {
+		return getOutput(bi, SopcInfoComponent.parameter_action.NONE);
 	}
-	public String getOutput(String pov, SopcInfoComponent.parameter_action paramAction, String bootArgs) {
-		int numCPUs = 0;
+	public String getOutput(BoardInfo bi, SopcInfoComponent.parameter_action paramAction) {
 		int indentLevel = 0;
 		vHandled.clear();
 		String res = "/*\n"
@@ -37,7 +37,47 @@ public class DTSGenerator extends AbstractSopcGenerator {
 			+ indent(++indentLevel) + "model = \"ALTR," + sys.getSystemName() + "\";\n"
 			+ indent(indentLevel) + "compatible = \"ALTR," + sys.getSystemName() + "\";\n"
 			+ indent(indentLevel) + "#address-cells = <1>;\n"
-			+ indent(indentLevel) + "#size-cells = <1>;\n";
+			+ indent(indentLevel) + "#size-cells = <1>;\n"
+			+ getDTSCpus(bi, paramAction, indentLevel);
+		
+		SopcInfoComponent povComp = getComponentByName(bi.getPov());
+		if(povComp!=null)
+		{
+			res += getDTSMemoryFrom(bi, povComp, indentLevel);
+			res += indent(indentLevel++) + "sopc@0 {\n" +
+					indent(indentLevel) + "#address-cells = <1>;\n" +
+					indent(indentLevel) + "#size-cells = <1>;\n" +
+					indent(indentLevel) + "device_type = \"soc\";\n" +
+					indent(indentLevel) + "compatible = \"ALTR,avalon\",\"simple-bus\";\n" +
+					indent(indentLevel) + "ranges ;\n" +
+					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
+			res += getDTSBusFrom(bi, povComp, paramAction, indentLevel);
+			res += indent(--indentLevel) + "}; //sopc\n";
+		}
+		res += getDTSChosen(bi, paramAction, indentLevel);
+		return res;
+	}
+	String getDTSChosen(BoardInfo bi, 
+			SopcInfoComponent.parameter_action paramAction, int indentLevel)
+	{
+		String res = "";
+		if((bi.getBootArgs()==null)||(bi.getBootArgs().length()==0))
+		{
+			bi.setBootArgs("debug console=ttyAL0,115200");
+		} else {
+			bi.setBootArgs(bi.getBootArgs().replaceAll("\"", ""));
+		}
+		res += indent(indentLevel++) + "chosen {\n" +
+				indent(indentLevel) + "bootargs = \"" + bi.getBootArgs() + "\";\n" +
+				indent(--indentLevel) + "};\n";
+		res += indent(--indentLevel) + "};\n";
+		return res;		
+	}
+	String getDTSCpus(BoardInfo bi, 
+			SopcInfoComponent.parameter_action paramAction, int indentLevel)
+	{
+		int numCPUs = 0;
+		String res="";
 		for(SopcInfoComponent comp : sys.getSystemComponents())
 		{
 			if(comp.getScd().getGroup().equalsIgnoreCase("cpu"))
@@ -47,10 +87,12 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					res += indent(indentLevel++) + "cpus {\n"
 						+ indent(indentLevel) + "#address-cells = <1>;\n"
 						+ indent(indentLevel) + "#size-cells = <0>;\n";
-					if(pov==null) pov = comp.getInstanceName();
+					if(bi.getPov()==null) {
+						bi.setPov(comp.getInstanceName());
+					}
 				}
 				comp.setAddr(numCPUs);
-				res += comp.toDts(indentLevel, paramAction);
+				res += comp.toDts(bi, indentLevel, paramAction);
 				vHandled.add(comp);
 				numCPUs++;
 			}
@@ -58,50 +100,27 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		if(numCPUs>0) {
 			res += indent(--indentLevel) + "};\n";
 		}
-		SopcInfoComponent povComp = getComponentByName(pov);
-		if(povComp!=null)
-		{
-			res += getDTSMemoryFrom(povComp, indentLevel);
-			res += indent(indentLevel++) + "sopc@0 {\n" +
-					indent(indentLevel) + "#address-cells = <1>;\n" +
-					indent(indentLevel) + "#size-cells = <1>;\n" +
-					indent(indentLevel) + "device_type = \"soc\";\n" +
-					indent(indentLevel) + "compatible = \"ALTR,avalon\",\"simple-bus\";\n" +
-					indent(indentLevel) + "ranges ;\n" +
-					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
-			res += getDTSBusFrom(povComp, paramAction, indentLevel);
-			res += indent(--indentLevel) + "}; //sopc\n";
-		}
-		if((bootArgs==null)||(bootArgs.length()==0))
-		{
-			bootArgs="debug console=ttyAL0,115200";
-		} else {
-			bootArgs = bootArgs.replaceAll("\"", "");
-		}
-		res += indent(indentLevel++) + "chosen {\n" +
-				indent(indentLevel) + "bootargs = \"" + bootArgs + "\";\n" +
-				indent(--indentLevel) + "};\n";
-		res += indent(--indentLevel) + "};\n";
 		return res;
 	}
-	String getDTSMemoryFrom(SopcInfoComponent master, int indentLevel)
+	String getDTSMemoryFrom(BoardInfo bi, SopcInfoComponent master, int indentLevel)
 	{
 		String res = "";
-		Vector<String> vMemoryMapped = new Vector<String>();
+		
 		if(master!=null)
 		{
-			for(SopcInfoInterface intf : master.getInterfaces())
+			Vector<String> vMemoryMapped = bi.getMemoryNodes();
+			if(vMemoryMapped!=null)
 			{
-				if(intf.isMemoryMaster())
+				for(SopcInfoInterface intf : master.getInterfaces())
 				{
-					for(SopcInfoMemoryBlock mem : intf.getMemoryMap())
+					if(intf.isMemoryMaster())
 					{
-						if(!vMemoryMapped.contains(mem.getModule()))
+						for(SopcInfoMemoryBlock mem : intf.getMemoryMap())
 						{
-							SopcInfoComponent comp = getComponentByName(mem.getModule());
-							if(comp!=null)
+							if(vMemoryMapped.contains(mem.getModule()))
 							{
-								if(comp.getScd().getGroup().equalsIgnoreCase("memory"))
+								SopcInfoComponent comp = getComponentByName(mem.getModule());
+								if((comp!=null)&&(!vHandled.contains(comp)))
 								{
 									if(res.length()==0)
 									{
@@ -113,10 +132,49 @@ public class DTSGenerator extends AbstractSopcGenerator {
 										res += "\n" + indent(indentLevel) + 
 											String.format("\t0x%08X 0x%08X", mem.getBase(), mem.getSize());
 									}
-									vMemoryMapped.add(mem.getModule());
 									vHandled.add(comp);
-								}
-							}		
+								}		
+							}
+						}
+					}
+				}
+			}
+
+			if(res.length()==0)
+			{
+				/*
+				 * manual memory-map failed or is not present.
+				 * Just list all devices classified as "memory"
+				 */
+				vMemoryMapped = new Vector<String>();
+				for(SopcInfoInterface intf : master.getInterfaces())
+				{
+					if(intf.isMemoryMaster())
+					{
+						for(SopcInfoMemoryBlock mem : intf.getMemoryMap())
+						{
+							if(!vMemoryMapped.contains(mem.getModule()))
+							{
+								SopcInfoComponent comp = getComponentByName(mem.getModule());
+								if(comp!=null)
+								{
+									if(comp.getScd().getGroup().equalsIgnoreCase("memory"))
+									{
+										if(res.length()==0)
+										{
+											res = indent(indentLevel++) + "memory@0 {\n" +
+													indent(indentLevel) + "device_type = \"memory\";\n" +
+													indent(indentLevel) + "reg = <" + 
+														String.format("0x%08X 0x%08X", mem.getBase(), mem.getSize());
+										} else {
+											res += "\n" + indent(indentLevel) + 
+												String.format("\t0x%08X 0x%08X", mem.getBase(), mem.getSize());
+										}
+										vMemoryMapped.add(mem.getModule());
+										vHandled.add(comp);
+									}
+								}		
+							}
 						}
 					}
 				}
@@ -128,7 +186,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		return res;
 	}
 
-	String getDTSBusFrom(SopcInfoComponent master, 
+	String getDTSBusFrom(BoardInfo bi, SopcInfoComponent master, 
 				SopcInfoComponent.parameter_action paramAction, int indentLevel)
 	{
 		String res = "";
@@ -146,11 +204,11 @@ public class DTSGenerator extends AbstractSopcGenerator {
 						{
 							if(!vHandled.contains(slave))
 							{
-								res += slave.toDts(indentLevel,paramAction, conn,false);
+								res += slave.toDts(bi, indentLevel,paramAction, conn,false);
 								vHandled.add(slave);
 								if(slave.getScd().getGroup().equalsIgnoreCase("bridge"))
 								{
-									res += "\n" + getDTSBusFrom(slave, paramAction, ++indentLevel);
+									res += "\n" + getDTSBusFrom(bi, slave, paramAction, ++indentLevel);
 									indentLevel--;
 								}
 								res += indent(indentLevel) + "}; //end "+slave.getScd().getGroup()+" (" + slave.getInstanceName() + ")\n\n";

@@ -1,5 +1,6 @@
 package sopc2dts.generators;
 
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoSystem;
 
 public abstract class AbstractSopcGenerator {
@@ -42,5 +43,5 @@ public abstract class AbstractSopcGenerator {
 		return in.toUpperCase().replace("-", "_");
 	}
 	public abstract String getExtension();
-	public abstract String getOutput(String pov);
+	public abstract String getOutput(BoardInfo bi);
 }

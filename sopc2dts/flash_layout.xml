@@ -1,6 +1,0 @@
-<FlashPartitions>
-	<Partition name="fpga" address="0x20000" size="0x160000">
-		<readonly></readonly></Partition>
-	<Partition name="kernel" address="0x180000" size="0x280000">
-		<readonly></readonly></Partition>
-	<Partition name="rootfs" address="0x400000" size="0xC00000"></Partition></FlashPartitions>

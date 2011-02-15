@@ -3,7 +3,6 @@ package sopc2dts.lib.components.altera;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.XMLReader;
 
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoInterface;
@@ -16,17 +15,7 @@ public class SICLan91c111 extends SICEthernet {
 		super(p, xr, scd, iName, version);
 	}
 
-	protected String getRegForDTS(int indentLevel, SopcInfoConnection conn, SopcInfoInterface intf)
-	{
-		if((conn!=null) && (intf!=null))
-		{
-			return AbstractSopcGenerator.indent(indentLevel) + "reg = <0x" + Integer.toHexString(getAddrFromConnection(conn)) + 
-					" 0x100>;\n";
-		} else {
-			return "";
-		}
-	}
-
+	@Override
 	protected int getAddrFromConnection(SopcInfoConnection conn)
 	{
 		//Yes this is REALLY ugly. But it just might work :)
@@ -39,5 +28,9 @@ public class SICLan91c111 extends SICEthernet {
 		}
 		return (conn==null ? getAddr() : conn.getBaseAddress()) + regOffset;
 	}
-
+	@Override
+	protected int getSizeFromInterface(SopcInfoInterface intf)
+	{
+		return 0x100;
+	}
 }

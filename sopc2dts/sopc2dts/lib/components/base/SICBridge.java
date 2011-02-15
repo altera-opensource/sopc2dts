@@ -5,6 +5,7 @@ import org.xml.sax.XMLReader;
 
 import sopc2dts.Logger;
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.SopcInfoSystem;
 import sopc2dts.lib.components.SopcComponentDescription;
@@ -18,6 +19,7 @@ public class SICBridge extends SopcInfoComponent {
 			SopcComponentDescription scd, String iName, String version) {
 		super(p, xr, scd, iName, version);
 	}
+	
 	protected String getDtsRanges(int indentLevel, SopcInfoConnection conn)
 	{
 		String res = "";
@@ -49,7 +51,9 @@ public class SICBridge extends SopcInfoComponent {
 		}
 		return res;
 	}
-	public String toDtsExtras(int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+
+	@Override
+	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
 	{
 		return AbstractSopcGenerator.indent(indentLevel) + "#address-cells = <1>;\n" +
 				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n" +

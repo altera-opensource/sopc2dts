@@ -2,6 +2,7 @@ package sopc2dts.generators;
 
 import java.util.Vector;
 
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoAssignment;
 import sopc2dts.lib.SopcInfoConnection;
 import sopc2dts.lib.SopcInfoSystem;
@@ -84,10 +85,10 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 		return res;
 	}
 	@Override
-	public String getOutput(String pov) {
+	public String getOutput(BoardInfo bi) {
 		String res = null;
 		vHandled.clear();
-		if(pov==null)
+		if(bi.getPov()==null)
 		{
 			for(SopcInfoComponent comp : sys.getSystemComponents())
 			{
@@ -99,7 +100,7 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 							"#define _ALTERA_CPU_H_\n\n" +
 							lameCopyright;
 					}
-					res += dumpComponent(comp, pov);
+					res += dumpComponent(comp, bi.getPov());
 				}
 			}
 			if(res!=null)
@@ -107,13 +108,13 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 				res += "\n#endif //_ALTERA_CPU_H_\n";
 			}
 		} else {
-			SopcInfoComponent povComp = sys.getComponentByName(pov);
+			SopcInfoComponent povComp = sys.getComponentByName(bi.getPov());
 			if(povComp!=null)
 			{
-				res = "#ifndef _ALTERA_" + definenify(pov) + "_H_\n" +
-				"#define _ALTERA_" + definenify(pov) + "_H_\n\n" +
+				res = "#ifndef _ALTERA_" + definenify(bi.getPov()) + "_H_\n" +
+				"#define _ALTERA_" + definenify(bi.getPov()) + "_H_\n\n" +
 				lameCopyright + "\n/*\n" +
-						" * This file contains macros for module '" + pov + "' and devices\n" +
+						" * This file contains macros for module '" + bi.getPov() + "' and devices\n" +
 						" * connected to the following masters:\n";
 				for(SopcInfoInterface intf : povComp.getInterfaces())
 				{
@@ -128,9 +129,9 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 						" * Doing so may result in duplicate macro names.\n" +
 						" * Instead, use the system header file which has macros with unique names.\n" +
 						" */\n" +
-						"\n" + dumpComponent(povComp, pov)
-						+ dumpChildren(povComp, pov);
-				res += "\n#endif /* _ALTERA_" + definenify(pov) + "_H_ */\n";
+						"\n" + dumpComponent(povComp, bi.getPov())
+						+ dumpChildren(povComp, bi.getPov());
+				res += "\n#endif /* _ALTERA_" + definenify(bi.getPov()) + "_H_ */\n";
 
 			}
 		}

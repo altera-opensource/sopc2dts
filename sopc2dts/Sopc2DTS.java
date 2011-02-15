@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.util.Vector;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import sopc2dts.Logger;
 import sopc2dts.generators.DTSGenerator;
 import sopc2dts.generators.KernelHeadersGenerator;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.SopcInfoSystem;
 import sopc2dts.lib.components.SopcInfoComponent;
 
@@ -25,6 +27,7 @@ public class Sopc2DTS {
 	protected CLParameter verbose = new CLParameter("" + false);
 	protected CLParameter mimicAlteraTools = new CLParameter("" + false);
 	protected CLParameter inputFileName = new CLParameter("");
+	protected CLParameter boardFileName = new CLParameter("");
 	protected CLParameter outputFileName = new CLParameter("");
 	protected CLParameter outputType = new CLParameter("dts");
 	protected CLParameter pov = new CLParameter("");
@@ -45,6 +48,7 @@ public class Sopc2DTS {
 	
 	public Sopc2DTS(String pName) {
 		programName = pName;
+		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"The board description file", "boardinfo file"));
 		vOptions.add(new CommandLineOption("help"		,"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose"	,"v", verbose,			false,false,"Show Lots of debugging info", null));
 		vOptions.add(new CommandLineOption("version"	,null,showVersion,		false,false,"Show version information and exit", null));
@@ -58,23 +62,53 @@ public class Sopc2DTS {
 	}
 	protected void go()
 	{
+		BoardInfo bInfo = null;
+		File f;
 		if(inputFileName.value.length()==0)
 		{
 			System.out.println("No input file specified!");
 			printUsage();
 		}
-		File f = new File(inputFileName.value);
+		if(boardFileName.value.length()>0)
+		{
+			f = new File(boardFileName.value);
+			if(f.exists())
+			{
+				try {
+					bInfo = new BoardInfo(new InputSource(new BufferedReader(new FileReader(f))));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			f = null;
+		}
+		if(bInfo==null)
+		{
+			bInfo = new BoardInfo();
+		}
+		if(pov.value.length()>0)
+		{
+			bInfo.setPov(pov.value);
+		}
+		f = new File(inputFileName.value);
 		if(f.exists())
 		{
 			try {
 				SopcInfoSystem sys = new SopcInfoSystem(new InputSource(new BufferedReader(new FileReader(f))));
-				if(pov.value.length()==0)
+				if(bInfo.getPov().length()==0)
 				{
-					for(int i=0; (i<sys.getSystemComponents().size()) && (pov.value.length()==0); i++)
+					for(int i=0; (i<sys.getSystemComponents().size()) && (bInfo.getPov().length()==0); i++)
 					{
 						if(sys.getSystemComponents().get(i).getScd().getGroup().equalsIgnoreCase("cpu"))
 						{
-							pov.value = sys.getSystemComponents().get(i).getInstanceName();
+							bInfo.setPov(sys.getSystemComponents().get(i).getInstanceName());
 						}
 					}
 				}
@@ -84,15 +118,20 @@ public class Sopc2DTS {
 					for(SopcInfoComponent master : vMasters)
 					{
 						BufferedWriter out = new BufferedWriter(new FileWriter(master.getInstanceName()+".h"));
-						out.write(fake.getOutput(master.getInstanceName()));
+						bInfo.setPov(master.getInstanceName());
+						out.write(fake.getOutput(bInfo));
 						out.close();
 					}
 				} else {
 					String generatedData = null;
+					if(bootargs.value.length()>0)
+					{
+						bInfo.setBootArgs(bootargs.value);
+					}
 					if(outputType.value.equalsIgnoreCase("dts"))
 					{
 						DTSGenerator dGen = new DTSGenerator(sys);
-						generatedData = dGen.getOutput(pov.value, dumpParameters, bootargs.value);
+						generatedData = dGen.getOutput(bInfo, dumpParameters);
 					} else if(outputType.value.equalsIgnoreCase("uboot"))
 					{
 						generatedData = "Whoops, I guess I was bluffing. uboot support is not yet done";
@@ -103,7 +142,7 @@ public class Sopc2DTS {
 					} else if(outputType.value.equalsIgnoreCase("kernel-full"))
 					{
 						SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
-						generatedData = fake.getOutput(pov.value);
+						generatedData = fake.getOutput(bInfo);
 					} else {
 						System.out.println("Unsupported output type: " + outputType.value);
 					}
