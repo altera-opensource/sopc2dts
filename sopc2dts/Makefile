@@ -22,8 +22,8 @@ CLASSES=$(SOURCES:.java=.class)
 
 all: sopc2dts.jar
 
-sopc2dts.jar: $(CLASSES) manifest
-	jar -cmf manifest sopc2dts.jar *.java *.class sopc2dts
+sopc2dts.jar: $(CLASSES) manifest sopc_components_*.xml
+	jar -cmf manifest sopc2dts.jar *.java *.class sopc2dts sopc_components_*.xml
 
 %.class: %.java
 	javac $<

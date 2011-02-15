@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -15,6 +18,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import sopc2dts.Logger;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.SopcInfoComponent;
 import sopc2dts.lib.components.altera.SICEpcs;
@@ -32,31 +36,19 @@ public class SopcComponentLib implements ContentHandler {
 	private String currentVendor = null;
 	SopcComponentDescription unknownComponent = new SICUnknown();
 	Vector<SopcComponentDescription> vLibComponents = new Vector<SopcComponentDescription>();
-	boolean bVerbose;
 	
 	public SopcComponentLib()
 	{
-		this(false);
-	}
-	public SopcComponentLib(boolean verbose)
-	{
-		bVerbose = verbose;
 		try {
 			int oldSize = 0;
 			XMLReader xr = XMLReaderFactory.createXMLReader();
 			xr.setContentHandler(this);
-			File folder = new File(".");
-		    File[] listOfFiles = folder.listFiles();
-
-		    for (File f : listOfFiles) {
-		    	if (f.isFile()) {
-		    		if(f.getName().startsWith("sopc_components_")&&f.getName().endsWith(".xml"))
-		    		{
-						xr.parse(new InputSource(new BufferedReader(new FileReader(f))));
-						if(bVerbose) System.out.println("Loaded " + (vLibComponents.size() - oldSize) + " components from " + f);
-						oldSize = vLibComponents.size();
-		    		}
-		    	}
+			Vector<String> vCompLibFiles = findComponentLibs();
+			for(String f : vCompLibFiles)
+			{
+				xr.parse(new InputSource(new BufferedReader(new FileReader(f))));
+				Logger.logln("Loaded " + (vLibComponents.size() - oldSize) + " components from " + f);
+				oldSize = vLibComponents.size();
 			}
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
@@ -69,6 +61,53 @@ public class SopcComponentLib implements ContentHandler {
 			e.printStackTrace();
 		}
 	}
+	public static Vector<String> findComponentLibs()
+	{
+		Vector<String> vComponentLibs;
+		try {
+			JarFile jf = new JarFile("sopc2dts.jar");
+			vComponentLibs = findComponentLibsInJar(jf);
+		} catch(Exception e) {
+			Logger.logln("We seem to be not running from a jar file. Trying to load lib from filesystem");
+			vComponentLibs = findComponentLibsInWorkDir();
+		}
+		return vComponentLibs;
+	}
+
+	public static Vector<String> findComponentLibsInJar(JarFile jf)
+	{
+		Vector<String> vRes = new Vector<String>();
+		Enumeration<JarEntry> je = jf.entries();
+		while(je.hasMoreElements()) {
+			String entryName = je.nextElement().getName();
+			//System.out.println("JAR: " + devicename);
+
+			if(entryName.endsWith(".xml") && entryName.startsWith("sopc_components_")) {
+				vRes.add(entryName);
+			}
+		}
+		return vRes;
+	}
+
+	public static Vector<String> findComponentLibsInWorkDir()
+	{
+		Vector<String> vRes = new Vector<String>();
+		File fDir = new File(".");
+		if(fDir.isDirectory())
+		{
+			String[] dirContents = fDir.list();
+			for(int i=0; i<dirContents.length; i++)
+			{
+				if(dirContents[i].endsWith(".xml")&&
+						dirContents[i].startsWith("sopc_components_"))
+				{
+					vRes.add(dirContents[i]);
+				}
+			}
+		}
+		return vRes;
+	}
+
 	protected SopcComponentDescription getScdByClassName(String className)
 	{
 		for(SopcComponentDescription scd : vLibComponents)
@@ -180,15 +219,12 @@ public class SopcComponentLib implements ContentHandler {
 			{
 				ignoreInput=true;
 				currentVendor = null;
-			} else if(localName.equalsIgnoreCase("S2DComponent")) {
-				//mwa...
-			} else if(localName.equalsIgnoreCase("compatible")) {
-				//mwa...
-			} else if(localName.equalsIgnoreCase("parameter")) {
-				//mwa...
-			} else if(localName.equalsIgnoreCase("RequiredParameter")) {
-				//mwa...
-			} else if(localName.equalsIgnoreCase("CompatibleVersion")) {
+			} else if((localName.equalsIgnoreCase("S2DComponent")) ||
+					(localName.equalsIgnoreCase("compatible")) ||
+					(localName.equalsIgnoreCase("parameter")) ||
+					(localName.equalsIgnoreCase("RequiredParameter")) ||
+					(localName.equalsIgnoreCase("CompatibleVersion"))) 
+			{
 				//mwa...
 			} else {
 				System.out.println("End element " + localName);
@@ -197,43 +233,24 @@ public class SopcComponentLib implements ContentHandler {
 	}
 	
 	public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void endDocument() throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void endPrefixMapping(String arg0) throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void ignorableWhitespace(char[] arg0, int arg1, int arg2)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void processingInstruction(String arg0, String arg1)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setDocumentLocator(Locator arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	public void skippedEntity(String arg0) throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void startDocument() throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
 	public void startPrefixMapping(String arg0, String arg1)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		
 	}
-
 }
