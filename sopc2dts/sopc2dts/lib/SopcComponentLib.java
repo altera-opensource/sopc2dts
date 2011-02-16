@@ -39,59 +39,53 @@ public class SopcComponentLib implements ContentHandler {
 	
 	public SopcComponentLib()
 	{
+		loadComponentLibs();
+	}
+	int loadComponentLib(InputSource in)
+	{
+		int oldSize = vLibComponents.size();
 		try {
-			int oldSize = 0;
 			XMLReader xr = XMLReaderFactory.createXMLReader();
 			xr.setContentHandler(this);
-			Vector<String> vCompLibFiles = findComponentLibs();
-			for(String f : vCompLibFiles)
-			{
-				xr.parse(new InputSource(new BufferedReader(new FileReader(f))));
-				Logger.logln("Loaded " + (vLibComponents.size() - oldSize) + " components from " + f);
-				oldSize = vLibComponents.size();
-			}
+			xr.parse(in);
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return (vLibComponents.size() - oldSize);
 	}
-	public static Vector<String> findComponentLibs()
+	public void loadComponentLibs()
 	{
-		Vector<String> vComponentLibs;
 		try {
-			JarFile jf = new JarFile("sopc2dts.jar");
-			vComponentLibs = findComponentLibsInJar(jf);
+			JarFile jf = new JarFile(SopcComponentLib.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+			loadComponentLibsInJar(jf);
 		} catch(Exception e) {
 			Logger.logln("We seem to be not running from a jar file. Trying to load lib from filesystem");
-			vComponentLibs = findComponentLibsInWorkDir();
+			loadComponentLibsInWorkDir();
 		}
-		return vComponentLibs;
 	}
 
-	public static Vector<String> findComponentLibsInJar(JarFile jf)
+	public void loadComponentLibsInJar(JarFile jf)
 	{
-		Vector<String> vRes = new Vector<String>();
 		Enumeration<JarEntry> je = jf.entries();
 		while(je.hasMoreElements()) {
 			String entryName = je.nextElement().getName();
 			//System.out.println("JAR: " + devicename);
-
 			if(entryName.endsWith(".xml") && entryName.startsWith("sopc_components_")) {
-				vRes.add(entryName);
+				try {
+					Logger.logln("Loaded " + loadComponentLib(new InputSource(
+							jf.getInputStream(jf.getEntry(entryName))))
+							 + " components from " + entryName);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		return vRes;
 	}
 
-	public static Vector<String> findComponentLibsInWorkDir()
+	public void loadComponentLibsInWorkDir()
 	{
-		Vector<String> vRes = new Vector<String>();
 		File fDir = new File(".");
 		if(fDir.isDirectory())
 		{
@@ -101,11 +95,16 @@ public class SopcComponentLib implements ContentHandler {
 				if(dirContents[i].endsWith(".xml")&&
 						dirContents[i].startsWith("sopc_components_"))
 				{
-					vRes.add(dirContents[i]);
+					try {
+						Logger.logln("Loaded " + loadComponentLib(new InputSource(
+								new BufferedReader(new FileReader(dirContents[i]))))
+								 + " components from " + dirContents[i]);
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
-		return vRes;
 	}
 
 	protected SopcComponentDescription getScdByClassName(String className)
