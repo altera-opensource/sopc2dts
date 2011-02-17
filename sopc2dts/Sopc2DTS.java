@@ -43,8 +43,10 @@ public class Sopc2DTS {
 	public static void main(String[] args) {
 		Sopc2DTS s2d = new Sopc2DTS("sopc2dts");
 		try {
-			s2d.parseCmdLine(args);
-			s2d.go();
+			if(s2d.parseCmdLine(args))
+			{
+				s2d.go();
+			}
 		} catch(Exception e) {
 			System.err.println(e);
 			s2d.printUsage();
@@ -205,7 +207,7 @@ public class Sopc2DTS {
 		}
 		return vRes.toArray(new String[0]);
 	}
-	protected void parseCmdLine(String[] args) throws Exception
+	protected boolean parseCmdLine(String[] args) throws Exception
 	{
 		int argPos = 0;
 		int oldPos = 0;
@@ -228,18 +230,18 @@ public class Sopc2DTS {
 				//No parser found!!!
 				System.out.println("Option " + args[argPos] +" not understood.");
 				printUsage();
-				System.exit(-1);
+				return false;
 			}
 		}
 		if(Boolean.parseBoolean(showHelp.value))
 		{
 			printUsage();
-			System.exit(0);
+			return false;
 		}
 		if(Boolean.parseBoolean(showVersion.value))
 		{
 			printVersion();
-			System.exit(0);
+			return false;
 		}
 		Logger.setVerbose(Boolean.parseBoolean(verbose.value));
 		if(sopcParameters.value.equalsIgnoreCase("none"))
@@ -252,6 +254,7 @@ public class Sopc2DTS {
 		{
 			dumpParameters = SopcInfoComponent.parameter_action.ALL;
 		}
+		return true;
 	}
 
 	protected void printUsage()
