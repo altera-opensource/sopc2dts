@@ -69,6 +69,10 @@
 		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_mm_bridge"
+		group="bridge" compatDevice="avalon">
+		<compatible name="simple-bus"></compatible>
+	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cy7c1380_ssram" group="memory" compatDevice="ssram">
 	</S2DComponent>
 	<S2DComponent classname="altmemddr" group="memory"
@@ -76,6 +80,9 @@
 	</S2DComponent>
 	<S2DComponent classname="altmemddr2" group="memory"
 		compatDevice="altmemddr2">
+	</S2DComponent>
+	<S2DComponent classname="altera_uniphy_ddr3" group="memory"
+		compatDevice="altera_uniphy_ddr3">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_new_sdram_controller" group="memory"
 		compatDevice="sdram">
@@ -149,4 +156,6 @@
 		group="ata" compatDevice="cf">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
+	<S2DComponent classname="multiplexer" group="ignore"></S2DComponent>
+	<S2DComponent classname="demultiplexer" group="ignore"></S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
