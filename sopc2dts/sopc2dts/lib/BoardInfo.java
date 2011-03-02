@@ -16,12 +16,12 @@ import sopc2dts.Logger;
 import sopc2dts.lib.components.base.FlashPartition;
 
 public class BoardInfo implements ContentHandler {
-	FlashPartition part = null;
-	String currTag = null;
-	String flashChip = null;
-	Vector<FlashPartition> vPartitions = null;
-	Vector<String> vMemoryNodes = null;
-	String bootArgs = null;
+	FlashPartition part;
+	String currTag;
+	String flashChip;
+	Vector<FlashPartition> vPartitions;
+	Vector<String> vMemoryNodes;
+	String bootArgs;
 	private String pov = "";
 
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
@@ -46,9 +46,6 @@ public class BoardInfo implements ContentHandler {
 		} else if(localName.equalsIgnoreCase("Bootargs"))
 		{
 				bootArgs = atts.getValue("val");
-		} else if(localName.equalsIgnoreCase("Chosen"))
-		{
-			//Hmmm will we do anything with this?
 		} else if(localName.equalsIgnoreCase("FlashPartitions")) 
 		{
 			//attribute chip can be null for a wildcard/fallback map
@@ -76,7 +73,8 @@ public class BoardInfo implements ContentHandler {
 		} else if(localName.equalsIgnoreCase("readonly"))
 		{
 			part.setReadonly(true);
-		} else {
+		} else if(!localName.equalsIgnoreCase("Chosen"))
+		{
 			currTag = localName;
 			Logger.logln("Boardinfo: Unhandled element " + localName);
 		}
