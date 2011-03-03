@@ -1,20 +1,23 @@
-package sopc2dts.lib;
+package sopc2dts.parsers.sopcinfo;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import sopc2dts.lib.BasicElement;
+import sopc2dts.lib.Parameter.DataType;
+
 
 public class SopcInfoParameter extends SopcInfoAssignment {
-	String type = null;
+	String type;
 	Boolean derived;
 	Boolean enabled;
 	Boolean visible;
 	Boolean valid;
 	
-	public SopcInfoParameter(ContentHandler p, XMLReader xr, String name)
+	public SopcInfoParameter(ContentHandler p, XMLReader xr, String name, BasicElement be)
 	{
-		super(p,xr);
-		this.setName(name);
+		super(p,xr,be);
+		this.name = name;
 	}
 	@Override
 	public String getElementName() {

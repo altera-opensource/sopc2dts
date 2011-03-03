@@ -7,20 +7,44 @@ public class SopcComponentDescription {
 	private String vendor;
 	private String device;
 	private Vector<String> vCompatible = new Vector<String>();
-	Vector<SICAutoParam> vAutoParams = new Vector<SICAutoParam>();
+	private Vector<SICAutoParam> vAutoParams = new Vector<SICAutoParam>();
 	Vector<SICRequiredParam> vRequiredParams = new Vector<SICRequiredParam>();
 	Vector<String> vCompatibleVersions = new Vector<String>();
 	
-	protected class SICAutoParam {
-		String dtsName;
-		String sopcInfoName;
-		String forceType;
+	public class SICAutoParam {
+		private String dtsName;
+		private String sopcInfoName;
+		private String forceType;
 		
 		public SICAutoParam(String dts, String sopcInfo, String type)
 		{
-			dtsName = dts;
-			sopcInfoName = sopcInfo;
-			forceType = type;
+			setDtsName(dts);
+			setSopcInfoName(sopcInfo);
+			setForceType(type);
+		}
+
+		public void setSopcInfoName(String sopcInfoName) {
+			this.sopcInfoName = sopcInfoName;
+		}
+
+		public String getSopcInfoName() {
+			return sopcInfoName;
+		}
+
+		public void setDtsName(String dtsName) {
+			this.dtsName = dtsName;
+		}
+
+		public String getDtsName() {
+			return dtsName;
+		}
+
+		public void setForceType(String forceType) {
+			this.forceType = forceType;
+		}
+
+		public String getForceType() {
+			return forceType;
 		}
 	}
 	protected class SICRequiredParam {
@@ -43,12 +67,12 @@ public class SopcComponentDescription {
 	{
 		return vRequiredParams;
 	}
-	public boolean isRequiredParamsOk(SopcInfoComponent comp)
+	public boolean isRequiredParamsOk(BasicComponent comp)
 	{
 		for(SICRequiredParam rp : vRequiredParams)
 		{
-			if(comp.getParamValue(rp.name)==null) return false;
-			if(!comp.getParamValue(rp.name).equalsIgnoreCase(rp.value)) return false;
+			if(comp.getParamByName(rp.name)==null) return false;
+			if(!comp.getParamValByName(rp.name).equalsIgnoreCase(rp.value)) return false;
 		}
 		return true;
 	}
@@ -160,5 +184,13 @@ public class SopcComponentDescription {
 			res += ",\"" + comp + "\"";
 		}
 		return res;
+	}
+
+	public void setAutoParams(Vector<SICAutoParam> vAutoParams) {
+		this.vAutoParams = vAutoParams;
+	}
+
+	public Vector<SICAutoParam> getAutoParams() {
+		return vAutoParams;
 	}
 }

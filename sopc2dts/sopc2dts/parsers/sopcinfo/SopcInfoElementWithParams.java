@@ -1,4 +1,4 @@
-package sopc2dts.lib;
+package sopc2dts.parsers.sopcinfo;
 import java.util.Vector;
 
 import org.xml.sax.Attributes;
@@ -6,13 +6,16 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import sopc2dts.lib.BasicElement;
+
+
 
 public abstract class SopcInfoElementWithParams extends SopcInfoElement {
 	Vector<SopcInfoAssignment> vParams = new Vector<SopcInfoAssignment>();
-
-	public SopcInfoElementWithParams(ContentHandler p, XMLReader xr) {
+	BasicElement basicElement;
+	public SopcInfoElementWithParams(ContentHandler p, XMLReader xr, BasicElement be) {
 		super(p, xr);
-		// TODO Auto-generated constructor stub
+		basicElement = be;
 	}
 	public String getParamValue(String paramName)
 	{
@@ -47,10 +50,10 @@ public abstract class SopcInfoElementWithParams extends SopcInfoElement {
 			Attributes atts) throws SAXException {
 		if(localName.equalsIgnoreCase("assignment"))
 		{
-			vParams.add(new SopcInfoAssignment(this, xmlReader));
+			vParams.add(new SopcInfoAssignment(this, xmlReader,basicElement));
 		} else if(localName.equalsIgnoreCase("parameter"))
 		{
-			vParams.add(new SopcInfoParameter(this, xmlReader, atts.getValue("name")));
+			vParams.add(new SopcInfoParameter(this, xmlReader, atts.getValue("name"), basicElement));
 		}
 	}
 

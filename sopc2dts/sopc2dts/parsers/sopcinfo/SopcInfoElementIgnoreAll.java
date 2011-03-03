@@ -1,8 +1,9 @@
-package sopc2dts.lib;
+package sopc2dts.parsers.sopcinfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+
 
 
 public class SopcInfoElementIgnoreAll extends SopcInfoElement {

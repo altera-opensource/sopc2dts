@@ -1,7 +1,7 @@
 package sopc2dts.generators;
 
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoSystem;
 
 public abstract class AbstractSopcGenerator {
 	protected static String copyRightNotice = "/*\n" +
@@ -24,8 +24,8 @@ public abstract class AbstractSopcGenerator {
 	" *\n" +
 	" */\n";
 
-	SopcInfoSystem sys;
-	public AbstractSopcGenerator(SopcInfoSystem s)
+	AvalonSystem sys;
+	public AbstractSopcGenerator(AvalonSystem s)
 	{
 		sys = s;
 	}

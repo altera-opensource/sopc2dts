@@ -2,16 +2,17 @@ package sopc2dts.generators;
 
 import java.util.Vector;
 
+import sopc2dts.Logger;
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoConnection;
-import sopc2dts.lib.SopcInfoSystem;
-import sopc2dts.lib.components.SopcInfoComponent;
-import sopc2dts.lib.components.SopcInfoInterface;
-import sopc2dts.lib.components.SopcInfoMemoryBlock;
+import sopc2dts.lib.Connection;
+import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.components.Interface;
+import sopc2dts.lib.components.MemoryBlock;
 
 public class DTSGenerator extends AbstractSopcGenerator {
-	Vector<SopcInfoComponent> vHandled = new Vector<SopcInfoComponent>();
-	public DTSGenerator(SopcInfoSystem s) {
+	Vector<BasicComponent> vHandled = new Vector<BasicComponent>();
+	public DTSGenerator(AvalonSystem s) {
 		super(s);
 	}
 
@@ -22,9 +23,9 @@ public class DTSGenerator extends AbstractSopcGenerator {
 
 	@Override
 	public String getOutput(BoardInfo bi) {
-		return getOutput(bi, SopcInfoComponent.parameter_action.NONE);
+		return getOutput(bi, BasicComponent.parameter_action.NONE);
 	}
-	public String getOutput(BoardInfo bi, SopcInfoComponent.parameter_action paramAction) {
+	public String getOutput(BoardInfo bi, BasicComponent.parameter_action paramAction) {
 		int indentLevel = 0;
 		vHandled.clear();
 		String res = "/*\n"
@@ -40,7 +41,16 @@ public class DTSGenerator extends AbstractSopcGenerator {
 			+ indent(indentLevel) + "#size-cells = <1>;\n"
 			+ getDTSCpus(bi, paramAction, indentLevel);
 		
-		SopcInfoComponent povComp = getComponentByName(bi.getPov());
+		BasicComponent povComp = getComponentByName(bi.getPov());
+		if(povComp==null)
+		{
+			//Just find the first master...
+			Vector<BasicComponent> vMasters = sys.getMasterComponents();
+			if(vMasters.size()>0)
+			{
+				povComp = vMasters.get(0);
+			}
+		}
 		if(povComp!=null)
 		{
 			res += getDTSMemoryFrom(bi, povComp, indentLevel);
@@ -53,12 +63,14 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
 			res += getDTSBusFrom(bi, povComp, paramAction, indentLevel);
 			res += indent(--indentLevel) + "}; //sopc\n";
+		} else {
+			Logger.logln("Could not find pov: " + bi.getPov());
 		}
 		res += getDTSChosen(bi, paramAction, indentLevel);
 		return res;
 	}
 	String getDTSChosen(BoardInfo bi, 
-			SopcInfoComponent.parameter_action paramAction, int indentLevel)
+			BasicComponent.parameter_action paramAction, int indentLevel)
 	{
 		String res = "";
 		if((bi.getBootArgs()==null)||(bi.getBootArgs().length()==0))
@@ -74,11 +86,11 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		return res;		
 	}
 	String getDTSCpus(BoardInfo bi, 
-			SopcInfoComponent.parameter_action paramAction, int indentLevel)
+			BasicComponent.parameter_action paramAction, int indentLevel)
 	{
 		int numCPUs = 0;
 		String res="";
-		for(SopcInfoComponent comp : sys.getSystemComponents())
+		for(BasicComponent comp : sys.getSystemComponents())
 		{
 			if(comp.getScd().getGroup().equalsIgnoreCase("cpu"))
 			{
@@ -102,7 +114,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		}
 		return res;
 	}
-	String getDTSMemoryFrom(BoardInfo bi, SopcInfoComponent master, int indentLevel)
+	String getDTSMemoryFrom(BoardInfo bi, BasicComponent master, int indentLevel)
 	{
 		String res = "";
 		
@@ -111,15 +123,15 @@ public class DTSGenerator extends AbstractSopcGenerator {
 			Vector<String> vMemoryMapped = bi.getMemoryNodes();
 			if(vMemoryMapped!=null)
 			{
-				for(SopcInfoInterface intf : master.getInterfaces())
+				for(Interface intf : master.getInterfaces())
 				{
 					if(intf.isMemoryMaster())
 					{
-						for(SopcInfoMemoryBlock mem : intf.getMemoryMap())
+						for(MemoryBlock mem : intf.getMemoryMap())
 						{
 							if(vMemoryMapped.contains(mem.getModule()))
 							{
-								SopcInfoComponent comp = getComponentByName(mem.getModule());
+								BasicComponent comp = mem.getModule();
 								if((comp!=null)&&(!vHandled.contains(comp)))
 								{
 									if(res.length()==0)
@@ -147,15 +159,15 @@ public class DTSGenerator extends AbstractSopcGenerator {
 				 * Just list all devices classified as "memory"
 				 */
 				vMemoryMapped = new Vector<String>();
-				for(SopcInfoInterface intf : master.getInterfaces())
+				for(Interface intf : master.getInterfaces())
 				{
 					if(intf.isMemoryMaster())
 					{
-						for(SopcInfoMemoryBlock mem : intf.getMemoryMap())
+						for(MemoryBlock mem : intf.getMemoryMap())
 						{
-							if(!vMemoryMapped.contains(mem.getModule()))
+							if(!vMemoryMapped.contains(mem.getModuleName()))
 							{
-								SopcInfoComponent comp = getComponentByName(mem.getModule());
+								BasicComponent comp = mem.getModule();
 								if(comp!=null)
 								{
 									if(comp.getScd().getGroup().equalsIgnoreCase("memory"))
@@ -170,7 +182,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 											res += "\n" + indent(indentLevel) + 
 												String.format("\t0x%08X 0x%08X", mem.getBase(), mem.getSize());
 										}
-										vMemoryMapped.add(mem.getModule());
+										vMemoryMapped.add(mem.getModuleName());
 										vHandled.add(comp);
 									}
 								}		
@@ -186,20 +198,21 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		return res;
 	}
 
-	String getDTSBusFrom(BoardInfo bi, SopcInfoComponent master, 
-				SopcInfoComponent.parameter_action paramAction, int indentLevel)
+	String getDTSBusFrom(BoardInfo bi, BasicComponent master, 
+				BasicComponent.parameter_action paramAction, int indentLevel)
 	{
 		String res = "";
 		if(master!=null)
 		{
-			for(SopcInfoInterface intf : master.getInterfaces())
+			for(Interface intf : master.getInterfaces())
 			{
+//				res += indent(indentLevel) + "//Port " + intf.getName() + " of " + master.getInstanceName() + " type: " + intf.getType() + " isMaster: " + intf.isMaster() + "\n";
 				if(intf.isMemoryMaster())
 				{
 					res += indent(indentLevel) + "//Port " + intf.getName() + " of " + master.getInstanceName() + "\n";
-					for(SopcInfoConnection conn : intf.getConnections())
+					for(Connection conn : intf.getConnections())
 					{
-						SopcInfoComponent slave = conn.getSlaveModule();						
+						BasicComponent slave = conn.getSlaveModule();						
 						if(slave!=null)
 						{
 							if(!vHandled.contains(slave))
@@ -221,9 +234,9 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		return res;
 	}
 
-	public SopcInfoComponent getComponentByName(String name)
+	public BasicComponent getComponentByName(String name)
 	{
-		for(SopcInfoComponent c : sys.getSystemComponents())
+		for(BasicComponent c : sys.getSystemComponents())
 		{
 			if(c.getInstanceName().equalsIgnoreCase(name))
 			{

@@ -1,15 +1,12 @@
 package sopc2dts.lib.components.altera;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
-
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoConnection;
+import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.BasicComponent;
 
-public class SICSgdma extends SopcInfoComponent {
+public class SICSgdma extends BasicComponent {
 	public static final String[] TYPE_NAMES = {
 		"MEMORY_TO_MEMORY",
 		"MEMORY_TO_STREAM",
@@ -18,19 +15,18 @@ public class SICSgdma extends SopcInfoComponent {
 		"UNKNOWN"
 	};
 	
-	public SICSgdma(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName, String version) {
-		super(p, xr, scd, iName, version);
+	public SICSgdma(SopcComponentDescription scd, String iName, String version) {
+		super(scd, iName, version);
 	}
 
 	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
 		String res = "";
 		int iType = 0;
 		while(iType<(TYPE_NAMES.length-1))
 		{
-			if(TYPE_NAMES[iType].equals(getParamValue("transferMode")))
+			if(TYPE_NAMES[iType].equals(getParamValByName("transferMode")))
 			{
 				break;
 			}

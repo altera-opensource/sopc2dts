@@ -15,9 +15,10 @@ import sopc2dts.Logger;
 import sopc2dts.generators.DTSGenerator;
 import sopc2dts.generators.KernelHeadersGenerator;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoSystem;
-import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.parsers.BasicSystemLoader;
 
 
 public class Sopc2DTS {
@@ -33,7 +34,7 @@ public class Sopc2DTS {
 	protected CLParameter pov = new CLParameter("");
 	protected CLParameter bootargs = new CLParameter("");
 	protected CLParameter sopcParameters = new CLParameter("none");
-	SopcInfoComponent.parameter_action dumpParameters = SopcInfoComponent.parameter_action.NONE;
+	BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
 
 	protected String programName;
 
@@ -48,7 +49,7 @@ public class Sopc2DTS {
 				s2d.go();
 			}
 		} catch(Exception e) {
-			System.err.println(e);
+			e.printStackTrace();
 			s2d.printUsage();
 		}
 	}
@@ -105,7 +106,7 @@ public class Sopc2DTS {
 		if(f.exists())
 		{
 			try {
-				SopcInfoSystem sys = new SopcInfoSystem(new InputSource(new BufferedReader(new FileReader(f))));
+				AvalonSystem sys = BasicSystemLoader.loadSystem(f);
 				if(bInfo.getPov().length()==0)
 				{
 					for(int i=0; (i<sys.getSystemComponents().size()) && (bInfo.getPov().length()==0); i++)
@@ -118,8 +119,8 @@ public class Sopc2DTS {
 				}
 				if(Boolean.parseBoolean(mimicAlteraTools.value)) {
 					SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
-					Vector<SopcInfoComponent> vMasters = sys.getMasterComponents();
-					for(SopcInfoComponent master : vMasters)
+					Vector<BasicComponent> vMasters = sys.getMasterComponents();
+					for(BasicComponent master : vMasters)
 					{
 						BufferedWriter out = new BufferedWriter(new FileWriter(master.getInstanceName()+".h"));
 						bInfo.setPov(master.getInstanceName());
@@ -246,13 +247,13 @@ public class Sopc2DTS {
 		Logger.setVerbose(Boolean.parseBoolean(verbose.value));
 		if(sopcParameters.value.equalsIgnoreCase("none"))
 		{
-			dumpParameters = SopcInfoComponent.parameter_action.NONE;
+			dumpParameters = BasicComponent.parameter_action.NONE;
 		} else if(sopcParameters.value.equalsIgnoreCase("cmacro"))
 		{
-			dumpParameters = SopcInfoComponent.parameter_action.CMACRCO;
+			dumpParameters = BasicComponent.parameter_action.CMACRCO;
 		} else if(sopcParameters.value.equalsIgnoreCase("all"))
 		{
-			dumpParameters = SopcInfoComponent.parameter_action.ALL;
+			dumpParameters = BasicComponent.parameter_action.ALL;
 		}
 		return true;
 	}
@@ -291,7 +292,7 @@ public class Sopc2DTS {
 	
 	public void printVersion()
 	{
-		System.out.println(programName + " - 0.1");
+		System.out.println(programName + " - 0.2");
 	}
 	
 	protected class CLParameter

@@ -1,13 +1,13 @@
 package sopc2dts.generators;
 
+import sopc2dts.lib.Parameter;
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoAssignment;
-import sopc2dts.lib.SopcInfoSystem;
-import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.BasicComponent;
 
 public class KernelHeadersGenerator extends AbstractSopcGenerator {
 	boolean minimal = true;
-	public KernelHeadersGenerator(SopcInfoSystem s) {
+	public KernelHeadersGenerator(AvalonSystem s) {
 		super(s);
 	}
 
@@ -19,7 +19,7 @@ public class KernelHeadersGenerator extends AbstractSopcGenerator {
 	@Override
 	public String getOutput(BoardInfo bi) {
 		String res = null;
-		for(SopcInfoComponent comp : sys.getSystemComponents())
+		for(BasicComponent comp : sys.getSystemComponents())
 		{
 			if((!minimal) || comp.getScd().getGroup().equalsIgnoreCase("cpu"))
 			{
@@ -34,7 +34,7 @@ public class KernelHeadersGenerator extends AbstractSopcGenerator {
 						" * Dumping parameters for " + comp.getInstanceName() + " (type " + comp.getScd().getGroup() + ")\n" +
 						" * This is not as clean as I hoped but FDT is just a tad late\n" +
 						" */\n";
-				for(SopcInfoAssignment ass : comp.getParams())
+				for(Parameter ass : comp.getParams())
 				{
 					if(ass.getName().toUpperCase().startsWith("EMBEDDEDSW.CMACRO."))
 					{

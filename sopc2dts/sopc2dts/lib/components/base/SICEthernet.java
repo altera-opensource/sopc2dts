@@ -1,28 +1,24 @@
 package sopc2dts.lib.components.base;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
-
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoConnection;
+import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.BasicComponent;
 /*
  * This class handles all default network stuff, subclasses can override 
  * defaults declared in this class, or just don't and keep 'm simple.
  * This is not really a special case (as are most classes in these packages) but
  * rather a convenience class to help the lazy people such as myself.
  */
-public class SICEthernet extends SopcInfoComponent {
+public class SICEthernet extends BasicComponent {
 	
-	public SICEthernet(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName, String version) {
-		super(p, xr, scd, iName, version);
+	public SICEthernet(SopcComponentDescription scd, String iName, String version) {
+		super(scd, iName, version);
 	}
 
 	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
 		String res =  AbstractSopcGenerator.indent(indentLevel) + "address-bits = <" + getAddressBits() + ">;\n"
 					+ AbstractSopcGenerator.indent(indentLevel) + "max-frame-size = <" + getMaxFrameSize() + ">;\n"

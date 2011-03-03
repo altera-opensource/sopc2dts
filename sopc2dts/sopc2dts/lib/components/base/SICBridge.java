@@ -1,45 +1,41 @@
 package sopc2dts.lib.components.base;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
-
 import sopc2dts.Logger;
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoConnection;
-import sopc2dts.lib.SopcInfoSystem;
+import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.components.SopcInfoComponent;
-import sopc2dts.lib.components.SopcInfoInterface;
+import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.components.Interface;
 
 
-public class SICBridge extends SopcInfoComponent {
+public class SICBridge extends BasicComponent {
 
-	public SICBridge(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName, String version) {
-		super(p, xr, scd, iName, version);
+	public SICBridge(SopcComponentDescription scd, String iName, String version) {
+		super(scd, iName, version);
 	}
 	
-	protected String getDtsRanges(int indentLevel, SopcInfoConnection conn)
+	protected String getDtsRanges(int indentLevel, Connection conn)
 	{
 		String res = "";
-		for(SopcInfoInterface master : getInterfaces())
+		for(Interface master : getInterfaces())
 		{
 			if(master.isMemoryMaster())
 			{
-				for(SopcInfoConnection childConn : master.getConnections())
+				for(Connection childConn : master.getConnections())
 				{
 					int size = 0;
-					SopcInfoInterface childIf=childConn.getSlaveInterface();
-					if(childIf!=null) size = childIf.getAddressableSize();
+					Interface childIf=childConn.getSlaveInterface();
+					if(childIf!=null) size = childIf.getInterfaceValue();
 					if(res.length()==0)
 					{
 						res = AbstractSopcGenerator.indent(indentLevel) + "ranges = <"; 
 					} else {
 						res += "\n" + AbstractSopcGenerator.indent(indentLevel) + "\t";
 					}					
-					res += String.format("0x%08X 0x%08X 0x%08X", childConn.getBaseAddress(),
-							childConn.getBaseAddress() + conn.getBaseAddress(), size);
+					res += String.format("0x%08X 0x%08X 0x%08X", childConn.getConnValue(),
+							childConn.getConnValue() + conn.getConnValue(), size);
 				}
 			}
 		}
@@ -53,22 +49,22 @@ public class SICBridge extends SopcInfoComponent {
 	}
 
 	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
 		return AbstractSopcGenerator.indent(indentLevel) + "#address-cells = <1>;\n" +
 				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n" +
 				getDtsRanges(indentLevel,conn);
 	}
-	private void removeFromSystem(SopcInfoSystem sys)
+	private void removeFromSystem(AvalonSystem sys)
 	{
 		Logger.logln("Try to eliminate " + getScd().getClassName() + ": " + getInstanceName());
-		SopcInfoInterface masterIntf = null, slaveIntf = null;
-		for(SopcInfoInterface intf : getInterfaces())
+		Interface masterIntf = null, slaveIntf = null;
+		for(Interface intf : getInterfaces())
 		{
-			if(intf.isClockInput())
+			if(intf.isClockSlave())
 			{
 				//Remove clocks
-				for(SopcInfoConnection conn : intf.getConnections())
+				for(Connection conn : intf.getConnections())
 				{
 					conn.getMasterInterface().getConnections().remove(conn);
 				}
@@ -85,15 +81,16 @@ public class SICBridge extends SopcInfoComponent {
 			Logger.logln("MasterIF " + masterIntf + " slaveIF " + slaveIntf);
 			return;
 		}
-		SopcInfoConnection masterConn;
+		Connection masterConn;
 		while(slaveIntf.getConnections().size()>0)
 		{
 			masterConn = slaveIntf.getConnections().firstElement();
 			Logger.logln("Master of bridge: " + masterConn.getMasterModule().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
-			for(SopcInfoConnection slaveConn : masterIntf.getConnections())
+			Logger.logln("Slave of bridge: " + masterIntf.getName() + " num slaves: " + masterIntf.getConnections().size());
+			for(Connection slaveConn : masterIntf.getConnections())
 			{
 				//Connect slaves to our masters
-				SopcInfoConnection conn = new SopcInfoConnection(slaveConn);
+				Connection conn = new Connection(slaveConn);
 				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + " to " + conn.getSlaveModule().getInstanceName());
 				conn.setMasterInterface(masterConn.getMasterInterface());
 				masterConn.getMasterInterface().getConnections().add(conn);
@@ -107,7 +104,7 @@ public class SICBridge extends SopcInfoComponent {
 			Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
 		}
 		//Now remove all slaves...
-		SopcInfoConnection slaveConn;
+		Connection slaveConn;
 		while(masterIntf.getConnections().size()>0)
 		{
 			slaveConn = masterIntf.getConnections().firstElement();
@@ -119,7 +116,8 @@ public class SICBridge extends SopcInfoComponent {
 			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
 		}
 	}
-	public void removeFromSystemIfPossible(SopcInfoSystem sys)
+	@Override
+	public void removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		boolean remove = false;
 		if(getScd().getClassName().equalsIgnoreCase("altera_avalon_tri_state_bridge"))

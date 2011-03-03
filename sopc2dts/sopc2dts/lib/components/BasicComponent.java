@@ -2,54 +2,37 @@ package sopc2dts.lib.components;
 
 import java.util.Vector;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.BasicElement;
+import sopc2dts.lib.Parameter;
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoAssignment;
-import sopc2dts.lib.SopcInfoConnection;
-import sopc2dts.lib.SopcInfoElementWithParams;
+import sopc2dts.lib.Connection;
 
-
-
-public class SopcInfoComponent extends SopcInfoElementWithParams {
+public class BasicComponent extends BasicElement {
 	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;
-	private String version;
+	protected String version;
 	private int addr = 0;
-	private Vector<SopcInfoInterface> vInterfaces = new Vector<SopcInfoInterface>();
-	private SopcComponentDescription scd;
-	public SopcInfoComponent(ContentHandler p, XMLReader xr, SopcComponentDescription scd, String iName, String ver)
+	protected Vector<Interface> vInterfaces = new Vector<Interface>();
+	protected SopcComponentDescription scd;
+
+	public BasicComponent(SopcComponentDescription scd, String iName, String ver)
 	{
-		super(p,xr);
 		this.setScd(scd);
 		this.setInstanceName(iName);
 		version = ver;
 	}
 
-	@Override
-	public void startElement(String uri, String localName, String qName,
-			Attributes atts) throws SAXException {
-		if(localName.equalsIgnoreCase("interface"))
-		{
-			getInterfaces().add(new SopcInfoInterface(this, xmlReader, atts.getValue("name"), atts.getValue("kind"), this));
-		} else {
-			super.startElement(uri, localName, qName, atts);
-		}
-		
-	}
-	protected String getRegForDTS(int indentLevel, SopcInfoComponent master)
+	protected String getRegForDTS(int indentLevel, BasicComponent master)
 	{
 		String res = "";
-		for(SopcInfoInterface intf : vInterfaces)
+		for(Interface intf : vInterfaces)
 		{
 			if(intf.isMemorySlave())
 			{
 				//Check all interfaces for a connection to master
-				SopcInfoConnection conn = null;
+				Connection conn = null;
 				for(int i=0; (i<intf.getConnections().size()) && (conn==null); i++)
 				{
 					if(intf.getConnections().get(i).getMasterModule().equals(master))
@@ -64,7 +47,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 						res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
 					}
 					res += " 0x" + Integer.toHexString(getAddrFromConnection(conn)) + 
-							" 0x" + Integer.toHexString(intf.getAddressableSize());
+							" 0x" + Integer.toHexString(intf.getInterfaceValue());
 				}
 			}
 		}
@@ -78,10 +61,10 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 	protected String getInterruptsForDTS(int indentLevel)
 	{
 		String interrupts =AbstractSopcGenerator.indent(indentLevel) + "interrupts = <";
-		SopcInfoComponent irqParent = null;
-		for(SopcInfoInterface intf : getInterfaces())
+		BasicComponent irqParent = null;
+		for(Interface intf : getInterfaces())
 		{
-			if(intf.getKind().equalsIgnoreCase("interrupt_sender"))
+			if(intf.isIRQSlave())
 			{
 				if(irqParent==null)
 				{
@@ -89,7 +72,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 				}
 				if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
 				{
-					interrupts += ' ' + intf.getConnections().get(0).getParamValue("irqNumber");
+					interrupts += " " + intf.getConnections().get(0).getConnValue();
 				}
 			}
 		}
@@ -101,13 +84,13 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 			return "";
 		}
 	}
-	public String toDts(BoardInfo bi, int indentLevel, SopcInfoComponent.parameter_action paramAction)
+	public String toDts(BoardInfo bi, int indentLevel, BasicComponent.parameter_action paramAction)
 	{
 		return toDts(bi, indentLevel, paramAction, null, true);
 	}
 	public String toDts(BoardInfo bi, int indentLevel, 
-						SopcInfoComponent.parameter_action paramAction, 
-						SopcInfoConnection conn, Boolean endComponent)
+						BasicComponent.parameter_action paramAction, 
+						Connection conn, Boolean endComponent)
 	{
 		int tmpAddr = getAddrFromConnection(conn);
 		String res = AbstractSopcGenerator.indent(indentLevel++) + getInstanceName() + ": " + getScd().getGroup() + "@0x" + Integer.toHexString(tmpAddr) + " {\n";
@@ -127,27 +110,27 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 		}
 		res += getInterruptMasterDesc(indentLevel);
 		res += getInterruptsForDTS(indentLevel);
-		for(SopcComponentDescription.SICAutoParam ap : getScd().vAutoParams)
+		for(SopcComponentDescription.SICAutoParam ap : getScd().getAutoParams())
 		{
-			SopcInfoAssignment ass = getParam(ap.sopcInfoName);
-			if(ass!=null)
+			Parameter bp = getParamByName(ap.getSopcInfoName());
+			if(bp!=null)
 			{
-				res += ass.toDts(indentLevel, ap.dtsName, 
-						SopcInfoAssignment.getDataTypeByName(ap.forceType));
-			} else if(ap.dtsName.equalsIgnoreCase("clock-frequency"))
+				res += bp.toDts(indentLevel, ap.getDtsName(), 
+						Parameter.getDataTypeByName(ap.getForceType()));
+			} else if(ap.getDtsName().equalsIgnoreCase("clock-frequency"))
 			{
-				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <" + getClockRate() + ">;\n";
-			} else if(ap.dtsName.equalsIgnoreCase("regstep"))
+				res += AbstractSopcGenerator.indent(indentLevel) + ap.getDtsName() + " = <" + getClockRate() + ">;\n";
+			} else if(ap.getDtsName().equalsIgnoreCase("regstep"))
 			{
-				res += AbstractSopcGenerator.indent(indentLevel) + ap.dtsName + " = <4>;\n";
+				res += AbstractSopcGenerator.indent(indentLevel) + ap.getDtsName() + " = <4>;\n";
 			}
 		}		
-		if((paramAction != parameter_action.NONE)&&(getParams().size()>0))
+		if((paramAction != parameter_action.NONE)&&(vParameters.size()>0))
 		{
 			res += AbstractSopcGenerator.indent(indentLevel) + "//Dumping SOPC parameters...\n";
-			for(SopcInfoAssignment ass : getParams())
+			for(Parameter bp : vParameters)
 			{
-				String assName = ass.getName();
+				String assName = bp.getName();
 				if(assName.startsWith("embeddedsw.CMacro.")) {
 					assName = assName.substring(18);
 				} else if(paramAction == parameter_action.CMACRCO) {
@@ -156,7 +139,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 				if(assName!=null)
 				{
 					assName = assName.replace('_', '-');
-					res += ass.toDts(indentLevel, 
+					res += bp.toDts(indentLevel, 
 							scd.getVendor() + ',' + assName, null);
 				}
 			}
@@ -166,9 +149,9 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 		return res;
 	}
 	private String getInterruptMasterDesc(int indentLevel) {
-		for(SopcInfoInterface intf : getInterfaces())
+		for(Interface intf : getInterfaces())
 		{
-			if(intf.getKind().equalsIgnoreCase("interrupt_receiver"))
+			if(intf.isIRQMaster())
 			{
 				return AbstractSopcGenerator.indent(indentLevel) + "interrupt-controller;\n" +
 				AbstractSopcGenerator.indent(indentLevel) + "#interrupt-cells = <1>;\n";
@@ -176,21 +159,17 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 		}
 		return "";
 	}
-	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
 		return "";
 	}
-	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
 		return "";
 	}
-	@Override
-	public String getElementName() {
-		return "module";
-	}
-	public SopcInfoInterface getInterfaceByName(String ifName)
+	public Interface getInterfaceByName(String ifName)
 	{
-		for(SopcInfoInterface intf : getInterfaces())
+		for(Interface intf : getInterfaces())
 		{
 			if(intf.getName().equalsIgnoreCase(ifName))
 			{
@@ -215,10 +194,7 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 	public String getInstanceName() {
 		return instanceName;
 	}
-	public void setInterfaces(Vector<SopcInfoInterface> vInterfaces) {
-		this.vInterfaces = vInterfaces;
-	}
-	public Vector<SopcInfoInterface> getInterfaces() {
+	public Vector<Interface> getInterfaces() {
 		return vInterfaces;
 	}
 	public void setAddr(int addr) {
@@ -233,44 +209,57 @@ public class SopcInfoComponent extends SopcInfoElementWithParams {
 	}
 	public int getAddrFromMaster(int index)
 	{
-		for(SopcInfoInterface intf : vInterfaces)
+		for(Interface intf : vInterfaces)
 		{
 			if(intf.isMemorySlave())
 			{
 				if(intf.getConnections().size()>index)
 				{
-					return intf.getConnections().get(index).getBaseAddress();
+					return intf.getConnections().get(index).getConnValue();
 				}
 			}
 		}
 		return -1;
 	}
-	protected int getAddrFromConnection(SopcInfoConnection conn)
+	protected int getAddrFromConnection(Connection conn)
 	{
-		return (conn==null ? getAddr() : conn.getBaseAddress());
+		return (conn==null ? getAddr() : conn.getConnValue());
 	}
-	protected int getSizeFromInterface(SopcInfoInterface intf)
+	protected int getSizeFromInterface(Interface intf)
 	{
-		return (intf==null ? 0 : intf.getAddressableSize());
+		return (intf==null ? 0 : intf.getInterfaceValue());
 	}
 	public int getClockRate()
 	{
 		int rate = 0;
-		for(SopcInfoInterface intf : vInterfaces)
+		for(Interface intf : vInterfaces)
 		{
-			if(intf.isClockInput())
+			if(intf.isClockSlave())
 			{
-				rate = Integer.decode(intf.getConnections().get(0).getMasterInterface().getParamValue("clockRate"));
+				try {
+					rate = intf.getConnections().firstElement().getConnValue();
+				} catch(ArrayIndexOutOfBoundsException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return rate;
 	}
+	
 	public boolean hasMemoryMaster()
 	{
-		for(SopcInfoInterface intf : vInterfaces)
+		for(Interface intf : vInterfaces)
 		{
 			if(intf.isMemoryMaster()) return true;
 		}
 		return false;
+	}
+	/*
+	 * Subclasses can implement this to optimize systems and/or flatten 
+	 * otherwise needless complex systems
+	 */
+	public void removeFromSystemIfPossible(AvalonSystem sys)
+	{
+		
 	}
 }

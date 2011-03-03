@@ -20,7 +20,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
@@ -33,13 +33,18 @@ import sopc2dts.lib.components.base.SICUnknown;
 public class SopcComponentLib implements ContentHandler {
 	private SopcComponentDescription currScd;
 	private boolean ignoreInput = true;
-	private String currentVendor = null;
+	private String currentVendor;
 	SopcComponentDescription unknownComponent = new SICUnknown();
 	Vector<SopcComponentDescription> vLibComponents = new Vector<SopcComponentDescription>();
+	private static SopcComponentLib me = new SopcComponentLib();
 	
-	public SopcComponentLib()
+	private SopcComponentLib()
 	{
 		loadComponentLibs();
+	}
+	public static SopcComponentLib getInstance()
+	{
+		return me;
 	}
 	int loadComponentLib(InputSource in)
 	{
@@ -118,37 +123,37 @@ public class SopcComponentLib implements ContentHandler {
 		}
 		return null;
 	}
-	public SopcInfoComponent getComponentForClass(String className, String instanceName, String version, ContentHandler p, XMLReader xr)
+	public BasicComponent getComponentForClass(String className, String instanceName, String version)
 	{
 		if(className.equalsIgnoreCase("triple_speed_ethernet"))
 		{
-			return new SICTrippleSpeedEthernet(p, xr, getScdByClassName(className), instanceName, version);			
+			return new SICTrippleSpeedEthernet(getScdByClassName(className), instanceName, version);			
 		} else if (className.equalsIgnoreCase("altera_avalon_sgdma")) {
-			return new SICSgdma(p, xr, getScdByClassName(className), instanceName, version);
+			return new SICSgdma(getScdByClassName(className), instanceName, version);
 		} else if (className.equalsIgnoreCase("altera_avalon_epcs_flash_controller")) {
-			return new SICEpcs(p, xr, getScdByClassName("altera_avalon_spi"), instanceName, version);
+			return new SICEpcs(getScdByClassName("altera_avalon_spi"), instanceName, version);
 		} else if (className.equalsIgnoreCase("altera_avalon_lan91c111")) {
-			return new SICLan91c111(p, xr, getScdByClassName(className), instanceName, version);
+			return new SICLan91c111(getScdByClassName(className), instanceName, version);
 		} else {
 			SopcComponentDescription scd = getScdByClassName(className);
 			if(scd!=null)
 			{
 				if (scd.getGroup().equalsIgnoreCase("bridge")) {
-					return new SICBridge(p, xr, getScdByClassName(className), instanceName, version);
+					return new SICBridge(getScdByClassName(className), instanceName, version);
 				} else if (scd.getGroup().equalsIgnoreCase("flash")) {
-					return new SICFlash(p, xr, scd, instanceName, version);
+					return new SICFlash(scd, instanceName, version);
 				} else if (scd.getGroup().equalsIgnoreCase("ethernet")) {
-					return new SICEthernet(p, xr, scd, instanceName, version);
+					return new SICEthernet(scd, instanceName, version);
 				} else {
-					return new SopcInfoComponent(p,xr,scd,instanceName, version);
+					return new BasicComponent(scd,instanceName, version);
 				}
 			} else {
 				System.out.println("Unknown class: " + className);
-				return new SopcInfoComponent(p, xr, unknownComponent, instanceName, version);
+				return new BasicComponent(unknownComponent, instanceName, version);
 			}
 		}
 	}
-	public SopcInfoComponent finalCheckOnComponent(SopcInfoComponent comp)
+	public BasicComponent finalCheckOnComponent(BasicComponent comp)
 	{
 		String className = comp.getScd().getClassName();
 		if(!comp.getScd().isRequiredParamsOk(comp))
@@ -218,14 +223,12 @@ public class SopcComponentLib implements ContentHandler {
 			{
 				ignoreInput=true;
 				currentVendor = null;
-			} else if((localName.equalsIgnoreCase("S2DComponent")) ||
-					(localName.equalsIgnoreCase("compatible")) ||
-					(localName.equalsIgnoreCase("parameter")) ||
-					(localName.equalsIgnoreCase("RequiredParameter")) ||
-					(localName.equalsIgnoreCase("CompatibleVersion"))) 
+			} else if((!localName.equalsIgnoreCase("S2DComponent")) &&
+					(!localName.equalsIgnoreCase("compatible")) &&
+					(!localName.equalsIgnoreCase("parameter")) &&
+					(!localName.equalsIgnoreCase("RequiredParameter")) &&
+					(!localName.equalsIgnoreCase("CompatibleVersion"))) 
 			{
-				//mwa...
-			} else {
 				System.out.println("End element " + localName);
 			}
 		}

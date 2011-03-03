@@ -2,24 +2,20 @@ package sopc2dts.lib.components.base;
 
 import java.util.Vector;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
-
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.SopcInfoConnection;
+import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.components.SopcInfoComponent;
+import sopc2dts.lib.components.BasicComponent;
 
-public class SICFlash extends SopcInfoComponent {
+public class SICFlash extends BasicComponent {
 	
-	public SICFlash(ContentHandler p, XMLReader xr,
-			SopcComponentDescription scd, String iName, String version) {
-		super(p, xr, scd, iName, version);
+	public SICFlash(SopcComponentDescription scd, String iName, String version) {
+		super(scd, iName, version);
 	}
 
 	@Override
-	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
 		String res = "";
 		Vector<FlashPartition> vPartitions = bi.getPartitionsForChip(this.getInstanceName());
@@ -35,11 +31,11 @@ public class SICFlash extends SopcInfoComponent {
 	}
 	
 	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, SopcInfoConnection conn, Boolean endComponent)
+	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
 		int bankw;
 		try {
-			bankw = Integer.decode(getParamValue("dataWidth"))/8;
+			bankw = Integer.decode(getParamValByName("dataWidth"))/8;
 		}catch(Exception e) {
 			//Default to 16bit on failure
 			bankw = 2;
