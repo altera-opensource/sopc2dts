@@ -4,7 +4,8 @@
 	<S2DComponent classname="opencores_i2c_master"
 		compatDevice="i2c-ocores" group="i2c">
 	<parameter dtsName="regstep"></parameter>
-	<parameter dtsName="clock-frequency"></parameter></S2DComponent>
+	<parameter dtsName="clock-frequency"></parameter>
+	<compatible name="opencores,i2c-ocores"></compatible></S2DComponent>
 	<S2DComponent classname="tiny_spi" compatDevice="tiny-spi" group="spi">
 		<parameter dtsName="clock-frequency"></parameter>
 		<parameter dtsName="baud-width" sopcName="BAUD_WIDTH"></parameter>
