@@ -68,14 +68,26 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 			valid = true;
 			type = SystemDataType.CUSTOM_INSTRUCTION;
 			isMaster = false;
-		} else if(k.equalsIgnoreCase("conduit"))
+		} else if(k.equalsIgnoreCase("avalon_streaming_sink"))
+		{
+			valid = true;
+			type = SystemDataType.STREAMING;
+			isMaster = false;
+		} else if(k.equalsIgnoreCase("avalon_streaming_source"))
+		{
+			valid = true;
+			type = SystemDataType.STREAMING;
+			isMaster = true;
+		} else if(k.equalsIgnoreCase("conduit") ||
+				k.equalsIgnoreCase("conduit_start") ||
+				k.equalsIgnoreCase("conduit_end"))
 		{
 			valid = true;
 			type = SystemDataType.CONDUIT;
 			isMaster = false;
 		}
 		if(!valid) {
-			Logger.logln("Unsupported kind: " + k);
+			Logger.logln("Unsupported interface kind: " + k);
 		}
 		return valid;
 	}

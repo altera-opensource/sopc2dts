@@ -57,6 +57,10 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 					bc = new Connection(masterInterface, slaveInterface, 
 							SystemDataType.INTERRUPT);
 					bc.setConnValue(Integer.decode(getParamValue("irqNumber")));
+				} else if(kind.equalsIgnoreCase("avalon_streaming"))
+				{
+					bc = new Connection(masterInterface, slaveInterface, 
+							SystemDataType.STREAMING);
 				} else {
 					Logger.logln("Unhandled connection of kind: " + kind);
 				}
