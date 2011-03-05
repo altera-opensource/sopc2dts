@@ -25,17 +25,6 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 		kind = k;
 	}
 	
-	public int getAddress()
-	{
-		int base = -1;
-		String assVal = getParamValue("baseAddress");
-		if(assVal!=null)
-		{
-			base = Integer.decode(assVal);
-		}
-		return base;
-	}
-
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		currTag = localName;
