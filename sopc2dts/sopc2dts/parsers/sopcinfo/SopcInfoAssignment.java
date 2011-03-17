@@ -86,13 +86,29 @@ public class SopcInfoAssignment extends SopcInfoElement {
 		{
 			dataType = DataType.BOOLEAN;
 		} else {
+			int start = 0;
+			boolean is_hex = false;
 			dataType = DataType.NUMBER;
 			String tmpVal = parseValueAsNumber(val);
-			for(int i=0; i<tmpVal.length(); i++)
+			if (tmpVal.length() > 2 && tmpVal.substring(0, 2).equals("0x")) {
+					start = 2;
+					is_hex = true;
+			}
+			for(int i=start; i<tmpVal.length(); i++)
 			{
-				if((tmpVal.charAt(i)<'0')||(tmpVal.charAt(i)>'9'))
+				if (!is_hex)
 				{
-					dataType = DataType.STRING;
+					if ((tmpVal.charAt(i)<'0')||(tmpVal.charAt(i)>'9'))
+					{
+						dataType = DataType.STRING;
+					}
+				} else {
+					if ((tmpVal.charAt(i)<'0')||(tmpVal.charAt(i)>'9'))
+					{
+						if ((tmpVal.toLowerCase().charAt(i) < 'a') && (tmpVal.toLowerCase().charAt(i) > 'f'))
+							dataType = DataType.STRING;
+					}
+
 				}
 			}
 			if(dataType == DataType.NUMBER)
