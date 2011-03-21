@@ -1,4 +1,22 @@
+/*
+sopc2dts - Devicetree generation for Altera systems
 
+Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,13 +54,14 @@ public class Sopc2DTS {
 	protected CLParameter sopcParameters = new CLParameter("none");
 	BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
 
-	protected String programName;
+	protected static final String programName = "sopc2dts";
+	protected static final String programVersion = "0.2";
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Sopc2DTS s2d = new Sopc2DTS("sopc2dts");
+		Sopc2DTS s2d = new Sopc2DTS();
 		try {
 			if(s2d.parseCmdLine(args))
 			{
@@ -54,8 +73,7 @@ public class Sopc2DTS {
 		}
 	}
 	
-	public Sopc2DTS(String pName) {
-		programName = pName;
+	public Sopc2DTS() {
 		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"The board description file", "boardinfo file"));
 		vOptions.add(new CommandLineOption("help"		,"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose"	,"v", verbose,			false,false,"Show Lots of debugging info", null));
@@ -292,7 +310,7 @@ public class Sopc2DTS {
 	
 	public void printVersion()
 	{
-		System.out.println(programName + " - 0.2");
+		System.out.println(programName + " - " + programVersion);
 	}
 	
 	protected class CLParameter
