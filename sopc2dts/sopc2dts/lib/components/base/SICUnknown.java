@@ -3,9 +3,9 @@ package sopc2dts.lib.components.base;
 import sopc2dts.lib.components.SopcComponentDescription;
 
 public class SICUnknown extends SopcComponentDescription {
-	public SICUnknown()
+	public SICUnknown(String sopcClassName)
 	{
-		setClassName("");
+		setClassName(sopcClassName);
 		setDevice("unknown");
 		setGroup("unknown");
 		setVendor("unknown");

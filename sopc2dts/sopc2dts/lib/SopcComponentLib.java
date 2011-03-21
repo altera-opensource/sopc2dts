@@ -25,6 +25,7 @@ import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.SICTrippleSpeedEthernet;
+import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.components.base.SICEthernet;
@@ -34,7 +35,6 @@ public class SopcComponentLib implements ContentHandler {
 	private SopcComponentDescription currScd;
 	private boolean ignoreInput = true;
 	private String currentVendor;
-	SopcComponentDescription unknownComponent = new SICUnknown();
 	Vector<SopcComponentDescription> vLibComponents = new Vector<SopcComponentDescription>();
 	private static SopcComponentLib me = new SopcComponentLib();
 	
@@ -66,7 +66,7 @@ public class SopcComponentLib implements ContentHandler {
 			JarFile jf = new JarFile(SopcComponentLib.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 			loadComponentLibsInJar(jf);
 		} catch(Exception e) {
-			Logger.logln("We seem to be not running from a jar file. Trying to load lib from filesystem");
+			Logger.logln("We don't seem to be running from a jar file. Trying to load lib from filesystem");
 			loadComponentLibsInWorkDir();
 		}
 	}
@@ -149,12 +149,22 @@ public class SopcComponentLib implements ContentHandler {
 				}
 			} else {
 				System.out.println("Unknown class: " + className);
-				return new BasicComponent(unknownComponent, instanceName, version);
+				return new BasicComponent(new SICUnknown(className), instanceName, version);
 			}
 		}
 	}
 	public BasicComponent finalCheckOnComponent(BasicComponent comp)
 	{
+		if(SCDSelfDescribing.isSelfDescribing(comp))
+		{
+			if(!(comp.getScd() instanceof SICUnknown))
+			{
+				Logger.logln("Component " + comp.getInstanceName() + " of class"
+						+ comp.getScd().getClassName() + " is self-describing "
+						+ "but has a lib-version as well. Using self-described version");
+			}
+			comp.setScd(new SCDSelfDescribing(comp));
+		}
 		String className = comp.getScd().getClassName();
 		if(!comp.getScd().isRequiredParamsOk(comp))
 		{
@@ -169,7 +179,7 @@ public class SopcComponentLib implements ContentHandler {
 					}
 				}
 			}	
-			comp.setScd(unknownComponent);
+			comp.setScd(new SICUnknown(className));
 		}
 		return comp;
 	}
