@@ -85,13 +85,16 @@ public class BasicComponent extends BasicElement {
 		{
 			if(intf.isIRQSlave())
 			{
-				if(irqParent==null)
+				if(intf.getConnections().size()>0)
 				{
-					irqParent = intf.getConnections().get(0).getMasterModule();
-				}
-				if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
-				{
-					interrupts += " " + intf.getConnections().get(0).getConnValue();
+					if(irqParent==null)
+					{
+							irqParent = intf.getConnections().get(0).getMasterModule();
+					}
+					if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
+					{
+						interrupts += " " + intf.getConnections().get(0).getConnValue();
+					}
 				}
 			}
 		}
