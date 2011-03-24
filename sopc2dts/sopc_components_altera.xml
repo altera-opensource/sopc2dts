@@ -22,7 +22,7 @@
 		<parameter dtsVName="has-flushda" sopcName="embeddedsw.CMacro.FLUSHDA_SUPPORTED"></parameter>
 		<parameter dtsVName="has-jmpi" sopcName="embeddedsw.CMacro.HAS_JMPI_INSTRUCTION"></parameter>
 		<parameter dtsVName="has-mmu" sopcName="embeddedsw.CMacro.MMU_PRESENT"></parameter>
-		<parameter dtsVName="reset_addr" sopcName="embeddedsw.CMacro.RESET_ADDR"></parameter>
+		<parameter dtsVName="reset-addr" sopcName="embeddedsw.CMacro.RESET_ADDR"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cfi_flash"
 		compatDevice="cfi_flash" group="flash">
