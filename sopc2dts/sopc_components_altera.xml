@@ -23,6 +23,8 @@
 		<parameter dtsVName="has-jmpi" sopcName="embeddedsw.CMacro.HAS_JMPI_INSTRUCTION"></parameter>
 		<parameter dtsVName="has-mmu" sopcName="embeddedsw.CMacro.MMU_PRESENT"></parameter>
 		<parameter dtsVName="reset-addr" sopcName="embeddedsw.CMacro.RESET_ADDR"></parameter>
+		<parameter dtsVName="fast-tlb-miss-addr" sopcName="embeddedsw.CMacro.FAST_TLB_MISS_EXCEPTION_ADDR"></parameter>
+		<parameter dtsVName="exception-addr" sopcName="embeddedsw.CMacro.EXCEPTION_ADDR"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cfi_flash"
 		compatDevice="cfi_flash" group="flash">
