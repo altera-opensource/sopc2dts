@@ -167,7 +167,6 @@ public class SopcComponentLib implements ContentHandler {
 					return new BasicComponent(scd,instanceName, version);
 				}
 			} else {
-				System.out.println("Unknown class: " + className);
 				return new BasicComponent(new SICUnknown(className), instanceName, version);
 			}
 		}
@@ -178,11 +177,17 @@ public class SopcComponentLib implements ContentHandler {
 		{
 			if(!(comp.getScd() instanceof SICUnknown))
 			{
-				Logger.logln("Component " + comp.getInstanceName() + " of class"
+				Logger.logln("Component " + comp.getInstanceName() + " of class "
 						+ comp.getScd().getClassName() + " is self-describing "
 						+ "but has a lib-version as well. Using self-described version");
 			}
 			comp.setScd(new SCDSelfDescribing(comp));
+		} else {
+			if(comp.getScd() instanceof SICUnknown)
+			{
+				Logger.logln("Component " + comp.getInstanceName() + " of class "
+						+ comp.getScd().getClassName() + " is unknown");
+			}
 		}
 		String className = comp.getScd().getClassName();
 		if(!comp.getScd().isRequiredParamsOk(comp))
