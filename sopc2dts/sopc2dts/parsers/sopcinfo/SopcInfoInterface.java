@@ -44,68 +44,65 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 	}
 	boolean setKind(String k)
 	{
-		boolean valid = false;
+		boolean valid = true;
 		if(k.equalsIgnoreCase("avalon_master") || 
 				k.equalsIgnoreCase("avalon_tristate_master"))
 		{
-			valid = true;
 			type = SystemDataType.MEMORY_MAPPED;
 			isMaster = true;
 		} else if(k.equalsIgnoreCase("avalon_slave") ||
 				k.equalsIgnoreCase("avalon_tristate_slave"))
 		{
-			valid = true;
 			type = SystemDataType.MEMORY_MAPPED;
 			isMaster = false;
 		} else if(k.equalsIgnoreCase("clock_sink"))
 		{
-			valid = true;
 			type = SystemDataType.CLOCK;
 			isMaster = false;
 		} else if(k.equalsIgnoreCase("clock_source"))
 		{
-			valid = true;
 			type = SystemDataType.CLOCK;
 			isMaster = true;
 		} else if(k.equalsIgnoreCase("interrupt_receiver"))
 		{
-			valid = true;
 			type = SystemDataType.INTERRUPT;
 			isMaster = true;
 		} else if(k.equalsIgnoreCase("interrupt_sender"))
 		{
-			valid = true;
 			type = SystemDataType.INTERRUPT;
 			isMaster = false;
 		} else if(k.equalsIgnoreCase("nios_custom_instruction_master"))
 		{
-			valid = true;
 			type = SystemDataType.CUSTOM_INSTRUCTION;
 			isMaster = true;
 		} else if(k.equalsIgnoreCase("nios_custom_instruction_slave"))
 		{
-			valid = true;
 			type = SystemDataType.CUSTOM_INSTRUCTION;
 			isMaster = false;
 		} else if(k.equalsIgnoreCase("avalon_streaming_sink"))
 		{
-			valid = true;
 			type = SystemDataType.STREAMING;
 			isMaster = false;
 		} else if(k.equalsIgnoreCase("avalon_streaming_source"))
 		{
-			valid = true;
 			type = SystemDataType.STREAMING;
+			isMaster = true;
+		} else if(k.equalsIgnoreCase("reset_sink"))
+		{
+			type = SystemDataType.RESET;
+			isMaster = false;
+		} else if(k.equalsIgnoreCase("reset_source"))
+		{
+			type = SystemDataType.RESET;
 			isMaster = true;
 		} else if(k.equalsIgnoreCase("conduit") ||
 				k.equalsIgnoreCase("conduit_start") ||
 				k.equalsIgnoreCase("conduit_end"))
 		{
-			valid = true;
 			type = SystemDataType.CONDUIT;
 			isMaster = false;
-		}
-		if(!valid) {
+		} else {
+			valid = false;
 			Logger.logln("Unsupported interface kind: " + k);
 		}
 		return valid;
