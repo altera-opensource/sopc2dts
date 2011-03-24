@@ -28,7 +28,7 @@ public class Connection extends BasicElement {
 	protected Interface masterInterface;
 	protected Interface slaveInterface;	
 	protected SystemDataType type = SystemDataType.CONDUIT;
-	protected int connValue;
+	protected long connValue;
 	
 	public Connection(Interface master, Interface slave, SystemDataType t)
 	{
@@ -44,11 +44,11 @@ public class Connection extends BasicElement {
 		connValue = org.connValue;
 	}
 
-	public int getConnValue()
+	public long getConnValue()
 	{
 		return connValue;
 	}
-	public void setConnValue(int val)
+	public void setConnValue(long val)
 	{
 		connValue = val;
 	}

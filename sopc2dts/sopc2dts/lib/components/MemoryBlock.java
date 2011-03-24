@@ -20,22 +20,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.components;
 
 public class MemoryBlock {
-	int base;
-	int size;
+	long base;
+	long size;
 	BasicComponent owner;
-	public MemoryBlock(BasicComponent owner, int base, int size)
+	public MemoryBlock(BasicComponent owner, long base, long size)
 	{
 		this.base = base;
 		this.size = size;
 		this.owner = owner;
 	}
-	public int getBase() {
+	public long getBase() {
 		return base;
 	}
 	public void setStart(int base) {
 		this.base = base;
 	}
-	public int getSize() {
+	public long getSize() {
 		return size;
 	}
 	public void setSize(int size) {

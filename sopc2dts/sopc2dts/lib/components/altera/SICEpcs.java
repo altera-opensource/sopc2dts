@@ -53,7 +53,7 @@ public class SICEpcs extends SICFlash {
 	}
 
 	@Override
-	protected int getAddrFromConnection(Connection conn)
+	protected long getAddrFromConnection(Connection conn)
 	{
 		//Yes this is REALLY ugly. But it just might work :)
 		int regOffset;
@@ -66,7 +66,7 @@ public class SICEpcs extends SICFlash {
 		return (conn==null ? getAddr() : conn.getConnValue()) + regOffset;
 	}
 	@Override
-	protected int getSizeFromInterface(Interface intf)
+	protected long getSizeFromInterface(Interface intf)
 	{
 		return 8;
 	}

@@ -44,7 +44,7 @@ public class SICBridge extends BasicComponent {
 			{
 				for(Connection childConn : master.getConnections())
 				{
-					int size = 0;
+					long size = 0;
 					Interface childIf=childConn.getSlaveInterface();
 					if(childIf!=null) size = childIf.getInterfaceValue();
 					if(res.length()==0)

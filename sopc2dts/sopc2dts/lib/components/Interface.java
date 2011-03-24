@@ -31,7 +31,7 @@ public class Interface extends BasicElement {
 	private BasicComponent owner;
 	protected SystemDataType type = SystemDataType.CONDUIT;
 	protected boolean isMaster;
-	int interfaceValue;
+	long interfaceValue;
 	
 	public Interface(String iName, SystemDataType dt, boolean master, BasicComponent owner) {
 		this.setName(iName);
@@ -40,11 +40,11 @@ public class Interface extends BasicElement {
 		this.isMaster = master;
 	}
 
-	public int getInterfaceValue()
+	public long getInterfaceValue()
 	{
 		return interfaceValue;
 	}
-	public void setInterfaceValue(int size)
+	public void setInterfaceValue(long size)
 	{
 		interfaceValue = size;
 	}

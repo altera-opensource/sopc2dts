@@ -65,8 +65,8 @@ public class BasicComponent extends BasicElement {
 					{
 						res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
 					}
-					res += " 0x" + Integer.toHexString(getAddrFromConnection(conn)) + 
-							" 0x" + Integer.toHexString(intf.getInterfaceValue());
+					res += " 0x" + Long.toHexString(getAddrFromConnection(conn)) + 
+							" 0x" + Long.toHexString(intf.getInterfaceValue());
 				}
 			}
 		}
@@ -111,8 +111,8 @@ public class BasicComponent extends BasicElement {
 						BasicComponent.parameter_action paramAction, 
 						Connection conn, Boolean endComponent)
 	{
-		int tmpAddr = getAddrFromConnection(conn);
-		String res = AbstractSopcGenerator.indent(indentLevel++) + getInstanceName() + ": " + getScd().getGroup() + "@0x" + Integer.toHexString(tmpAddr) + " {\n";
+		long tmpAddr = getAddrFromConnection(conn);
+		String res = AbstractSopcGenerator.indent(indentLevel++) + getInstanceName() + ": " + getScd().getGroup() + "@0x" + Long.toHexString(tmpAddr) + " {\n";
 		res += toDtsExtrasFirst(bi, indentLevel, conn, endComponent);
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
@@ -222,11 +222,11 @@ public class BasicComponent extends BasicElement {
 	public int getAddr() {
 		return addr;
 	}
-	public int getAddrFromMaster()
+	public long getAddrFromMaster()
 	{
 		return getAddrFromMaster(0);
 	}
-	public int getAddrFromMaster(int index)
+	public long getAddrFromMaster(int index)
 	{
 		for(Interface intf : vInterfaces)
 		{
@@ -240,17 +240,17 @@ public class BasicComponent extends BasicElement {
 		}
 		return -1;
 	}
-	protected int getAddrFromConnection(Connection conn)
+	protected long getAddrFromConnection(Connection conn)
 	{
 		return (conn==null ? getAddr() : conn.getConnValue());
 	}
-	protected int getSizeFromInterface(Interface intf)
+	protected long getSizeFromInterface(Interface intf)
 	{
 		return (intf==null ? 0 : intf.getInterfaceValue());
 	}
-	public int getClockRate()
+	public long getClockRate()
 	{
-		int rate = 0;
+		long rate = 0;
 		for(Interface intf : vInterfaces)
 		{
 			if(intf.isClockSlave())

@@ -111,14 +111,14 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 		return valid;
 	}
 
-	public int getAddressableSize()
+	public long getAddressableSize()
 	{
-		int span = 1;
+		long span = 1;
 		int stepSize = 1;
 		String assVal = getParamValue("addressSpan");
 		if(assVal!=null)
 		{
-			span = Integer.decode(assVal);
+			span = Long.decode(assVal);
 		}
 		assVal = getParamValue("addressUnits");
 		if(assVal!=null)

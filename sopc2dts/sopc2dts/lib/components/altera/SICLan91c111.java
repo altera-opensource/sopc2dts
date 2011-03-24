@@ -31,7 +31,7 @@ public class SICLan91c111 extends SICEthernet {
 	}
 
 	@Override
-	protected int getAddrFromConnection(Connection conn)
+	protected long getAddrFromConnection(Connection conn)
 	{
 		//Yes this is REALLY ugly. But it just might work :)
 		int regOffset;
@@ -44,7 +44,7 @@ public class SICLan91c111 extends SICEthernet {
 		return (conn==null ? getAddr() : conn.getConnValue()) + regOffset;
 	}
 	@Override
-	protected int getSizeFromInterface(Interface intf)
+	protected long getSizeFromInterface(Interface intf)
 	{
 		return 0x100;
 	}
