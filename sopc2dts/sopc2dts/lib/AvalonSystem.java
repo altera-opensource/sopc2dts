@@ -66,4 +66,23 @@ public class AvalonSystem extends BasicElement {
 	public String getSystemName() {
 		return systemName;
 	}
+	public void setVersion(String string) {
+		versionStr = string;		
+	}
+	public void recheckComponents()
+	{
+		for(BasicComponent comp : vSystemComponents)
+		{
+			SopcComponentLib.getInstance().finalCheckOnComponent(comp);
+		}
+		/*
+		 * Now remove tristate (and other unneeded) bridges. If any.
+		 * Also flatten hierarchical qsys designs.
+		 */
+		for(BasicComponent c : vSystemComponents)
+		{
+			c.removeFromSystemIfPossible(this);
+		}
+	}
+
 }

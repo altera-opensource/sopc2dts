@@ -65,7 +65,7 @@ public class SopcInfoSystemLoader implements ContentHandler {
 			xmlReader.parse(in);
 			if(currSystem!=null)
 			{
-				recheckComponents();
+				currSystem.recheckComponents();
 				connectComponents();
 			}
 		} catch (SAXException e) {
@@ -109,21 +109,6 @@ public class SopcInfoSystemLoader implements ContentHandler {
 				}
 			}
 			vConnections.remove(conn);
-		}
-		/*
-		 * Now remove tristate (and other unneeded) bridges. If any.
-		 * Also flatten hierarchical qsys designs.
-		 */
-		for(BasicComponent c : currSystem.getSystemComponents())
-		{
-			c.removeFromSystemIfPossible(currSystem);
-		}
-	}
-	public void recheckComponents()
-	{
-		for(BasicComponent comp : currSystem.getSystemComponents())
-		{
-			lib.finalCheckOnComponent(comp);
 		}
 	}
 

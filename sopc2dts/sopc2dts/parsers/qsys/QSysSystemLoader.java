@@ -83,7 +83,7 @@ public class QSysSystemLoader implements ContentHandler {
 			xmlReader.parse(in);
 			if(currSystem!=null)
 			{
-				recheckComponents();
+				currSystem.recheckComponents();
 				flattenDesign();
 			}
 			Logger.logln("Loaded " + source.getCanonicalPath());
@@ -138,13 +138,6 @@ public class QSysSystemLoader implements ContentHandler {
 			} else {
 				i++;
 			}
-		}
-	}
-	public void recheckComponents()
-	{
-		for(BasicComponent comp : currSystem.getSystemComponents())
-		{
-			lib.finalCheckOnComponent(comp);
 		}
 	}
 	public BasicComponent getComponentByName(String name)
