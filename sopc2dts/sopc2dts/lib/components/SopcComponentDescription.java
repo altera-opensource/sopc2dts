@@ -21,15 +21,22 @@ package sopc2dts.lib.components;
 import java.util.Vector;
 
 public class SopcComponentDescription {
-	private String className;
-	private String group;
-	private String vendor;
-	private String device;
+	protected String className;
+	protected String group;
+	protected String vendor;
+	protected String device;
 	private Vector<String> vCompatible = new Vector<String>();
 	private Vector<SICAutoParam> vAutoParams = new Vector<SICAutoParam>();
 	Vector<SICRequiredParam> vRequiredParams = new Vector<SICRequiredParam>();
 	Vector<String> vCompatibleVersions = new Vector<String>();
 	
+	public SopcComponentDescription(String cn, String grp, String vnd, String dev)
+	{
+		className = cn;
+		group = grp;
+		vendor = vnd;
+		device = dev;
+	}
 	public class SICAutoParam {
 		private String dtsName;
 		private String sopcInfoName;

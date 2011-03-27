@@ -218,11 +218,9 @@ public class SopcComponentLib implements ContentHandler {
 		} else{
 			if(localName.equalsIgnoreCase("S2DComponent"))
 			{
-				currScd = new SopcComponentDescription();
-				currScd.setClassName(atts.getValue("classname"));
-				currScd.setGroup(atts.getValue("group"));
-				currScd.setVendor(currentVendor);
-				currScd.setDevice(atts.getValue("compatDevice"));
+				currScd = new SopcComponentDescription(
+						atts.getValue("classname"),atts.getValue("group"),
+						currentVendor,atts.getValue("compatDevice"));
 				vLibComponents.add(currScd);
 			} else if((localName.equalsIgnoreCase("compatible"))&&(currScd!=null))
 			{
