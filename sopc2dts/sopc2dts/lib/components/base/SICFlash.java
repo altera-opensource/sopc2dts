@@ -52,9 +52,13 @@ public class SICFlash extends BasicComponent {
 	@Override
 	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
-		int bankw;
+		int bankw = 2;
 		try {
-			bankw = Integer.decode(getParamValByName("dataWidth"))/8;
+			String sdw = getParamValByName("dataWidth");
+			if(sdw!=null)
+			{
+				bankw = Integer.decode(sdw)/8;
+			}
 		}catch(Exception e) {
 			//Default to 16bit on failure
 			bankw = 2;
