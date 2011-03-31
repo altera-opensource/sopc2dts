@@ -129,7 +129,7 @@ public class QSysSystemLoader implements ContentHandler {
 				//Transfers and rename subcomponents
 				for(BasicComponent bc : qss.vSystemComponents)
 				{
-					bc.setInstanceName(qss.getInstanceName() + "-" + bc.getInstanceName());
+					bc.setInstanceName(qss.getInstanceName() + '-' + bc.getInstanceName());
 					getComponents().add(bc);
 				}
 				qss.vSystemComponents.clear();
@@ -237,7 +237,7 @@ public class QSysSystemLoader implements ContentHandler {
 			BasicComponent slave = getComponentByName(end.split("\\.")[0]);
 			if((master==null)||(slave==null))
 			{
-				Logger.logln("Cannot find master and/or slave to connect (" + start + " to " + end +")");
+				Logger.logln("Cannot find master and/or slave to connect (" + start + " to " + end + ')');
 			} else {
 				SystemDataType dt = getSystemDataTypeByName(atts.getValue("kind"));
 				Interface mIntf = master.getInterfaceByName(start.split("\\.")[1]);
