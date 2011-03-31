@@ -19,6 +19,10 @@ SOURCES=Sopc2DTS.java sopc2dts/Logger.java sopc2dts/generators/AbstractSopcGener
 	sopc2dts/lib/components/base/SICEthernet.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
 	sopc2dts/parsers/BasicSystemLoader.java \
+	sopc2dts/parsers/ptf/PHIgnore.java \
+	sopc2dts/parsers/ptf/PHInterface.java \
+	sopc2dts/parsers/ptf/PtfHandler.java \
+	sopc2dts/parsers/ptf/PtfSystemLoader.java \
 	sopc2dts/parsers/qsys/QSysSubSystem.java \
 	sopc2dts/parsers/qsys/QSysSystemLoader.java \
 	sopc2dts/parsers/sopcinfo/SopcInfoAssignment.java \

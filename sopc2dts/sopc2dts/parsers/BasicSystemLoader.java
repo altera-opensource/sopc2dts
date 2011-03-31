@@ -23,6 +23,7 @@ import java.io.File;
 
 import sopc2dts.Logger;
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.parsers.ptf.PtfSystemLoader;
 import sopc2dts.parsers.qsys.QSysSystemLoader;
 import sopc2dts.parsers.sopcinfo.SopcInfoSystemLoader;
 
@@ -39,6 +40,12 @@ public class BasicSystemLoader  {
 			{
 				QSysSystemLoader qsl = new QSysSystemLoader();
 				return qsl.loadSystem(source);
+			} else if(source.getName().endsWith(".ptf"))
+			{
+				PtfSystemLoader pleaseUpgradeYourQuartus = new PtfSystemLoader();
+				return pleaseUpgradeYourQuartus.loadSystem(source);
+			} else {
+				Logger.logln("Don't know how to parse " + source.getName());
 			}
 		}
 		Logger.logln("Loading of system failed.");
