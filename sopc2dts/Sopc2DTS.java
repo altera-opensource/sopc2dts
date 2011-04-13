@@ -30,6 +30,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.DTSGenerator;
 import sopc2dts.generators.KernelHeadersGenerator;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
@@ -387,12 +388,12 @@ public class Sopc2DTS {
 							Logger.increaseVerbosity();
 						}
 					}
-					Logger.log("Scanned option " + option + '(' + shortOption + ") with");
+					Logger.log("Scanned option " + option + '(' + shortOption + ") with", LogLevel.DEBUG);
 					if(hasValue)
 					{
-						Logger.logln(" value " + parameter.value);
+						Logger.logln(" value " + parameter.value, LogLevel.DEBUG);
 					} else {
-						Logger.logln("out value.");
+						Logger.logln("out value.", LogLevel.DEBUG);
 					}
 					index++;
 				}

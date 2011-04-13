@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.Connection;
@@ -74,7 +75,7 @@ class PtfHandler {
 		} else if(!line.equals("}") && !line.equals("{")  &&
 				!line.equals("SYSTEM_BUILDER_INFO")&&
 				!line.equals("WIZARD_SCRIPT_ARGUMENTS")) {
-			Logger.logln(line);
+			Logger.logln("unhandled PTF:" + line, LogLevel.DEBUG);
 		}
 		if(line.equalsIgnoreCase("{"))
 		{
@@ -111,7 +112,8 @@ class PtfHandler {
 					intf.setInterfaceValue(Long.decode(sFreq));
 					parent.addChildObject(intf);
 				} catch(NumberFormatException e) {
-					Logger.logln("Failed to get frequency \"" + sFreq + "\" for clock " + tagName);
+					Logger.logln("Failed to get frequency \"" + sFreq + "\"" +
+							" for clock " + tagName, LogLevel.WARNING);
 				}
 			}
 		} else if(tag.equals("CLOCKS"))
@@ -142,7 +144,8 @@ class PtfHandler {
 					comp.getInterfaces().add(intf);
 				} else {
 					Logger.logln("Unhandled child object of type: " + 
-							vChildren.get(0).getClass().getCanonicalName());
+							vChildren.get(0).getClass().getCanonicalName(),
+							LogLevel.WARNING);
 				}
 				vChildren.remove(0);
 			}

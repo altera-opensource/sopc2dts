@@ -22,6 +22,7 @@ package sopc2dts.parsers;
 import java.io.File;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.parsers.ptf.PtfSystemLoader;
 import sopc2dts.parsers.qsys.QSysSystemLoader;
@@ -45,10 +46,11 @@ public class BasicSystemLoader  {
 				PtfSystemLoader pleaseUpgradeYourQuartus = new PtfSystemLoader();
 				return pleaseUpgradeYourQuartus.loadSystem(source);
 			} else {
-				Logger.logln("Don't know how to parse " + source.getName());
+				Logger.logln("Don't know how to parse " + source.getName(),
+						LogLevel.ERROR);
 			}
 		}
-		Logger.logln("Loading of system failed.");
+		Logger.logln("Loading of system failed.", LogLevel.ERROR);
 		return null;
 	}
 }

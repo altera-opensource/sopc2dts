@@ -26,6 +26,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
@@ -51,13 +52,15 @@ public class PtfSystemLoader {
 					currSys = new AvalonSystem(line.split(" ")[1], "", source);
 					h = new PtfHandler(null, currSys, "SYSTEM");
 				} else {
-					Logger.logln("Unexpected line: " + line);
+					Logger.logln("PTF: Unexpected line: " + line, LogLevel.DEBUG);
 				}
 			}
 		} catch (FileNotFoundException e) {
-			Logger.logln("Error \'" + e.getMessage() + "\' while loading ptf file");
+			Logger.logln("Error \'" + e.getMessage() + "\' while loading ptf file",
+					LogLevel.ERROR);
 		} catch (IOException e) {
-			Logger.logln("Error \'" + e.getMessage() + "\' while loading ptf file");
+			Logger.logln("Error \'" + e.getMessage() + "\' while loading ptf file",
+					LogLevel.ERROR);
 		}
 		for(BasicComponent c : currSys.getSystemComponents())
 		{
@@ -80,7 +83,7 @@ public class PtfSystemLoader {
 						} else {
 							Logger.logln("Conn " + connName + 
 									" on " + intf.getName() + 
-									" of " + c.getInstanceName());						
+									" of " + c.getInstanceName(), LogLevel.DEBUG);						
 						}
 						intf.getParams().remove(i);
 					} else {
@@ -104,7 +107,8 @@ public class PtfSystemLoader {
 				try {
 					conVal = Long.decode(sconVal);
 				} catch(NumberFormatException e) { 
-					Logger.logln("Failed to parse IRQ-nr");
+					Logger.logln("Failed to parse IRQ-nr: '" + sconVal + "'" +
+							" for " + comp.getInstanceName(), LogLevel.ERROR);
 				}
 			}
 		}
@@ -156,7 +160,9 @@ public class PtfSystemLoader {
 						try {
 							conn.setConnValue(Long.decode(conVal));
 						} catch(NumberFormatException e) { 
-							Logger.logln("Failed to parse baseAddress");
+							Logger.logln("Failed to parse baseAddress: '" + conVal + '\'' +
+									" for link between " + master.getInstanceName() +
+									" and " + intf.getOwner().getInstanceName(), LogLevel.ERROR);
 						}
 					}
 				}

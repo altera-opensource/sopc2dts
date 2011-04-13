@@ -38,6 +38,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.altera.SICEpcs;
@@ -85,7 +86,8 @@ public class SopcComponentLib implements ContentHandler {
 			JarFile jf = new JarFile(SopcComponentLib.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 			loadComponentLibsInJar(jf);
 		} catch(Exception e) {
-			Logger.logln("We don't seem to be running from a jar file. Trying to load lib from filesystem");
+			Logger.logln("We don't seem to be running from a jar file. " +
+					"Trying to load lib from filesystem", LogLevel.DEBUG);
 			loadComponentLibsInWorkDir();
 		}
 	}
@@ -100,7 +102,7 @@ public class SopcComponentLib implements ContentHandler {
 				try {
 					Logger.logln("Loaded " + loadComponentLib(new InputSource(
 							jf.getInputStream(jf.getEntry(entryName))))
-							 + " components from " + entryName);
+							 + " components from " + entryName, LogLevel.DEBUG);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -122,7 +124,7 @@ public class SopcComponentLib implements ContentHandler {
 					try {
 						Logger.logln("Loaded " + loadComponentLib(new InputSource(
 								new BufferedReader(new FileReader(dirContents[i]))))
-								 + " components from " + dirContents[i]);
+								 + " components from " + dirContents[i], LogLevel.DEBUG);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
@@ -179,14 +181,15 @@ public class SopcComponentLib implements ContentHandler {
 			{
 				Logger.logln("Component " + comp.getInstanceName() + " of class "
 						+ comp.getScd().getClassName() + " is self-describing "
-						+ "but has a lib-version as well. Using self-described version");
+						+ "but has a lib-version as well. Using self-described version",
+						LogLevel.INFO);
 			}
 			comp.setScd(new SCDSelfDescribing(comp));
 		} else {
 			if(comp.getScd() instanceof SICUnknown)
 			{
 				Logger.logln("Component " + comp.getInstanceName() + " of class "
-						+ comp.getScd().getClassName() + " is unknown");
+						+ comp.getScd().getClassName() + " is unknown", LogLevel.WARNING);
 			}
 		}
 		String className = comp.getScd().getClassName();

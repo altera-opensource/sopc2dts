@@ -22,6 +22,7 @@ package sopc2dts.generators;
 import java.util.Vector;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
@@ -82,10 +83,10 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
 			res += getDTSBusFrom(bi, povComp, paramAction, indentLevel);
 			res += indent(--indentLevel) + "}; //sopc\n";
+			res += getDTSChosen(bi, paramAction, indentLevel);
 		} else {
-			Logger.logln("Could not find pov: " + bi.getPov());
+			Logger.logln("Could not find pov: " + bi.getPov(), LogLevel.ERROR);
 		}
-		res += getDTSChosen(bi, paramAction, indentLevel);
 		return res;
 	}
 	String getDTSChosen(BoardInfo bi, 

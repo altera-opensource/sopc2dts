@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.BasicComponent;
@@ -103,7 +104,7 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 			isMaster = false;
 		} else {
 			valid = false;
-			Logger.logln("Unsupported interface kind: " + k);
+			Logger.logln("Unsupported interface kind: " + k, LogLevel.WARNING);
 		}
 		return valid;
 	}

@@ -34,6 +34,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.BasicElement;
 import sopc2dts.lib.Parameter;
@@ -75,7 +76,7 @@ public class QSysSystemLoader implements ContentHandler {
 			hierName = parseValue("$${FILE_NAME}", source);
 		}
 		try {
-			Logger.logln("Trying to load " + source.getCanonicalPath());
+			Logger.logln("Trying to load " + source.getCanonicalPath(), LogLevel.DEBUG);
 			InputSource in = new InputSource(new FileReader(source));
 			sourceFile = source;
 			xmlReader = XMLReaderFactory.createXMLReader();
@@ -86,7 +87,7 @@ public class QSysSystemLoader implements ContentHandler {
 				currSystem.recheckComponents();
 				flattenDesign();
 			}
-			Logger.logln("Loaded " + source.getCanonicalPath());
+			Logger.logln("Loaded " + source.getCanonicalPath(), LogLevel.DEBUG);
 		} catch (SAXException e) {
 			e.printStackTrace();
 			currSystem = null;
@@ -109,7 +110,7 @@ public class QSysSystemLoader implements ContentHandler {
 			if(getComponents().get(i) instanceof QSysSubSystem)
 			{
 				QSysSubSystem qss = (QSysSubSystem)getComponents().get(i);
-				Logger.logln("Trying to flatten " + qss.getInstanceName());
+				Logger.logln("Trying to flatten " + qss.getInstanceName(),LogLevel.INFO);
 				//First re-route connections to internal components.
 				while(qss.getInterfaces().size()>0)
 				{
@@ -122,7 +123,7 @@ public class QSysSystemLoader implements ContentHandler {
 						internalComponent.getInterfaces().add(intf);
 						intf.setOwner(internalComponent);
 					} else {
-						Logger.logln("Interface merging on hierarchical QSys designs is not yet supported.");
+						Logger.logln("Interface merging on hierarchical QSys designs is not yet supported.",LogLevel.WARNING);
 					}
 					qss.getInterfaces().remove(0);
 				}
@@ -216,7 +217,8 @@ public class QSysSystemLoader implements ContentHandler {
 					currModule = qsl.loadSubSystem(f,atts.getValue("name"));
 				} else {
 					try {
-						Logger.logln("Nothing known about modules of kind: " + kind + " and " + f.getCanonicalPath() + " Does not exist");
+						Logger.logln("Nothing known about modules of kind: " + kind + 
+								" and " + f.getCanonicalPath() + " Does not exist", LogLevel.WARNING);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -237,7 +239,7 @@ public class QSysSystemLoader implements ContentHandler {
 			BasicComponent slave = getComponentByName(end.split("\\.")[0]);
 			if((master==null)||(slave==null))
 			{
-				Logger.logln("Cannot find master and/or slave to connect (" + start + " to " + end + ')');
+				Logger.logln("Cannot find master and/or slave to connect (" + start + " to " + end + ')', LogLevel.WARNING);
 			} else {
 				SystemDataType dt = getSystemDataTypeByName(atts.getValue("kind"));
 				Interface mIntf = master.getInterfaceByName(start.split("\\.")[1]);

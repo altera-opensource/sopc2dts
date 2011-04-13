@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.components.base;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
@@ -76,7 +77,8 @@ public class SICBridge extends BasicComponent {
 	}
 	private void removeFromSystem(AvalonSystem sys)
 	{
-		Logger.logln("Try to eliminate " + getScd().getClassName() + ": " + getInstanceName());
+		Logger.logln("Try to eliminate " + getScd().getClassName() + 
+				": " + getInstanceName(), LogLevel.INFO);
 		Interface masterIntf = null, slaveIntf = null;
 		for(Interface intf : getInterfaces())
 		{
@@ -97,30 +99,34 @@ public class SICBridge extends BasicComponent {
 		if((masterIntf==null)||(slaveIntf==null))
 		{
 			//That shouldn't happen
-			Logger.logln("MasterIF " + masterIntf + " slaveIF " + slaveIntf);
+			Logger.logln("MasterIF " + masterIntf + " slaveIF " + slaveIntf, LogLevel.WARNING);
 			return;
 		}
 		Connection masterConn;
 		while(slaveIntf.getConnections().size()>0)
 		{
 			masterConn = slaveIntf.getConnections().firstElement();
-			Logger.logln("Master of bridge: " + masterConn.getMasterModule().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
-			Logger.logln("Slave of bridge: " + masterIntf.getName() + " num slaves: " + masterIntf.getConnections().size());
+			Logger.logln("Master of bridge: " + masterConn.getMasterModule().getInstanceName() + 
+					" name " + masterConn.getMasterInterface().getName(), LogLevel.DEBUG);
+			Logger.logln("Slave of bridge: " + masterIntf.getName() + 
+					" num slaves: " + masterIntf.getConnections().size(), LogLevel.DEBUG);
 			for(Connection slaveConn : masterIntf.getConnections())
 			{
 				//Connect slaves to our masters
 				Connection conn = new Connection(slaveConn);
-				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + " to " + conn.getSlaveModule().getInstanceName());
+				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + 
+						" to " + conn.getSlaveModule().getInstanceName(), LogLevel.DEBUG);
 				conn.setMasterInterface(masterConn.getMasterInterface());
 				masterConn.getMasterInterface().getConnections().add(conn);
 				conn.getSlaveInterface().getConnections().add(conn);
-				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + " to " + conn.getSlaveModule().getInstanceName());
+				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + 
+						" to " + conn.getSlaveModule().getInstanceName(), LogLevel.DEBUG);
 			}
 			//Now remove connection to master
 			slaveIntf.getConnections().remove(masterConn);
-			Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
+			Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size(), LogLevel.DEBUG);
 			masterConn.getMasterInterface().getConnections().remove(masterConn);
-			Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size());
+			Logger.logln("Master count: " + masterConn.getMasterInterface().getConnections().size(), LogLevel.DEBUG);
 		}
 		//Now remove all slaves...
 		Connection slaveConn;
@@ -130,9 +136,9 @@ public class SICBridge extends BasicComponent {
 //			System.out.println("Master of bridge: " + masterConn.getMasterModule().getInstanceName() + " name " + masterConn.getMasterInterface().getName());
 			//Now remove connection to master
 			masterIntf.getConnections().remove(slaveConn);
-			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
+			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size(), LogLevel.DEBUG);
 			slaveConn.getSlaveInterface().getConnections().remove(slaveConn);
-			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size());
+			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size(), LogLevel.DEBUG);
 		}
 	}
 	@Override

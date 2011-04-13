@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.parsers.ptf;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.Parameter;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
@@ -54,7 +55,7 @@ public class PHInterface extends PtfHandler {
 				intf = new Interface(iName, 
 						SystemDataType.STREAMING, isMaster, null);
 			} else {
-				Logger.logln("Unhandled PTF interface type " + type);
+				Logger.logln("Unhandled PTF interface type " + type,LogLevel.DEBUG);
 			}
 			if(intf!=null)
 			{
@@ -78,7 +79,7 @@ public class PHInterface extends PtfHandler {
 				long span = Long.decode(as);
 				return span;
 			} catch(NumberFormatException e) {
-				Logger.logln("Failed to parse " + as);
+				Logger.logln("Failed to parse " + as,LogLevel.ERROR);
 			}
 		}
 		try {
@@ -96,7 +97,7 @@ public class PHInterface extends PtfHandler {
 		} catch(Exception e)
 		{
 			//Exceptions are OK. just fail.
-			Logger.logln("Failed to get adress spane for " + name);
+			Logger.logln("Failed to get adress spane for " + name, LogLevel.WARNING);
 		}
 		return 0l;
 	}

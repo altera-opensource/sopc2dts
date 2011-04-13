@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.components.Interface;
@@ -82,7 +83,7 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 					bc = new Connection(masterInterface, slaveInterface, 
 							SystemDataType.STREAMING);
 				} else {
-					Logger.logln("Unhandled connection of kind: " + kind);
+					Logger.logln("Unhandled connection of kind: " + kind,LogLevel.DEBUG);
 				}
 				//Ignore other connections for now...
 				if(bc!=null)

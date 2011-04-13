@@ -32,6 +32,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.base.FlashPartition;
 
 public class BoardInfo implements ContentHandler {
@@ -95,7 +96,7 @@ public class BoardInfo implements ContentHandler {
 		} else if(!localName.equalsIgnoreCase("Chosen"))
 		{
 			currTag = localName;
-			Logger.logln("Boardinfo: Unhandled element " + localName);
+			Logger.logln("Boardinfo: Unhandled element " + localName, LogLevel.WARNING);
 		}
 	}
 

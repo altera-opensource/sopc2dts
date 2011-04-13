@@ -35,6 +35,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.SopcComponentLib;
@@ -138,7 +139,7 @@ public class SopcInfoSystemLoader implements ContentHandler {
 			currSystem = new AvalonSystem(atts.getValue("name"), 
 					atts.getValue("version"), sourceFile);
 		} else {
-			System.out.println("New element " + localName);
+			Logger.logln("New element " + localName, LogLevel.DEBUG);
 		}
 	}
 	public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -147,9 +148,9 @@ public class SopcInfoSystemLoader implements ContentHandler {
 		} else if(localName.equalsIgnoreCase("module")) {
 			currComp = null;
 		} else if(localName.equalsIgnoreCase("EnsembleReport")) {
-			Logger.logln("sopcinfo: Loading done");
+			Logger.logln("sopcinfo: Loading done", LogLevel.DEBUG);
 		} else {
-			Logger.logln("sopcinfo: Unexpected endtag: " + localName);
+			Logger.logln("sopcinfo: Unexpected endtag: " + localName, LogLevel.DEBUG);
 		}
 	}
 	
