@@ -262,7 +262,6 @@ public class Sopc2DTS {
 			printVersion();
 			return false;
 		}
-		Logger.setVerbose(Boolean.parseBoolean(verbose.value));
 		if(sopcParameters.value.equalsIgnoreCase("none"))
 		{
 			dumpParameters = BasicComponent.parameter_action.NONE;
@@ -383,7 +382,10 @@ public class Sopc2DTS {
 					}
 					if(parameter==verbose)
 					{
-						Logger.setVerbose(Boolean.parseBoolean(parameter.value));
+						if(Boolean.parseBoolean(parameter.value))
+						{
+							Logger.increaseVerbosity();
+						}
 					}
 					Logger.log("Scanned option " + option + '(' + shortOption + ") with");
 					if(hasValue)

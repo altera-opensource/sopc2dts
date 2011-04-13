@@ -20,28 +20,64 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts;
 
 public class Logger {
-	static boolean bVerbose = false;
-	
-	public static void setVerbose(boolean verbose)
+	public enum LogLevel { ERROR, WARNING, INFO, DEBUG };
+	private static LogLevel verbosity = LogLevel.WARNING;
+	private static boolean useStdOutErr = true;
+	public static void increaseVerbosity()
 	{
-		bVerbose = verbose;
-	}
-	public static boolean isVerbose()
-	{
-		return bVerbose;
-	}
-	public static void logln(String log)
-	{
-		if(bVerbose)
-		{
-			System.out.println(log);
+		switch (verbosity) {
+		case ERROR: 	verbosity = LogLevel.WARNING; break;
+		case WARNING:	verbosity = LogLevel.INFO; break;
+		case INFO:		verbosity = LogLevel.DEBUG; break;
+		default:
+			break;
 		}
+	}
+	public static void decreaseVerbosity()
+	{
+		switch (verbosity) {
+		case WARNING:	verbosity = LogLevel.ERROR; break;
+		case INFO: 		verbosity = LogLevel.WARNING; break;
+		case DEBUG:		verbosity = LogLevel.INFO; break;
+		default:
+			break;
+		}
+	}
+	public static void setVerbosity(LogLevel v)
+	{
+		verbosity = v;
 	}
 	public static void log(String log)
 	{
-		if(bVerbose)
+		log(log,LogLevel.INFO);
+	}
+	public static void log(String log, LogLevel ll)
+	{
+		if(ll.compareTo(verbosity)<=0)
 		{
-			System.out.print(log);
+			if(useStdOutErr)
+			{
+				if(ll.equals(LogLevel.ERROR))
+				{
+					System.err.print(log);
+				} else {
+					System.out.print(log);
+				}
+			}
 		}
+	}
+	public static void logln(String log)
+	{
+		logln(log,LogLevel.INFO);
+	}
+	public static void logln(String log, LogLevel ll)
+	{
+		log(log+'\n',ll);
+	}
+	public static void setUseStdOutErr(boolean use) {
+		useStdOutErr = use;
+	}
+	public static boolean isUseStdOutErr() {
+		return useStdOutErr;
 	}
 }
