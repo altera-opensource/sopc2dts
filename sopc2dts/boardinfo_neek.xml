@@ -6,6 +6,13 @@
 		<readonly></readonly></Partition>
 	<Partition name="rootfs" address="0x400000" size="0xC00000"></Partition>
 </FlashPartitions>
+<I2CBus>
+	<I2CChip addr="0x50" name="24c02"></I2CChip>
+</I2CBus>
+<I2CBus master="i2c_1">
+	<I2CChip addr="0x34" name="wm8731"></I2CChip>
+	<I2CChip addr="0x40" name="adv7180"></I2CChip>
+</I2CBus>
 <Memory>
 	<Node chip="ddr_sdram"></Node>
 	<Node chip="onchip_memory2_0"></Node>

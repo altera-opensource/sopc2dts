@@ -49,6 +49,7 @@ import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.components.base.SICEthernet;
+import sopc2dts.lib.components.base.SICI2CMaster;
 import sopc2dts.lib.components.base.SICUnknown;
 
 public class SopcComponentLib implements ContentHandler {
@@ -163,6 +164,8 @@ public class SopcComponentLib implements ContentHandler {
 					return new SICBridge(getScdByClassName(className), instanceName, version);
 				} else if (scd.getGroup().equalsIgnoreCase("flash")) {
 					return new SICFlash(scd, instanceName, version);
+				} else if (scd.getGroup().equalsIgnoreCase("i2c")) {
+					return new SICI2CMaster(scd, instanceName, version);
 				} else if (scd.getGroup().equalsIgnoreCase("ethernet")) {
 					return new SICEthernet(scd, instanceName, version);
 				} else {

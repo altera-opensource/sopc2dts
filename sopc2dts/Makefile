@@ -16,6 +16,7 @@ SOURCES=Sopc2DTS.java sopc2dts/Logger.java sopc2dts/generators/AbstractSopcGener
 	sopc2dts/lib/components/base/FlashPartition.java \
 	sopc2dts/lib/components/base/SCDQSys.java \
 	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
+	sopc2dts/lib/components/base/SICI2CMaster.java \
 	sopc2dts/lib/components/base/SICEthernet.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
 	sopc2dts/parsers/BasicSystemLoader.java \

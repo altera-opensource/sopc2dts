@@ -47,6 +47,11 @@ public class BoardInfo implements ContentHandler {
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
 			new HashMap<String, Vector<FlashPartition>>(4);
 
+	HashMap<String, HashMap<Integer, String>> mI2CMaps = 
+			new HashMap<String, HashMap<Integer,String>>(4);
+	
+	HashMap<Integer, String> mI2C;
+	
 	public BoardInfo()
 	{
 		//TODO Set some sane defaults
@@ -71,6 +76,14 @@ public class BoardInfo implements ContentHandler {
 			//attribute chip can be null for a wildcard/fallback map
 			vPartitions = new Vector<FlashPartition>(); 
 			mFlashPartitions.put(atts.getValue("chip"), vPartitions);
+		} else if(localName.equalsIgnoreCase("I2CBus")) 
+		{
+			//attribute master can be null for a wildcard/fallback map
+			mI2C = new HashMap<Integer, String>(4); 
+			mI2CMaps.put(atts.getValue("master"), mI2C);
+		} else if(localName.equalsIgnoreCase("I2CChip")) 
+		{
+			mI2C.put(Integer.decode(atts.getValue("addr")),atts.getValue("name"));
 		} else if(localName.equalsIgnoreCase("Memory"))
 		{
 			vMemoryNodes = new Vector<String>();
@@ -145,6 +158,15 @@ public class BoardInfo implements ContentHandler {
 	}
 	public void setBootArgs(String bootArgs) {
 		this.bootArgs = bootArgs;
+	}
+	public HashMap<Integer, String> getI2CChipsForMaster(String instanceName) {
+		HashMap<Integer, String> res = mI2CMaps.get(instanceName);
+		if(res==null)
+		{
+			// Try to get a backup map
+			res = mI2CMaps.get(null);
+		}
+		return res;
 	}
 	public Vector<FlashPartition> getPartitionsForChip(String instanceName) {
 		Vector<FlashPartition> res = mFlashPartitions.get(instanceName);
