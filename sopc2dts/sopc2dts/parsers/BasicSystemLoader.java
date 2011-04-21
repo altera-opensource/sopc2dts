@@ -35,14 +35,20 @@ public class BasicSystemLoader  {
 		{
 			if(source.getName().endsWith(".sopcinfo"))
 			{
+				Logger.logln("Loading " + source.getName() + " using SopcInfoSystemLoader", 
+						LogLevel.DEBUG);
 				SopcInfoSystemLoader sisl = new SopcInfoSystemLoader();
 				return sisl.loadSystem(source);
 			} else if(source.getName().endsWith(".qsys"))
 			{
+				Logger.logln("Loading " + source.getName() + " using QSysSystemLoader", 
+						LogLevel.DEBUG);
 				QSysSystemLoader qsl = new QSysSystemLoader();
 				return qsl.loadSystem(source);
 			} else if(source.getName().endsWith(".ptf"))
 			{
+				Logger.logln("Loading " + source.getName() + " using PtfSystemLoader", 
+						LogLevel.DEBUG);
 				PtfSystemLoader pleaseUpgradeYourQuartus = new PtfSystemLoader();
 				return pleaseUpgradeYourQuartus.loadSystem(source);
 			} else {
