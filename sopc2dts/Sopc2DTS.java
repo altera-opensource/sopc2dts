@@ -34,6 +34,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.DTSGenerator;
 import sopc2dts.generators.KernelHeadersGenerator;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
+import sopc2dts.gui.Sopc2DTSGui;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.components.BasicComponent;
@@ -53,6 +54,7 @@ public class Sopc2DTS {
 	protected CLParameter pov = new CLParameter("");
 	protected CLParameter bootargs = new CLParameter("");
 	protected CLParameter sopcParameters = new CLParameter("none");
+	protected CLParameter gui = new CLParameter("" + false);
 	BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
 
 	protected static final String programName = "sopc2dts";
@@ -76,9 +78,10 @@ public class Sopc2DTS {
 	
 	public Sopc2DTS() {
 		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"The board description file", "boardinfo file"));
-		vOptions.add(new CommandLineOption("help"		,"h", showHelp,			false,false,"Show this usage info and exit",null));
-		vOptions.add(new CommandLineOption("verbose"	,"v", verbose,			false,false,"Show Lots of debugging info", null));
-		vOptions.add(new CommandLineOption("version"	,null,showVersion,		false,false,"Show version information and exit", null));
+		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
+		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
+		vOptions.add(new CommandLineOption("gui",		"v", gui,				false,false,"Run in gui mode (beta)", null));
+		vOptions.add(new CommandLineOption("version",	null,showVersion,		false,false,"Show version information and exit", null));
 		vOptions.add(new CommandLineOption("mimic-sopc-create-header-files"	,"m", mimicAlteraTools,		false,false,"Try to (mis)behave like sopc-create-header-files does", null));
 		vOptions.add(new CommandLineOption("input", 	"i", inputFileName, 	true, true, "The sopcinfo file (if not supplied the current dir is scanned for one)", "sopcinfo file"));
 		vOptions.add(new CommandLineOption("output",	"o", outputFileName,	true, false,"The output filename","filename"));
@@ -121,76 +124,89 @@ public class Sopc2DTS {
 		{
 			bInfo.setPov(pov.value);
 		}
-		f = new File(inputFileName.value);
-		if(f.exists())
+		if(Boolean.parseBoolean(gui.value))
 		{
-			try {
-				AvalonSystem sys = BasicSystemLoader.loadSystem(f);
-				if(bInfo.getPov().length()==0)
-				{
-					for(int i=0; (i<sys.getSystemComponents().size()) && (bInfo.getPov().length()==0); i++)
-					{
-						if(sys.getSystemComponents().get(i).getScd().getGroup().equalsIgnoreCase("cpu"))
-						{
-							bInfo.setPov(sys.getSystemComponents().get(i).getInstanceName());
-						}
-					}
-				}
-				if(Boolean.parseBoolean(mimicAlteraTools.value)) {
-					SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
-					Vector<BasicComponent> vMasters = sys.getMasterComponents();
-					for(BasicComponent master : vMasters)
-					{
-						BufferedWriter out = new BufferedWriter(new FileWriter(master.getInstanceName()+".h"));
-						bInfo.setPov(master.getInstanceName());
-						out.write(fake.getOutput(bInfo));
-						out.close();
-					}
-				} else {
-					String generatedData = null;
-					if(bootargs.value.length()>0)
-					{
-						bInfo.setBootArgs(bootargs.value);
-					}
-					if(outputType.value.equalsIgnoreCase("dts"))
-					{
-						DTSGenerator dGen = new DTSGenerator(sys);
-						generatedData = dGen.getOutput(bInfo, dumpParameters);
-					} else if(outputType.value.equalsIgnoreCase("uboot"))
-					{
-						generatedData = "Whoops, I guess I was bluffing. uboot support is not yet done";
-					} else if(outputType.value.equalsIgnoreCase("kernel"))
-					{
-						KernelHeadersGenerator kGen = new KernelHeadersGenerator(sys);
-						generatedData = kGen.getOutput(null);
-					} else if(outputType.value.equalsIgnoreCase("kernel-full"))
-					{
-						SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
-						generatedData = fake.getOutput(bInfo);
-					} else {
-						System.out.println("Unsupported output type: " + outputType.value);
-					}
-					if(generatedData!=null)
-					{
-						if(outputFileName.value.length()==0)
-						{
-							System.out.println(generatedData);
-						} else {
-							BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName.value));
-							out.write(generatedData);
-							out.close();
-						}
-					}
-				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(outputType.value.equalsIgnoreCase("dts"))
+			{
+				Sopc2DTSGui s2dgui = new Sopc2DTSGui(inputFileName.value);
+				s2dgui.setVisible(true);
+			} else {
+				Logger.logln("GUI-Mode is only supported for dts output", 
+						LogLevel.ERROR);
 			}
 		} else {
-			System.out.println("Inputfile " + inputFileName.value + " not found");
+			f = new File(inputFileName.value);
+			if(f.exists())
+			{
+				try {
+					AvalonSystem sys = BasicSystemLoader.loadSystem(f);
+					if(bInfo.getPov().length()==0)
+					{
+						for(int i=0; (i<sys.getSystemComponents().size()) && (bInfo.getPov().length()==0); i++)
+						{
+							if(sys.getSystemComponents().get(i).getScd().getGroup().equalsIgnoreCase("cpu"))
+							{
+								bInfo.setPov(sys.getSystemComponents().get(i).getInstanceName());
+							}
+						}
+					}
+					if(Boolean.parseBoolean(mimicAlteraTools.value)) {
+						SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
+						Vector<BasicComponent> vMasters = sys.getMasterComponents();
+						for(BasicComponent master : vMasters)
+						{
+							BufferedWriter out = new BufferedWriter(new FileWriter(master.getInstanceName()+".h"));
+							bInfo.setPov(master.getInstanceName());
+							out.write(fake.getOutput(bInfo));
+							out.close();
+						}
+					} else {
+						String generatedData = null;
+						if(bootargs.value.length()>0)
+						{
+							bInfo.setBootArgs(bootargs.value);
+						}
+						if(outputType.value.equalsIgnoreCase("dts"))
+						{
+							DTSGenerator dGen = new DTSGenerator(sys);
+							generatedData = dGen.getOutput(bInfo, dumpParameters);
+						} else if(outputType.value.equalsIgnoreCase("uboot"))
+						{
+							generatedData = "Whoops, I guess I was bluffing. uboot support is not yet done";
+						} else if(outputType.value.equalsIgnoreCase("kernel"))
+						{
+							KernelHeadersGenerator kGen = new KernelHeadersGenerator(sys);
+							generatedData = kGen.getOutput(null);
+						} else if(outputType.value.equalsIgnoreCase("kernel-full"))
+						{
+							SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
+							generatedData = fake.getOutput(bInfo);
+						} else {
+							System.out.println("Unsupported output type: " + outputType.value);
+						}
+						if(generatedData!=null)
+						{
+							if(outputFileName.value.length()==0)
+							{
+								System.out.println(generatedData);
+							} else {
+								BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName.value));
+								out.write(generatedData);
+								out.close();
+							}
+						}
+					}
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				Logger.logln("Inputfile " + inputFileName.value + " not found", 
+						LogLevel.WARNING);
+			}
 		}
 	}
 	protected String[] intelliSplit(String inp, int splitChar)

@@ -4,6 +4,11 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/generators/AbstractSopcGenerator.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
+	sopc2dts/gui/BasicComponentRenderer.java \
+	sopc2dts/gui/BasicComponetListItem.java \
+	sopc2dts/gui/InputPanel.java \
+	sopc2dts/gui/OutputPanel.java \
+	sopc2dts/gui/Sopc2DTSGui.java \
 	sopc2dts/lib/BoardInfo.java sopc2dts/lib/SopcComponentLib.java \
 	sopc2dts/lib/AvalonSystem.java sopc2dts/lib/BasicElement.java \
 	sopc2dts/lib/Connection.java sopc2dts/lib/Parameter.java \
