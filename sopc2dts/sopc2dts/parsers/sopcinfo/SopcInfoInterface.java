@@ -118,15 +118,19 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 		{
 			span = Long.decode(assVal);
 		}
-		assVal = getParamValue("addressUnits");
-		if(assVal!=null)
+		assVal = getParamValue("addressAlignment");
+		if((assVal!=null)&&(assVal.equals("NATIVE")))
 		{
-			if(assVal.equalsIgnoreCase("WORDS"))
+			assVal = getParamValue("addressUnits");
+			if(assVal!=null)
 			{
-				stepSize = 4;
-			} else {
-				System.out.println("Unsupported AddressUnits: " + assVal + " reverting to bytes");
-			}
+				if(assVal.equalsIgnoreCase("WORDS"))
+				{
+					stepSize = 4;
+				} else {
+					System.out.println("Unsupported AddressUnits: " + assVal + " reverting to bytes");
+				}
+			}			
 		}
 		return span * stepSize;
 	}
