@@ -1,5 +1,7 @@
 
-SOURCES=Sopc2DTS.java sopc2dts/Logger.java sopc2dts/generators/AbstractSopcGenerator.java \
+SOURCES=Sopc2DTS.java \
+	sopc2dts/LogListener.java sopc2dts/Logger.java \
+	sopc2dts/generators/AbstractSopcGenerator.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
 	sopc2dts/lib/BoardInfo.java sopc2dts/lib/SopcComponentLib.java \

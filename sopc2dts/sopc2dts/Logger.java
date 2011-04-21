@@ -19,10 +19,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts;
 
+import java.util.Vector;
+
 public class Logger {
 	public enum LogLevel { ERROR, WARNING, INFO, DEBUG };
 	private static LogLevel verbosity = LogLevel.WARNING;
 	private static boolean useStdOutErr = true;
+	private static Vector<LogListener> vListeners = new Vector<LogListener>();
+	
 	public static void increaseVerbosity()
 	{
 		switch (verbosity) {
@@ -55,6 +59,10 @@ public class Logger {
 	{
 		if(ll.compareTo(verbosity)<=0)
 		{
+			for(LogListener l: vListeners)
+			{
+				l.messageLogged(log);
+			}
 			if(useStdOutErr)
 			{
 				if(ll.equals(LogLevel.ERROR))
@@ -79,5 +87,13 @@ public class Logger {
 	}
 	public static boolean isUseStdOutErr() {
 		return useStdOutErr;
+	}
+	public static void addLogListener(LogListener ll)
+	{
+		vListeners.add(ll);
+	}
+	public static void removeLogListener(LogListener ll)
+	{
+		vListeners.remove(ll);
 	}
 }
