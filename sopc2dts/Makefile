@@ -20,6 +20,8 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/SICLan91c111.java \
 	sopc2dts/lib/components/altera/SICSgdma.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
+	sopc2dts/lib/components/altera/TSEModular.java \
+	sopc2dts/lib/components/altera/TSEMonolithic.java \
 	sopc2dts/lib/components/base/FlashPartition.java \
 	sopc2dts/lib/components/base/SCDQSys.java \
 	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
