@@ -2,8 +2,6 @@ package sopc2dts.lib.components.base;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.Vector;
 
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
