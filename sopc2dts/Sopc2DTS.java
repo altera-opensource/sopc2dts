@@ -80,7 +80,7 @@ public class Sopc2DTS {
 		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"The board description file", "boardinfo file"));
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
-		vOptions.add(new CommandLineOption("gui",		"v", gui,				false,false,"Run in gui mode (beta)", null));
+		vOptions.add(new CommandLineOption("gui",		"g", gui,				false,false,"Run in gui mode (beta)", null));
 		vOptions.add(new CommandLineOption("version",	null,showVersion,		false,false,"Show version information and exit", null));
 		vOptions.add(new CommandLineOption("mimic-sopc-create-header-files"	,"m", mimicAlteraTools,		false,false,"Try to (mis)behave like sopc-create-header-files does", null));
 		vOptions.add(new CommandLineOption("input", 	"i", inputFileName, 	true, true, "The sopcinfo file (if not supplied the current dir is scanned for one)", "sopcinfo file"));
