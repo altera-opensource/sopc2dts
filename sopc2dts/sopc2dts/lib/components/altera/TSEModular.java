@@ -52,7 +52,8 @@ public class TSEModular extends SICTrippleSpeedEthernet {
 	@Override
 	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
-		return getSGDMAEngine(indentLevel, getInterfaceByName("transmit"), "ALTR,sgdma_tx") +
+		return super.toDtsExtras(bi, indentLevel, conn, endComponent) +
+				getSGDMAEngine(indentLevel, getInterfaceByName("transmit"), "ALTR,sgdma_tx") +
 				getSGDMAEngine(indentLevel, getInterfaceByName("receive"), "ALTR,sgdma_rx");
 	}
 }
