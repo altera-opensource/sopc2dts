@@ -66,8 +66,8 @@ public class SopcInfoSystemLoader implements ContentHandler {
 			xmlReader.parse(in);
 			if(currSystem!=null)
 			{
-				currSystem.recheckComponents();
 				connectComponents();
+				currSystem.recheckComponents();
 			}
 		} catch (SAXException e) {
 			e.printStackTrace();
