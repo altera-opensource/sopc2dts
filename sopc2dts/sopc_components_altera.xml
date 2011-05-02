@@ -84,6 +84,9 @@
 	<S2DComponent classname="altmemddr2" group="memory"
 		compatDevice="altmemddr2">
 	</S2DComponent>
+	<S2DComponent classname="altmemddr3" group="memory"
+		compatDevice="altmemddr3">
+	</S2DComponent>
 	<S2DComponent classname="ddr2_high_perf" group="memory"
 		compatDevice="ddr2_high_perf">
 	</S2DComponent>
