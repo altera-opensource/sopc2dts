@@ -149,7 +149,8 @@ public class SICBridge extends BasicComponent {
 		{
 			//Always remove tristate bridges.
 			remove = true;
-		} else if((getScd().getClassName().equalsIgnoreCase("altera_avalon_pipeline_bridge")) &&
+		} else if((getScd().getClassName().equalsIgnoreCase("altera_avalon_pipeline_bridge") ||
+				getScd().getClassName().equalsIgnoreCase("altera_avalon_clock_crossing")) &&
 				(getAddrFromMaster()==0))
 		{
 			remove = true;
