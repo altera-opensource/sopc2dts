@@ -45,6 +45,8 @@ import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.SICTrippleSpeedEthernet;
+import sopc2dts.lib.components.altera.TSEModular;
+import sopc2dts.lib.components.altera.TSEMonolithic;
 import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICFlash;
@@ -149,7 +151,8 @@ public class SopcComponentLib implements ContentHandler {
 	{
 		if(className.equalsIgnoreCase("triple_speed_ethernet"))
 		{
-			return new SICTrippleSpeedEthernet(getScdByClassName(className), instanceName, version);			
+			//return new TSEModular(getScdByClassName(className), instanceName, version);			
+			return new TSEMonolithic(getScdByClassName(className), instanceName, version);			
 		} else if (className.equalsIgnoreCase("altera_avalon_sgdma")) {
 			return new SICSgdma(getScdByClassName(className), instanceName, version);
 		} else if (className.equalsIgnoreCase("altera_avalon_epcs_flash_controller")) {

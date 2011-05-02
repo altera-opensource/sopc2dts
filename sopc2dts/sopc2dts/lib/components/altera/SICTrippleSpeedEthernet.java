@@ -19,9 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
-import sopc2dts.generators.AbstractSopcGenerator;
-import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
@@ -33,9 +30,8 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 		super(scd, iName, version);
 	}
 
-	private String getSGDMAEngine(int indentLevel, Interface intf, String dtsEntry)
+	protected BasicComponent getDMAEngineForIntf(Interface intf)
 	{
-		String res = "";
 		if((intf!=null) && (intf.getConnections().size()>0))
 		{
 			BasicComponent comp = null;
@@ -45,23 +41,8 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 			} else {
 				comp = intf.getConnections().firstElement().getMasterModule();
 			}
-			if(comp != null)
-			{
-				res += AbstractSopcGenerator.indent(indentLevel) + dtsEntry + 
-									" = <&" + comp.getInstanceName() + ">;\n";
-			}
+			return comp;
 		}
-		if(res.length()==0)
-		{
-			res = AbstractSopcGenerator.indent(indentLevel) + 
-					"//Port " + intf.getName() + " seems not connected\n";
-		}
-		return res;
-	}
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		return getSGDMAEngine(indentLevel, getInterfaceByName("transmit"), "ALTR,sgdma_tx") +
-				getSGDMAEngine(indentLevel, getInterfaceByName("receive"), "ALTR,sgdma_rx");
+		return null;
 	}
 }
