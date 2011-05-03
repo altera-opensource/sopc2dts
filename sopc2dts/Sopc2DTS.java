@@ -26,6 +26,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
+import javax.swing.JFrame;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -99,42 +101,43 @@ public class Sopc2DTS {
 			System.out.println("No input file specified!");
 			printUsage();
 		}
-		if(boardFileName.value.length()>0)
-		{
-			f = new File(boardFileName.value);
-			if(f.exists())
-			{
-				try {
-					bInfo = new BoardInfo(new InputSource(new BufferedReader(new FileReader(f))));
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (SAXException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			f = null;
-		}
-		if(bInfo==null)
-		{
-			bInfo = new BoardInfo();
-		}
-		if(pov.value.length()>0)
-		{
-			bInfo.setPov(pov.value);
-		}
 		if(Boolean.parseBoolean(gui.value))
 		{
 			if(outputType.value.equalsIgnoreCase("dts"))
 			{
-				Sopc2DTSGui s2dgui = new Sopc2DTSGui(inputFileName.value);
+				Sopc2DTSGui s2dgui = new Sopc2DTSGui(inputFileName.value, boardFileName.value);
+				s2dgui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				s2dgui.setVisible(true);
 			} else {
 				Logger.logln("GUI-Mode is only supported for dts output", 
 						LogLevel.ERROR);
 			}
 		} else {
+			if(boardFileName.value.length()>0)
+			{
+				f = new File(boardFileName.value);
+				if(f.exists())
+				{
+					try {
+						bInfo = new BoardInfo(new InputSource(new BufferedReader(new FileReader(f))));
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (SAXException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				f = null;
+			}
+			if(bInfo==null)
+			{
+				bInfo = new BoardInfo();
+			}
+			if(pov.value.length()>0)
+			{
+				bInfo.setPov(pov.value);
+			}
 			f = new File(inputFileName.value);
 			if(f.exists())
 			{
