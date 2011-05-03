@@ -22,6 +22,7 @@ package sopc2dts.lib.components.altera;
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
@@ -85,13 +86,62 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 				Logger.logln("TSEMonolithic: No RX-DMA engine. Cannot find descriptor memory");
 			} else {
 				Interface intfDescr = rx_dma.getInterfaceByName("descriptor_read");
-				desc_mem = intfDescr.getConnections().get(0).getSlaveModule();
-				sys.getSystemComponents().remove(desc_mem);
-				Interface s1 = desc_mem.getInterfaceByName("s1");
-				desc_mem.getInterfaces().remove(s1);
-				s1.setOwner(this);
-				vInterfaces.add(s1);
+				desc_mem = findSlaveComponent(intfDescr, "memory", "onchipmem");
+				if(desc_mem == null)
+				{
+					Logger.logln("Failed to find onchip descriptor memory. " +
+							"Trying other memories", LogLevel.WARNING);
+					desc_mem = findSlaveComponent(intfDescr, "memory", null);
+				}
+				if(desc_mem!=null)
+				{
+					sys.getSystemComponents().remove(desc_mem);
+					Interface s1 = desc_mem.getInterfaceByName("s1");
+					desc_mem.getInterfaces().remove(s1);
+					s1.setOwner(this);
+					vInterfaces.add(s1);
+				} else {
+					Logger.logln("Failed to find descriptor memory.", LogLevel.WARNING);
+				}
 			}
 		}
+	}
+	BasicComponent findSlaveComponent(Interface intf, String group, String device)
+	{
+		BasicComponent res = null;
+		for(Connection conn : intf.getConnections())
+		{
+			res = conn.getSlaveModule();
+			if(res != null)
+			{
+				if(res.getScd().getGroup().equals("bridge"))
+				{
+					Logger.logln("Warning decriptor memory connected through a bridge. " +
+							"I'll probably mess things up trying to guess what memory I'm connected to...",
+							LogLevel.WARNING);
+					res = findSlaveComponent(res.getInterfaceByName("m1"), group, device);
+				} else {
+					if(group!=null)
+					{
+						if(!res.getScd().getGroup().equals(group))
+						{
+							res = null;
+						}
+					}
+					if((res!=null)&&(device!=null))
+					{
+						if(!res.getScd().getDevice().equals(device))
+						{
+							res = null;
+						}
+					}
+				}
+			}
+			if(res!=null)
+			{
+				return res;
+			}
+		}
+		return res;
 	}
 }
