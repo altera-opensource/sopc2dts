@@ -44,8 +44,6 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
-import sopc2dts.lib.components.altera.SICTrippleSpeedEthernet;
-import sopc2dts.lib.components.altera.TSEModular;
 import sopc2dts.lib.components.altera.TSEMonolithic;
 import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICBridge;
