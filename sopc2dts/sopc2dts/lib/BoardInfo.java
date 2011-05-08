@@ -180,4 +180,7 @@ public class BoardInfo implements ContentHandler {
 	public Vector<String> getMemoryNodes() {
 		return vMemoryNodes;
 	}
+	public void setMemoryNodes(Vector<String> vMem) {
+		vMemoryNodes = vMem;
+	}
 }
