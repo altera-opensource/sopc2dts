@@ -149,7 +149,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					{
 						for(MemoryBlock mem : intf.getMemoryMap())
 						{
-							if(vMemoryMapped.contains(mem.getModule()))
+							if(vMemoryMapped.contains(mem.getModule().getInstanceName()))
 							{
 								BasicComponent comp = mem.getModule();
 								if((comp!=null)&&(!vHandled.contains(comp)))
@@ -174,6 +174,8 @@ public class DTSGenerator extends AbstractSopcGenerator {
 
 			if(res.length()==0)
 			{
+				Logger.logln("dts memory section: No memory nodes specified. " +
+						"Blindly adding them all", LogLevel.INFO);
 				/*
 				 * manual memory-map failed or is not present.
 				 * Just list all devices classified as "memory"
