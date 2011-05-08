@@ -18,6 +18,6 @@
 	<Node chip="onchip_memory2_0"></Node>
 </Memory>
 <Chosen>
-	<Bootargs val="console=ttyJ0 rootfstype=jffs2 root=mtdblock3"></Bootargs>
+	<Bootargs val="console=ttyJ0 rootfstype=jffs2 root=mtdblock2"></Bootargs>
 </Chosen>
 </BoardInfo>
