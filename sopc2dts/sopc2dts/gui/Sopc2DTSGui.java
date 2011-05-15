@@ -1,3 +1,22 @@
+/*
+sopc2dts - Devicetree generation for Altera systems
+
+Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 package sopc2dts.gui;
 
 import java.awt.BorderLayout;
@@ -12,19 +31,18 @@ import javax.swing.JTextArea;
 import sopc2dts.LogListener;
 import sopc2dts.Logger;
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.BoardInfo;
 
 public class Sopc2DTSGui extends JFrame implements LogListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1060629328921686729L;
+	private static final long serialVersionUID = 8613192420393857538L;
 	JTabbedPane jtp = new JTabbedPane();
 	JTextArea txtLog = new JTextArea();
 	InputPanel pnlInput;
 	OutputPanel pnlOutput = new OutputPanel();
 	private AvalonSystem sys;
-
-	public Sopc2DTSGui(String inpFile) {
+	private BoardInfo boardInfo;
+	
+	public Sopc2DTSGui(String inpFile, String biFile) {
 		super("Sopc2DTS");
 		Logger.addLogListener(this);
 		Logger.setUseStdOutErr(false);
