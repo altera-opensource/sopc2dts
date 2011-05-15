@@ -22,13 +22,13 @@ package sopc2dts.parsers.qsys;
 import java.util.Vector;
 
 import sopc2dts.lib.components.BasicComponent;
-import sopc2dts.lib.components.base.SCDQSys;
+import sopc2dts.lib.components.SopcComponentDescription;
 
 public class QSysSubSystem extends BasicComponent {
 	protected Vector<BasicComponent> vSystemComponents = new Vector<BasicComponent>();
 
 	public QSysSubSystem(String iName, String ver) {
-		super(new SCDQSys(iName), iName, ver);
+		super(new SopcComponentDescription(iName, "QSys", "ALTR", iName), iName, ver);
 	}
 
 	public void addModule(BasicComponent bc) {
