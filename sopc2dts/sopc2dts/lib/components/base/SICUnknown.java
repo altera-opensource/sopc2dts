@@ -22,6 +22,8 @@ package sopc2dts.lib.components.base;
 import sopc2dts.lib.components.SopcComponentDescription;
 
 public class SICUnknown extends SopcComponentDescription {
+	private static final long serialVersionUID = 3316792351076561269L;
+
 	public SICUnknown(String sopcClassName)
 	{
 		super(sopcClassName,"unknown","unknown","unknown");

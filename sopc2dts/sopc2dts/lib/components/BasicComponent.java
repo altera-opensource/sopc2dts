@@ -29,13 +29,14 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 
 public class BasicComponent extends BasicElement {
+	private static final long serialVersionUID = -4790737466253508122L;
 	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;
 	protected String version;
 	private int addr = 0;
 	protected Vector<Interface> vInterfaces = new Vector<Interface>();
 	protected SopcComponentDescription scd;
-
+	
 	public BasicComponent(SopcComponentDescription scd, String iName, String ver)
 	{
 		this.setScd(scd);

@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -35,7 +36,8 @@ import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.base.FlashPartition;
 
-public class BoardInfo implements ContentHandler {
+public class BoardInfo implements ContentHandler, Serializable {
+	private static final long serialVersionUID = -6963198643520147067L;
 	FlashPartition part;
 	String currTag;
 	String flashChip;

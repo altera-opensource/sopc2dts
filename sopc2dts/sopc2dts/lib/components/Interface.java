@@ -26,6 +26,7 @@ import sopc2dts.lib.AvalonSystem.SystemDataType;
 
 
 public class Interface extends BasicElement {
+	private static final long serialVersionUID = -6938146538340317708L;
 	private String name;
 	private Vector<Connection> vConnections = new Vector<Connection>();
 	private BasicComponent owner;

@@ -31,6 +31,7 @@ import sopc2dts.lib.components.Interface;
 
 
 public class SICBridge extends BasicComponent {
+	private static final long serialVersionUID = -2430030898696019903L;
 
 	public SICBridge(SopcComponentDescription scd, String iName, String version) {
 		super(scd, iName, version);

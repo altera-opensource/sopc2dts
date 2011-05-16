@@ -27,6 +27,7 @@ import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 
 public class TSEModular extends SICTrippleSpeedEthernet {
+	private static final long serialVersionUID = -2943307814446020894L;
 
 	public TSEModular(SopcComponentDescription scd, String iName, String version) {
 		super(scd, iName, version);

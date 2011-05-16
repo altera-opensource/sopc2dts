@@ -31,7 +31,7 @@ import sopc2dts.lib.components.BasicComponent;
  * rather a convenience class to help the lazy people such as myself.
  */
 public class SICEthernet extends BasicComponent {
-	
+	private static final long serialVersionUID = -5419573431636445762L;
 	public SICEthernet(SopcComponentDescription scd, String iName, String version) {
 		super(scd, iName, version);
 	}

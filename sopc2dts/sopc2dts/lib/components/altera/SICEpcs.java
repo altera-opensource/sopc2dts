@@ -27,7 +27,8 @@ import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
 
 public class SICEpcs extends SICFlash {
-	
+	private static final long serialVersionUID = 8647857111806987880L;
+
 	public SICEpcs(SopcComponentDescription scd, String iName, String version) {
 		super(scd, iName, version);
 	}

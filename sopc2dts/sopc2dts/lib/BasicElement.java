@@ -19,9 +19,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib;
 
+import java.io.Serializable;
 import java.util.Vector;
 
-public class BasicElement {
+public class BasicElement implements Serializable {
+	private static final long serialVersionUID = -1672549052228353372L;
 	protected Vector<Parameter> vParameters = new Vector<Parameter>();
 	
 	public boolean addParam(Parameter bp)
