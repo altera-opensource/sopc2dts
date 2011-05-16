@@ -34,7 +34,7 @@ public class BasicComponentRenderer implements ListCellRenderer {
 		if(value instanceof BasicComponent)
 		{
 			BasicComponent bc = (BasicComponent)value;
-			return new BasicComponetListItem(bc,isSelected);
+			return new BasicComponentListItem(bc,isSelected);
 		} else {
 			return new JLabel(value.toString());
 		}

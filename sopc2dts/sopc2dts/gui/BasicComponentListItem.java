@@ -31,10 +31,10 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICUnknown;
 
-public class BasicComponetListItem extends JPanel {
+public class BasicComponentListItem extends JPanel {
 	private static final long serialVersionUID	= 3548406165403921773L;
 
-	public BasicComponetListItem(BasicComponent bc, boolean selected)
+	public BasicComponentListItem(BasicComponent bc, boolean selected)
 	{
 		super();
 		this.setLayout(new GridLayout(3,2));

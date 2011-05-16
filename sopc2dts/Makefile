@@ -5,7 +5,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
 	sopc2dts/gui/BasicComponentRenderer.java \
-	sopc2dts/gui/BasicComponetListItem.java \
+	sopc2dts/gui/BasicComponentListItem.java \
 	sopc2dts/gui/InputPanel.java \
 	sopc2dts/gui/OutputPanel.java \
 	sopc2dts/gui/Sopc2DTSGui.java \
