@@ -82,6 +82,14 @@ public class Logger {
 	{
 		log(log+'\n',ll);
 	}
+	public static void logException(Exception e)
+	{
+		logln(e.getMessage(), LogLevel.INFO);
+		if(verbosity == LogLevel.DEBUG)
+		{
+			e.printStackTrace();
+		}
+	}
 	public static void setUseStdOutErr(boolean use) {
 		useStdOutErr = use;
 	}
