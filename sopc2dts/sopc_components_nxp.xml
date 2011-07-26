@@ -1,0 +1,4 @@
+<SOPC2DTS_COMPONENTLIB vendor="nxp">
+	<S2DComponent classname="ISP1362_CTRL" group="isp1362" compatDevice="isp1362">
+	</S2DComponent>
+</SOPC2DTS_COMPONENTLIB>
