@@ -110,6 +110,7 @@ public class UBootComponentLib {
 		vComponents.add(new UBootLibComponent(
 				new String[] { "ddr_sdram_component_classic", "*altera_avalon_new_dfram_controller*", "*altmemddr*" }, 
 				props, null));
+		vComponents.add(new UBootTSEComponent());
 	}
 	public static UBootComponentLib getInstance()
 	{

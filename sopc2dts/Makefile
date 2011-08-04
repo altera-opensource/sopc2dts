@@ -30,6 +30,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
 	sopc2dts/lib/uboot/UBootComponentLib.java \
 	sopc2dts/lib/uboot/UBootLibComponent.java \
+	sopc2dts/lib/uboot/UBootTSEComponent.java \
 	sopc2dts/parsers/BasicSystemLoader.java \
 	sopc2dts/parsers/ptf/PHIgnore.java \
 	sopc2dts/parsers/ptf/PHInterface.java \
