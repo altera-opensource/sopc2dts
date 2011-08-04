@@ -72,6 +72,10 @@
 		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_half_rate_bridge"
+		group="bridge" compatDevice="avalon">
+		<compatible name="simple-bus"></compatible>
+	</S2DComponent>
 	<S2DComponent classname="altera_avalon_mm_bridge"
 		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
