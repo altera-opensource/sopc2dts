@@ -23,7 +23,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -42,8 +41,9 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 	private AvalonSystem sys;
 	private BoardInfo boardInfo;
 	
-	public Sopc2DTSGui(String inpFile, String biFile) {
+	public Sopc2DTSGui(String inpFile, BoardInfo bInfo) {
 		super("Sopc2DTS");
+		boardInfo = bInfo;
 		Logger.addLogListener(this);
 		Logger.setUseStdOutErr(false);
 		pnlInput = new InputPanel(inpFile, this);

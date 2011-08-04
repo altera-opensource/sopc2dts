@@ -19,6 +19,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -39,6 +43,7 @@ import sopc2dts.lib.components.base.FlashPartition;
 public class BoardInfo implements ContentHandler, Serializable {
 	private static final long serialVersionUID = -6963198643520147067L;
 	FlashPartition part;
+	private File sourceFile;
 	String currTag;
 	String flashChip;
 	Vector<FlashPartition> vPartitions;
@@ -56,15 +61,23 @@ public class BoardInfo implements ContentHandler, Serializable {
 	
 	public BoardInfo()
 	{
-		//TODO Set some sane defaults
+		vMemoryNodes = new Vector<String>();
+	}
+	public BoardInfo(File source) throws FileNotFoundException, SAXException, IOException
+	{
+		sourceFile = source;
+		load(new InputSource(new BufferedReader(new FileReader(sourceFile))));
 	}
 	public BoardInfo(InputSource in) throws SAXException, IOException
+	{
+		load(in);
+	}
+	protected void load(InputSource in) throws SAXException, IOException
 	{
 		XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 		xmlReader.setContentHandler(this);
 		xmlReader.parse(in);
 	}
-
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		if(localName.equalsIgnoreCase("BoardInfo"))
@@ -184,5 +197,17 @@ public class BoardInfo implements ContentHandler, Serializable {
 	}
 	public void setMemoryNodes(Vector<String> vMem) {
 		vMemoryNodes = vMem;
+	}
+	public void setPartitionsForchip(String instanceName, Vector<FlashPartition> vParts) {
+		mFlashPartitions.put(instanceName, vParts);
+	}
+	public void setI2CBusForchip(String instanceName, HashMap<Integer, String> i2cMap) {
+		mI2CMaps.put(instanceName, i2cMap);
+	}
+	public void setSourceFile(File sourceFile) {
+		this.sourceFile = sourceFile;
+	}
+	public File getSourceFile() {
+		return sourceFile;
 	}
 }

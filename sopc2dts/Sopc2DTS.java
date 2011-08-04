@@ -17,18 +17,15 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
 import javax.swing.JFrame;
 
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import sopc2dts.Logger;
@@ -73,7 +70,7 @@ public class Sopc2DTS {
 				s2d.go();
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			Logger.logException(e);
 			s2d.printUsage();
 		}
 	}
@@ -101,11 +98,31 @@ public class Sopc2DTS {
 			System.out.println("No input file specified!");
 			printUsage();
 		}
+		if(boardFileName.value.length()>0)
+		{
+			try {
+				bInfo = new BoardInfo(new File(boardFileName.value));						
+			} catch (FileNotFoundException e) {
+				Logger.logException(e);
+			} catch (SAXException e) {
+				Logger.logException(e);
+			} catch (IOException e) {
+				Logger.logException(e);
+			}
+		}
+		if(bInfo==null)
+		{
+			bInfo = new BoardInfo();
+		}
+		if(pov.value.length()>0)
+		{
+			bInfo.setPov(pov.value);
+		}
 		if(Boolean.parseBoolean(gui.value))
 		{
 			if(outputType.value.equalsIgnoreCase("dts"))
 			{
-				Sopc2DTSGui s2dgui = new Sopc2DTSGui(inputFileName.value, boardFileName.value);
+				Sopc2DTSGui s2dgui = new Sopc2DTSGui(inputFileName.value, bInfo);
 				s2dgui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				s2dgui.setVisible(true);
 			} else {
@@ -113,31 +130,6 @@ public class Sopc2DTS {
 						LogLevel.ERROR);
 			}
 		} else {
-			if(boardFileName.value.length()>0)
-			{
-				f = new File(boardFileName.value);
-				if(f.exists())
-				{
-					try {
-						bInfo = new BoardInfo(new InputSource(new BufferedReader(new FileReader(f))));
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (SAXException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				f = null;
-			}
-			if(bInfo==null)
-			{
-				bInfo = new BoardInfo();
-			}
-			if(pov.value.length()>0)
-			{
-				bInfo.setPov(pov.value);
-			}
 			f = new File(inputFileName.value);
 			if(f.exists())
 			{
@@ -200,11 +192,9 @@ public class Sopc2DTS {
 						}
 					}
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.logException(e);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.logException(e);
 				}
 			} else {
 				Logger.logln("Inputfile " + inputFileName.value + " not found", 
