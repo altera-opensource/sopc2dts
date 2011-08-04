@@ -83,9 +83,15 @@ public class UBootLibComponent {
 			return res;
 		} else 	if(propertyDefines == null)
 		{
+			String irq = getIrqSimple(comp);
 			res = String.format("#define CONFIG_SYS_%s_BASE\t0x%08X\n",
 						AbstractSopcGenerator.definenify(comp.getInstanceName()),
 						((comp.getAddrFromMaster() + addrOffset) | IO_REGION_BASE));
+			if(irq!=null)
+			{
+				res += String.format("#define CONFIG_SYS_%s_IRQ\t%s\n",
+						AbstractSopcGenerator.definenify(comp.getInstanceName()),irq);
+			}
 		} else {
 			Set<String> keys = propertyDefines.keySet();
 			for(String define : keys)
