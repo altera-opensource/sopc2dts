@@ -33,6 +33,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.DTSGenerator;
 import sopc2dts.generators.KernelHeadersGenerator;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
+import sopc2dts.generators.UBootHeaderGenerator;
 import sopc2dts.gui.Sopc2DTSGui;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
@@ -167,7 +168,8 @@ public class Sopc2DTS {
 							generatedData = dGen.getOutput(bInfo, dumpParameters);
 						} else if(outputType.value.equalsIgnoreCase("uboot"))
 						{
-							generatedData = "Whoops, I guess I was bluffing. uboot support is not yet done";
+							UBootHeaderGenerator uGen = new UBootHeaderGenerator(sys);
+							generatedData = uGen.getOutput(bInfo);
 						} else if(outputType.value.equalsIgnoreCase("kernel"))
 						{
 							KernelHeadersGenerator kGen = new KernelHeadersGenerator(sys);

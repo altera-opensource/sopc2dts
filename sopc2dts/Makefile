@@ -4,6 +4,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/generators/AbstractSopcGenerator.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
+	sopc2dts/generators/UBootHeaderGenerator.java \
 	sopc2dts/gui/BasicComponentRenderer.java \
 	sopc2dts/gui/BasicComponentListItem.java \
 	sopc2dts/gui/InputPanel.java \
@@ -27,6 +28,8 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/base/SICI2CMaster.java \
 	sopc2dts/lib/components/base/SICEthernet.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
+	sopc2dts/lib/uboot/UBootComponentLib.java \
+	sopc2dts/lib/uboot/UBootLibComponent.java \
 	sopc2dts/parsers/BasicSystemLoader.java \
 	sopc2dts/parsers/ptf/PHIgnore.java \
 	sopc2dts/parsers/ptf/PHInterface.java \
