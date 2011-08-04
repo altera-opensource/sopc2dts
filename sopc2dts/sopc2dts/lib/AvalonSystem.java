@@ -61,6 +61,10 @@ public class AvalonSystem extends BasicElement {
 		}
 		return vRes;
 	}
+	public File getSourceFile()
+	{
+		return sourceFile;
+	}
 	public Vector<BasicComponent> getSystemComponents() {
 		return vSystemComponents;
 	}
