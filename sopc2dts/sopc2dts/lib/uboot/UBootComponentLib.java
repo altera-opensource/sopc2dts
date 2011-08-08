@@ -110,7 +110,21 @@ public class UBootComponentLib {
 		vComponents.add(new UBootLibComponent(
 				new String[] { "ddr_sdram_component_classic", "*altera_avalon_new_dfram_controller*", "*altmemddr*" }, 
 				props, null));
-		vComponents.add(new UBootTSEComponent());
+
+		props = new HashMap<String, String>();
+		props.put("CONFIG_SYS_ALTERA_TSE_MAC_BASE","gen|addr0");
+		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_RX_BASE","gen|addr1");
+		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_TX_BASE","gen|addr2");
+		props.put("CONFIG_SYS_ALTERA_TSE_DESC","gen|addr3");
+		props.put("CONFIG_SYS_ALTERA_TSE_RX_FIFO", "prop|embeddedsw.CMacro.RECEIVE_FIFO_DEPTH");
+		props.put("CONFIG_SYS_ALTERA_TSE_TX_FIFO", "prop|embeddedsw.CMacro.TRANSMIT_FIFO_DEPTH");
+		vComponents.add(new UBootLibComponent(
+				new String[] { "triple_speed_ethernet" }, props, 
+				"#define CONFIG_ALTERA_TSE\n" +
+				"#define CONFIG_MII\n" +
+				"#define CONFIG_CMD_MII\n" +
+				"#define CONFIG_SYS_ALTERA_TSE_PHY_ADDR 1\n" +
+				"#define CONFIG_SYS_ALTERA_TSE_FLAGS 0\n"));
 	}
 	public static UBootComponentLib getInstance()
 	{

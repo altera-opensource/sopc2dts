@@ -153,7 +153,7 @@ public class SICBridge extends BasicComponent {
 		} else if((getScd().getClassName().equalsIgnoreCase("altera_avalon_pipeline_bridge") ||
 				getScd().getClassName().equalsIgnoreCase("altera_avalon_clock_crossing") ||
 				getScd().getClassName().equalsIgnoreCase("altera_avalon_half_rate_bridge")) &&
-				(getAddrFromMaster()==0))
+				(!this.isTranslatingBridge()))
 		{
 			remove = true;
 		}
@@ -161,5 +161,22 @@ public class SICBridge extends BasicComponent {
 		{
 			removeFromSystem(sys);
 		}
+	}
+	protected boolean isTranslatingBridge()
+	{
+		for(Interface slave : vInterfaces)
+		{
+			if(slave.isMemorySlave())
+			{
+				for(Connection conn : slave.getConnections())
+				{
+					if(conn.getConnValue()!=0)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

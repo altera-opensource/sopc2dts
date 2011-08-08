@@ -21,10 +21,12 @@ package sopc2dts.lib.uboot;
 
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Vector;
 
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.AvalonSystem.SystemDataType;
+import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
-import sopc2dts.lib.components.Interface;
 
 public class UBootLibComponent {
 	public static final long IO_REGION_BASE = 0x80000000l;
@@ -75,7 +77,7 @@ public class UBootLibComponent {
 	public String getExtraData() {
 		return extraData;
 	}
-	public String getHeadersFor(BasicComponent comp, int ifNum, long addrOffset)
+	public String getHeadersFor(BasicComponent master, BasicComponent comp, int ifNum, long addrOffset)
 	{
 		String res = "" ;
 		if(comp.getScd().getGroup().equalsIgnoreCase("bridge"))
@@ -83,15 +85,8 @@ public class UBootLibComponent {
 			return res;
 		} else 	if(propertyDefines == null)
 		{
-			String irq = getIrqSimple(comp);
-			res = String.format("#define CONFIG_SYS_%s_BASE\t0x%08X\n",
-						AbstractSopcGenerator.definenify(comp.getInstanceName()),
-						((comp.getAddrFromMaster() + addrOffset) | IO_REGION_BASE));
-			if(irq!=null)
-			{
-				res += String.format("#define CONFIG_SYS_%s_IRQ\t%s\n",
-						AbstractSopcGenerator.definenify(comp.getInstanceName()),irq);
-			}
+			res = getMemoryDefinesForConn(master, comp, null, (addrOffset | IO_REGION_BASE));
+			res += getInterruptDefinesForConn(master, comp, null);
 		} else {
 			Set<String> keys = propertyDefines.keySet();
 			for(String define : keys)
@@ -110,16 +105,20 @@ public class UBootLibComponent {
 					if(valType[1].equalsIgnoreCase("clk"))
 					{
 						val = "" + comp.getClockRate();
-					} else if(valType[1].equalsIgnoreCase("addr"))
+					} else if(valType[1].startsWith("addr"))
 					{
-						val = String.format("0x%08X", 
-								((comp.getAddrFromMaster() + addrOffset) | IO_REGION_BASE));
+						if(valType[1].length()==5)
+						{
+							res += getMemoryDefinesForConn(master, comp, define, (addrOffset | IO_REGION_BASE), valType[1].charAt(4)-0x30);
+						} else {
+							res += getMemoryDefinesForConn(master, comp, define, (addrOffset | IO_REGION_BASE));
+						}
 					} else if(valType[1].equalsIgnoreCase("addr_raw"))
 					{
-						val = String.format("0x%08X", (comp.getAddrFromMaster() + addrOffset));
+						res += getMemoryDefinesForConn(master, comp, define, addrOffset);
 					} else if(valType[1].equalsIgnoreCase("irq"))
 					{
-						val = getIrqSimple(comp);
+						res += getInterruptDefinesForConn(master, comp, define);
 					} else if(valType[1].equalsIgnoreCase("size"))
 					{
 						val = String.format("0x%08X", comp.getInterfaces().get(ifNum).getInterfaceValue());
@@ -141,23 +140,66 @@ public class UBootLibComponent {
 		}
 		return res;
 	}
-	protected String getIrqSimple(BasicComponent comp)
+	protected String getInterruptDefinesForConn(BasicComponent master, BasicComponent slave, 
+			String name)
 	{
-		BasicComponent irqParent = null;
-		for(Interface intf : comp.getInterfaces())
+		return getDefinesForConn(master, slave, name, SystemDataType.INTERRUPT, 0,-1);
+	}
+	protected String getMemoryDefinesForConn(BasicComponent master, BasicComponent slave, 
+			String name, long offset)
+	{
+		return getMemoryDefinesForConn(master, slave, name, offset,-1);
+	}
+	protected String getMemoryDefinesForConn(BasicComponent master, BasicComponent slave, 
+			String name, long offset, int index)
+	{
+		return getDefinesForConn(master, slave, name, SystemDataType.MEMORY_MAPPED, offset,index);
+	}
+	protected String getDefinesForConn(BasicComponent master, BasicComponent slave, 
+			String name, SystemDataType type, long offset, int index)
+	{
+		String res = "";
+		Vector<Connection> vConns = slave.getConnections(type, false, master);
+		if(name == null)
 		{
-			if(intf.isIRQSlave())
+			name = AbstractSopcGenerator.definenify(slave.getInstanceName());
+			switch(type)
 			{
-				if(intf.getConnections().size()>0)
-				{
-					irqParent = intf.getConnections().get(0).getMasterModule();
-					if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
-					{
-						return "" + intf.getConnections().get(0).getConnValue();
-					}
-				}
+			case MEMORY_MAPPED: name += "_BASE";	break;
+			case INTERRUPT:		name += "_IRQ";		break;
+			case CLOCK:			name += "_FREQ";	break;
+			default: {
+				
+			}
 			}
 		}
-		return null;
+		/* Remove instruction master stuff */
+		int i=0;
+		while(i<vConns.size())
+		{
+			if(vConns.get(i).getMasterInterface().getName().equalsIgnoreCase("instruction_master"))
+			{
+				vConns.remove(i);
+			} else {
+				i++;
+			}
+		}
+		if((index>=0) && (index<vConns.size()))
+		{
+			vConns = new Vector<Connection>(vConns.subList(index, index+1));
+		}
+		for(Connection conn : vConns)
+		{
+			String val = (type == SystemDataType.MEMORY_MAPPED ? 
+					String.format("0x%08X",(conn.getConnValue() + offset)) :
+						"" + (conn.getConnValue() + offset));
+			if(vConns.size() != 1)
+			{
+				name = AbstractSopcGenerator.definenify(slave.getInstanceName())
+					+ "_" + AbstractSopcGenerator.definenify(conn.getSlaveInterface().getName());
+			}
+			res += String.format("#define %s\t%s\n", name,val);
+		}
+		return res;
 	}
 }

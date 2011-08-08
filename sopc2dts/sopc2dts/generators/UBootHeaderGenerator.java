@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.generators;
 
+import java.util.Vector;
+
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
@@ -30,6 +32,8 @@ import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.uboot.UBootComponentLib;
 
 public class UBootHeaderGenerator extends AbstractSopcGenerator {
+	Vector<BasicComponent> vHandled;
+	
 	public UBootHeaderGenerator(AvalonSystem s) {
 		super(s);
 	}
@@ -46,12 +50,14 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 				"#define CUSTOM_FPGA_H_\n\n" +
 				"/* generated from " + sys.getSourceFile().getName() + " */\n\n";
 		BasicComponent pov = getPovCpu(bi.getPov());
+		vHandled = new Vector<BasicComponent>();
 		if(pov!=null)
 		{
 			res += getInfoForSlavesOf(pov.getInterfaceByName("data_master"), 0);
 		} else {
 			Logger.logln("Unable to find a CPU. U-Boot works best when run on a cpu.", LogLevel.ERROR);
 		}
+		res += "\n#endif\t//CUSTOM_FPGA_H_\n";
 		return res;
 	}
 	String getInfoForSlavesOf(Interface master, long offset)
@@ -64,8 +70,10 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 			{
 				res = "/* Dumping slaves of " + master.getOwner().getInstanceName() + "." + master.getName() + "*/\n";
 			}
-			res += "\n" + getInfoFor(conn.getSlaveInterface(), offset);
-			
+			if(!vHandled.contains(comp))
+			{
+				res += "\n" + getInfoFor(master.getOwner(),conn.getSlaveInterface(), offset);
+			}
 			if(comp instanceof SICBridge)
 			{
 				for(Interface intf : comp.getInterfaces())
@@ -79,12 +87,14 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 		}
 		return res;
 	}
-	String getInfoFor(Interface intf, long offset)
+	String getInfoFor(BasicComponent master, Interface intf, long offset)
 	{
 		BasicComponent comp = intf.getOwner();
-		String res = "/* " + comp.getInstanceName() + "." + 
+		vHandled.add(comp);
+		String res = "/* " + comp.getInstanceName() + '.' + 
 				intf.getName() + " is a " + comp.getScd().getClassName() + " */\n";
-		res += UBootComponentLib.getInstance().getCompFor(comp).getHeadersFor(comp, comp.getInterfaces().indexOf(intf), offset);
+		res += UBootComponentLib.getInstance().getCompFor(comp).getHeadersFor(
+				master,comp, comp.getInterfaces().indexOf(intf), offset);
 		return res;
 	}
 	BasicComponent getPovCpu(String name)

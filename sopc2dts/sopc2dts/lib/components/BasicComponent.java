@@ -22,6 +22,7 @@ package sopc2dts.lib.components;
 import java.util.Vector;
 
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BasicElement;
 import sopc2dts.lib.Parameter;
 import sopc2dts.lib.AvalonSystem;
@@ -226,23 +227,27 @@ public class BasicComponent extends BasicElement {
 	public int getAddr() {
 		return addr;
 	}
-	public long getAddrFromMaster()
+
+	public Vector<Connection> getConnections(SystemDataType ofType, Boolean isMaster, BasicComponent toComponent)
 	{
-		return getAddrFromMaster(0);
-	}
-	public long getAddrFromMaster(int index)
-	{
+		Vector<Connection> conns = new Vector<Connection>();
 		for(Interface intf : vInterfaces)
 		{
-			if(intf.isMemorySlave())
+			if(((ofType == null) || (intf.getType().equals(ofType))) &&
+					((isMaster == null) || (intf.isMaster == isMaster)))
 			{
-				if(intf.getConnections().size()>index)
+				for(Connection conn : intf.getConnections())
 				{
-					return intf.getConnections().get(index).getConnValue();
+					if((toComponent == null) || 
+							(intf.isMaster && conn.getSlaveModule().equals(toComponent)) ||
+							(!intf.isMaster && conn.getMasterModule().equals(toComponent)))
+					{
+						conns.add(conn);
+					}
 				}
 			}
 		}
-		return -1;
+		return conns;
 	}
 	protected long getAddrFromConnection(Connection conn)
 	{
