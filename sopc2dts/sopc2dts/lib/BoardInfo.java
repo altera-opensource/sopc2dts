@@ -41,6 +41,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.base.FlashPartition;
 
 public class BoardInfo implements ContentHandler, Serializable {
+	public enum PovType { CPU, PCI };
 	private static final long serialVersionUID = -6963198643520147067L;
 	FlashPartition part;
 	private File sourceFile;
@@ -50,7 +51,8 @@ public class BoardInfo implements ContentHandler, Serializable {
 	Vector<String> vMemoryNodes;
 	String bootArgs;
 	private String pov = "";
-
+	private PovType povType = PovType.CPU;
+	
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
 			new HashMap<String, Vector<FlashPartition>>(4);
 
@@ -197,6 +199,22 @@ public class BoardInfo implements ContentHandler, Serializable {
 	}
 	public void setMemoryNodes(Vector<String> vMem) {
 		vMemoryNodes = vMem;
+	}
+	public PovType getPovType() {
+		return povType;
+	}
+	public void setPovType(PovType povType) {
+		this.povType = povType;
+	}
+	public void setPovType(String povTypeName) {
+		if(povTypeName.equalsIgnoreCase("cpu"))
+		{
+			setPovType(PovType.CPU);
+		} else if(povTypeName.equalsIgnoreCase("pci") ||
+				povTypeName.equalsIgnoreCase("pcie"))
+		{
+			setPovType(PovType.PCI);
+		}
 	}
 	public void setPartitionsForchip(String instanceName, Vector<FlashPartition> vParts) {
 		mFlashPartitions.put(instanceName, vParts);

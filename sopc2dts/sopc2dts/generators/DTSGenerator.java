@@ -26,6 +26,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.BoardInfo.PovType;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.MemoryBlock;
@@ -48,15 +49,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 	public String getOutput(BoardInfo bi, BasicComponent.parameter_action paramAction) {
 		int indentLevel = 0;
 		vHandled.clear();
-		String res = getSmallCopyRightNotice("devicetree")
-			+ "/dts-v1/;\n"
-			+ "/ {\n"
-			+ indent(++indentLevel) + "model = \"ALTR," + sys.getSystemName() + "\";\n"
-			+ indent(indentLevel) + "compatible = \"ALTR," + sys.getSystemName() + "\";\n"
-			+ indent(indentLevel) + "#address-cells = <1>;\n"
-			+ indent(indentLevel) + "#size-cells = <1>;\n"
-			+ getDTSCpus(bi, paramAction, indentLevel);
-		
+		String res = "";
 		BasicComponent povComp = getComponentByName(bi.getPov());
 		if(povComp==null)
 		{
@@ -67,24 +60,51 @@ public class DTSGenerator extends AbstractSopcGenerator {
 				povComp = vMasters.get(0);
 			}
 		}
-		if(povComp!=null)
+		if(povComp == null)
 		{
-			res += getDTSMemoryFrom(bi, povComp, indentLevel);
-			res += indent(indentLevel++) + "sopc@0 {\n" +
-					indent(indentLevel) + "#address-cells = <1>;\n" +
-					indent(indentLevel) + "#size-cells = <1>;\n" +
-					indent(indentLevel) + "device_type = \"soc\";\n" +
-					indent(indentLevel) + "compatible = \"ALTR,avalon\",\"simple-bus\";\n" +
-					indent(indentLevel) + "ranges ;\n" +
-					indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n";
-			res += getDTSBusFrom(bi, povComp, paramAction, indentLevel);
-			res += indent(--indentLevel) + "}; //sopc\n";
-			res += getDTSChosen(bi, paramAction, indentLevel);
-		} else {
 			Logger.logln("Could not find pov: " + bi.getPov(), LogLevel.ERROR);
+		} else {
+			res = getSmallCopyRightNotice("devicetree")
+				+ "/dts-v1/;\n"
+				+ "/ {\n";
+			switch(bi.getPovType())
+			{
+			case CPU: {
+				res += indent(++indentLevel) + "model = \"ALTR," + sys.getSystemName() + "\";\n"
+					+ indent(indentLevel) + "compatible = \"ALTR," + sys.getSystemName() + "\";\n"
+					+ indent(indentLevel) + "#address-cells = <1>;\n"
+					+ indent(indentLevel) + "#size-cells = <1>;\n"
+					+ getDTSCpus(bi, paramAction, indentLevel)
+					+ getDTSMemoryFrom(bi, povComp, indentLevel)
+					+ indent(indentLevel++) + "sopc@0 {\n";
+			} break;
+			case PCI: {
+				indentLevel++;
+				res += "";
+			} break;
+			}
+			res += indent(indentLevel) + "#address-cells = <1>;\n" 
+				+ indent(indentLevel) + "#size-cells = <1>;\n"
+				+ (bi.getPovType().equals(PovType.CPU) ? indent(indentLevel) + "device_type = \"soc\";\n" : "")
+				+ indent(indentLevel) + "compatible = \"ALTR,avalon\",\"simple-bus\";\n"
+//				+ indent(indentLevel) + "ranges ;\n"
+				+ indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n"
+				+ getDTSBusFrom(bi, povComp, paramAction, indentLevel);
+			switch(bi.getPovType())
+			{
+			case CPU: {
+				res += indent(--indentLevel) + "}; //sopc\n"
+					+ getDTSChosen(bi, paramAction, indentLevel);
+					
+			} break;
+			case PCI: {
+			} break;
+			}
+			res += indent(--indentLevel) + "};\n";
 		}
 		return res;
 	}
+	
 	String getDTSChosen(BoardInfo bi, 
 			BasicComponent.parameter_action paramAction, int indentLevel)
 	{
@@ -98,7 +118,6 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		res += indent(indentLevel++) + "chosen {\n" +
 				indent(indentLevel) + "bootargs = \"" + bi.getBootArgs() + "\";\n" +
 				indent(--indentLevel) + "};\n";
-		res += indent(--indentLevel) + "};\n";
 		return res;		
 	}
 	String getDTSCpus(BoardInfo bi, 

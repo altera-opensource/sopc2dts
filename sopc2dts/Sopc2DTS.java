@@ -52,6 +52,7 @@ public class Sopc2DTS {
 	protected CLParameter outputFileName = new CLParameter("");
 	protected CLParameter outputType = new CLParameter("dts");
 	protected CLParameter pov = new CLParameter("");
+	protected CLParameter povType = new CLParameter("cpu");
 	protected CLParameter bootargs = new CLParameter("");
 	protected CLParameter sopcParameters = new CLParameter("none");
 	protected CLParameter gui = new CLParameter("" + false);
@@ -86,6 +87,7 @@ public class Sopc2DTS {
 		vOptions.add(new CommandLineOption("input", 	"i", inputFileName, 	true, true, "The sopcinfo file (if not supplied the current dir is scanned for one)", "sopcinfo file"));
 		vOptions.add(new CommandLineOption("output",	"o", outputFileName,	true, false,"The output filename","filename"));
 		vOptions.add(new CommandLineOption("pov", 		"p", pov,		 		true, false,"The point of view to generate from. Defaults to the first cpu found", "component name"));
+		vOptions.add(new CommandLineOption("pov-type", 	null, povType,			true, false,"The point of view device type", "{cpu,pci}"));
 		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dts,uboot,kernel,kernel-full}"));
 		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
 		vOptions.add(new CommandLineOption("sopc-parameters", 	null,sopcParameters, true, false,"What sopc-parameters to include in DTS: none, cmacro or all.", "choice"));
@@ -119,6 +121,7 @@ public class Sopc2DTS {
 		{
 			bInfo.setPov(pov.value);
 		}
+		bInfo.setPovType(povType.value);
 		if(Boolean.parseBoolean(gui.value))
 		{
 			if(outputType.value.equalsIgnoreCase("dts"))
