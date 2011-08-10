@@ -53,14 +53,14 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 		vHandled = new Vector<BasicComponent>();
 		if(pov!=null)
 		{
-			res += getInfoForSlavesOf(pov.getInterfaceByName("data_master"), 0);
+			res += getInfoForSlavesOf(pov.getInterfaceByName("data_master"), 0, pov);
 		} else {
 			Logger.logln("Unable to find a CPU. U-Boot works best when run on a cpu.", LogLevel.ERROR);
 		}
 		res += "\n#endif\t//CUSTOM_FPGA_H_\n";
 		return res;
 	}
-	String getInfoForSlavesOf(Interface master, long offset)
+	String getInfoForSlavesOf(Interface master, long offset, BasicComponent irqMaster)
 	{
 		String res = "";
 		for(Connection conn : master.getConnections())
@@ -72,7 +72,7 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 			}
 			if(!vHandled.contains(comp))
 			{
-				res += "\n" + getInfoFor(master.getOwner(),conn.getSlaveInterface(), offset);
+				res += "\n" + getInfoFor(master.getOwner(),irqMaster, conn.getSlaveInterface(), offset);
 			}
 			if(comp instanceof SICBridge)
 			{
@@ -80,21 +80,21 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 				{
 					if(intf.isMemoryMaster())
 					{
-						res += getInfoForSlavesOf(intf, offset + conn.getConnValue());
+						res += getInfoForSlavesOf(intf, offset + conn.getConnValue(), irqMaster);
 					}
 				}
 			}
 		}
 		return res;
 	}
-	String getInfoFor(BasicComponent master, Interface intf, long offset)
+	String getInfoFor(BasicComponent memMaster, BasicComponent irqMaster, Interface intf, long offset)
 	{
 		BasicComponent comp = intf.getOwner();
 		vHandled.add(comp);
 		String res = "/* " + comp.getInstanceName() + '.' + 
 				intf.getName() + " is a " + comp.getScd().getClassName() + " */\n";
 		res += UBootComponentLib.getInstance().getCompFor(comp).getHeadersFor(
-				master,comp, comp.getInterfaces().indexOf(intf), offset);
+				memMaster, irqMaster, comp, comp.getInterfaces().indexOf(intf), offset);
 		return res;
 	}
 	BasicComponent getPovCpu(String name)

@@ -77,7 +77,7 @@ public class UBootLibComponent {
 	public String getExtraData() {
 		return extraData;
 	}
-	public String getHeadersFor(BasicComponent master, BasicComponent comp, int ifNum, long addrOffset)
+	public String getHeadersFor(BasicComponent memMaster, BasicComponent irqMaster, BasicComponent comp, int ifNum, long addrOffset)
 	{
 		String res = "" ;
 		if(comp.getScd().getGroup().equalsIgnoreCase("bridge"))
@@ -85,8 +85,8 @@ public class UBootLibComponent {
 			return res;
 		} else 	if(propertyDefines == null)
 		{
-			res = getMemoryDefinesForConn(master, comp, null, (addrOffset | IO_REGION_BASE));
-			res += getInterruptDefinesForConn(master, comp, null);
+			res = getMemoryDefinesForConn(memMaster, comp, null, (addrOffset | IO_REGION_BASE));
+			res += getInterruptDefinesForConn(irqMaster, comp, null);
 		} else {
 			Set<String> keys = propertyDefines.keySet();
 			for(String define : keys)
@@ -109,16 +109,16 @@ public class UBootLibComponent {
 					{
 						if(valType[1].length()==5)
 						{
-							res += getMemoryDefinesForConn(master, comp, define, (addrOffset | IO_REGION_BASE), valType[1].charAt(4)-0x30);
+							res += getMemoryDefinesForConn(memMaster, comp, define, (addrOffset | IO_REGION_BASE), valType[1].charAt(4)-0x30);
 						} else {
-							res += getMemoryDefinesForConn(master, comp, define, (addrOffset | IO_REGION_BASE));
+							res += getMemoryDefinesForConn(memMaster, comp, define, (addrOffset | IO_REGION_BASE));
 						}
 					} else if(valType[1].equalsIgnoreCase("addr_raw"))
 					{
-						res += getMemoryDefinesForConn(master, comp, define, addrOffset);
+						res += getMemoryDefinesForConn(memMaster, comp, define, addrOffset);
 					} else if(valType[1].equalsIgnoreCase("irq"))
 					{
-						res += getInterruptDefinesForConn(master, comp, define);
+						res += getInterruptDefinesForConn(irqMaster, comp, define);
 					} else if(valType[1].equalsIgnoreCase("size"))
 					{
 						val = String.format("0x%08X", comp.getInterfaces().get(ifNum).getInterfaceValue());
