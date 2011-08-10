@@ -108,7 +108,7 @@ public class UBootComponentLib {
 		props.put("CONFIG_SYS_SDRAM_BASE",		"gen|addr_raw");
 		props.put("CONFIG_SYS_SDRAM_SIZE",		"gen|size");
 		vComponents.add(new UBootLibComponent(
-				new String[] { "ddr_sdram_component_classic", "*altera_avalon_new_dfram_controller*", "*altmemddr*" }, 
+				new String[] { "ddr_sdram_component_classic", "*altera_avalon_new_sdram_controller*", "*altmemddr*" }, 
 				props, null));
 
 		props = new HashMap<String, String>();
