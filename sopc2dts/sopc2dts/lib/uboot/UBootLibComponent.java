@@ -29,7 +29,10 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 
 public class UBootLibComponent {
-	public static final long IO_REGION_BASE = 0x80000000l;
+	public static final long KERNEL_REGION_BASE_NOMMU	= 0x00000000l;
+	public static final long IO_REGION_BASE_NOMMU 		= 0x80000000l;
+	public static final long KERNEL_REGION_BASE_MMU	= 0xc0000000l;
+	public static final long IO_REGION_BASE_MMU 		= 0xe0000000l;
 	String[] compatible;
 	HashMap<String, String> propertyDefines;
 	String extraData;
@@ -40,7 +43,32 @@ public class UBootLibComponent {
 		propertyDefines = props;
 		extraData = extra;
 	}
-
+	protected static boolean isMMUEnabled(BasicComponent comp)
+	{
+		if(comp.getParamByName("embeddedsw.CMacro.MMU_PRESENT")!=null)
+		{
+			return true;
+		}
+		return false;
+	}
+	public static long getKernelBase(BasicComponent master)
+	{
+		if(isMMUEnabled(master))
+		{
+			return KERNEL_REGION_BASE_MMU;
+		} else {
+			return KERNEL_REGION_BASE_NOMMU;
+		}
+	}
+	public static long getIOBase(BasicComponent master)
+	{
+		if(isMMUEnabled(master))
+		{
+			return IO_REGION_BASE_MMU;
+		} else {
+			return IO_REGION_BASE_NOMMU;
+		}
+	}
 	boolean isCompatible(String name) {
 		for(String comp : compatible)
 		{
@@ -85,7 +113,7 @@ public class UBootLibComponent {
 			return res;
 		} else 	if(propertyDefines == null)
 		{
-			res = getMemoryDefinesForConn(memMaster, comp, null, (addrOffset | IO_REGION_BASE));
+			res = getMemoryDefinesForConn(memMaster, comp, null, (addrOffset | getIOBase(irqMaster)));
 			res += getInterruptDefinesForConn(irqMaster, comp, null);
 		} else {
 			Set<String> keys = propertyDefines.keySet();
@@ -105,17 +133,17 @@ public class UBootLibComponent {
 					if(valType[1].equalsIgnoreCase("clk"))
 					{
 						val = "" + comp.getClockRate();
-					} else if(valType[1].startsWith("addr"))
+					} else if(valType[1].startsWith("ioaddr"))
 					{
-						if(valType[1].length()==5)
+						if(valType[1].length()==7)
 						{
-							res += getMemoryDefinesForConn(memMaster, comp, define, (addrOffset | IO_REGION_BASE), valType[1].charAt(4)-0x30);
+							res += getMemoryDefinesForConn(memMaster, comp, define, (addrOffset | getIOBase(irqMaster)), valType[1].charAt(6)-0x30);
 						} else {
-							res += getMemoryDefinesForConn(memMaster, comp, define, (addrOffset | IO_REGION_BASE));
+							res += getMemoryDefinesForConn(memMaster, comp, define, (addrOffset | getIOBase(irqMaster)));
 						}
-					} else if(valType[1].equalsIgnoreCase("addr_raw"))
+					} else if(valType[1].equalsIgnoreCase("kerneladdr"))
 					{
-						res += getMemoryDefinesForConn(memMaster, comp, define, addrOffset);
+						res += getMemoryDefinesForConn(memMaster, comp, define, addrOffset | getKernelBase(irqMaster));
 					} else if(valType[1].equalsIgnoreCase("irq"))
 					{
 						res += getInterruptDefinesForConn(irqMaster, comp, define);

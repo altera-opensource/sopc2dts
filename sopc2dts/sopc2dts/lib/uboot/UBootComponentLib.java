@@ -36,28 +36,29 @@ public class UBootComponentLib {
 		props.put("CONFIG_SYS_ICACHE_SIZE", 	"prop|embeddedsw.CMacro.ICACHE_SIZE");
 		props.put("CONFIG_SYS_ICACHELINE_SIZE", "prop|embeddedsw.CMacro.ICACHE_LINE_SIZE");
 		props.put("CONFIG_SYS_DCACHE_SIZE", 	"prop|embeddedsw.CMacro.DCACHE_SIZE");
-		props.put("CONFIG_SYS_DCACHELINE_SIZE", "prop|embeddedsw.CMacro.DCACHE_LINE_SIZE");		
+		props.put("CONFIG_SYS_DCACHELINE_SIZE", "prop|embeddedsw.CMacro.DCACHE_LINE_SIZE");
+		/* TODO This is a hack. doesn't work for nommu */
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_nios2"}, props, 
-				String.format("#define IO_REGION_BASE\t0x%08X\n",UBootLibComponent.IO_REGION_BASE)));
+				String.format("#define IO_REGION_BASE\t0x%08X\n",UBootLibComponent.IO_REGION_BASE_MMU)));
 		
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_SYSID_BASE",		"gen|addr");
+		props.put("CONFIG_SYS_SYSID_BASE",		"gen|ioaddr");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_avalon_sysid"}, props, null));
 		
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_GPIO_BASE",		"gen|addr");
+		props.put("CONFIG_SYS_GPIO_BASE",		"gen|ioaddr");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "gpio"}, props, null));
 
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_JTAG_UART_BASE",		"gen|addr");
+		props.put("CONFIG_SYS_JTAG_UART_BASE",		"gen|ioaddr");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_avalon_jtag_uart"}, props, null));
 
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_UART_BASE",		"gen|addr");
+		props.put("CONFIG_SYS_UART_BASE",		"gen|ioaddr");
 		props.put("CONFIG_SYS_UART_FREQ",		"gen|clk");
 		props.put("CONFIG_SYS_UART_BAUD",		"prop|embeddedsw.CMacro.BAUD");
 		vComponents.add(new UBootLibComponent(
@@ -65,14 +66,14 @@ public class UBootComponentLib {
 				props, null));
 		
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_TIMER_BASE",		"gen|addr");
+		props.put("CONFIG_SYS_TIMER_BASE",		"gen|ioaddr");
 		props.put("CONFIG_SYS_TIMER_IRQ",		"gen|irq");
 		props.put("CONFIG_SYS_TIMER_FREQ",		"gen|clk");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_avalon_timer"}, props, null));
 
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_ATA_BASE_ADDR",	"gen|addr");
+		props.put("CONFIG_SYS_ATA_BASE_ADDR",	"gen|ioaddr");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_avalon_cf"}, props, 
 				"#define CONFIG_CMD_IDE\n" +
@@ -88,12 +89,12 @@ public class UBootComponentLib {
 				"#define CONFIG_SYS_ATA_ALT_OFFSET 0x20\n"));
 
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_ETHOC_BASE",		"gen|addr");
+		props.put("CONFIG_SYS_ETHOC_BASE",		"gen|ioaddr");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "eth_ocm"}, props, "#define CONFIG_ETHOC"));
 		
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_FLASH_BASE",		"gen|addr");
+		props.put("CONFIG_SYS_FLASH_BASE",		"gen|ioaddr");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_avalon_cfi_flash"}, props,
 				"#define CONFIG_FLASH_CFI_DRIVER\n" +
@@ -105,17 +106,17 @@ public class UBootComponentLib {
 				"#define CONFIG_SYS_MAX_FLASH_SECT 1024\n"));
 		
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_SDRAM_BASE",		"gen|addr_raw");
+		props.put("CONFIG_SYS_SDRAM_BASE",		"gen|kerneladdr");
 		props.put("CONFIG_SYS_SDRAM_SIZE",		"gen|size");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "ddr_sdram_component_classic", "*altera_avalon_new_sdram_controller*", "*altmemddr*" }, 
 				props, null));
 
 		props = new HashMap<String, String>();
-		props.put("CONFIG_SYS_ALTERA_TSE_MAC_BASE","gen|addr0");
-		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_RX_BASE","gen|addr1");
-		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_TX_BASE","gen|addr2");
-		props.put("CONFIG_SYS_ALTERA_TSE_DESC","gen|addr3");
+		props.put("CONFIG_SYS_ALTERA_TSE_MAC_BASE","gen|ioaddr0");
+		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_RX_BASE","gen|ioaddr1");
+		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_TX_BASE","gen|ioaddr2");
+		props.put("CONFIG_SYS_ALTERA_TSE_DESC","gen|ioaddr3");
 		props.put("CONFIG_SYS_ALTERA_TSE_RX_FIFO", "prop|embeddedsw.CMacro.RECEIVE_FIFO_DEPTH");
 		props.put("CONFIG_SYS_ALTERA_TSE_TX_FIFO", "prop|embeddedsw.CMacro.TRANSMIT_FIFO_DEPTH");
 		vComponents.add(new UBootLibComponent(
