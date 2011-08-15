@@ -37,6 +37,7 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 	JTabbedPane jtp = new JTabbedPane();
 	JTextArea txtLog = new JTextArea();
 	InputPanel pnlInput;
+	BoardInfoPanel pnlBoardInfo;
 	OutputPanel pnlOutput = new OutputPanel();
 	private AvalonSystem sys;
 	private BoardInfo boardInfo;
@@ -47,9 +48,10 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 		Logger.addLogListener(this);
 		Logger.setUseStdOutErr(false);
 		pnlInput = new InputPanel(inpFile, this);
+		pnlBoardInfo = new BoardInfoPanel(
+				(bInfo.getSourceFile() == null ? null : bInfo.getSourceFile().getName()), this);
 		jtp.addTab("Input", pnlInput);
-//		jtp.addTab("Settings", new JPanel());
-//		jtp.addTab("Boardinfo", new JPanel());
+		jtp.addTab("Boardinfo", pnlBoardInfo);
 		jtp.addTab("Output", pnlOutput);
 		txtLog.setEditable(false);
 		JScrollPane jsp = new JScrollPane(txtLog);
@@ -68,10 +70,18 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 	}
 	public void setSys(AvalonSystem sys) {
 		this.sys = sys;
+		pnlBoardInfo.setBoardInfoAndSys(boardInfo, sys);
 		pnlOutput.setSys(sys);
 	}
 	public AvalonSystem getSys() {
 		return sys;
 	}
-	
+	public BoardInfo getBoardInfo() {
+		return boardInfo;
+	}
+	public void setBoardInfo(BoardInfo boardInfo) {
+		this.boardInfo = boardInfo;
+		pnlOutput.setBoardInfo(boardInfo);
+		pnlBoardInfo.setBoardInfoAndSys(boardInfo, sys);		
+	}
 }
