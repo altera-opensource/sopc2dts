@@ -22,13 +22,20 @@ package sopc2dts.lib.components.base;
 import java.io.Serializable;
 
 public class FlashPartition implements Serializable {
-	private static final long serialVersionUID = -636328109380513658L;
+	private static final long serialVersionUID = -4893851504958583588L;
 	private String name;
 	private int address;
 	private int size;
 	private boolean readonly = false;
 
 	public FlashPartition() {
+	}
+
+	public FlashPartition(FlashPartition fp) {
+		this.name = fp.name;
+		this.address = fp.address;
+		this.size = fp.size;
+		this.readonly = fp.readonly;
 	}
 
 	public String getName() {
@@ -61,5 +68,25 @@ public class FlashPartition implements Serializable {
 
 	public void setReadonly(boolean readonly) {
 		this.readonly = readonly;
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if(!(o instanceof FlashPartition))
+			return false;
+		
+		FlashPartition fp = (FlashPartition)o;
+		
+		if(readonly != fp.isReadonly())
+			return false;
+		
+		if(address != fp.getAddress())
+			return false;
+		
+		if(size != fp.getSize())
+			return false;
+		
+		return name.equals(fp.getName());
 	}
 }
