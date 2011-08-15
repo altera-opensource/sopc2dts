@@ -222,6 +222,83 @@ public class BoardInfo implements ContentHandler, Serializable {
 	public void setI2CBusForchip(String instanceName, HashMap<Integer, String> i2cMap) {
 		mI2CMaps.put(instanceName, i2cMap);
 	}
+	public String getXml()
+	{
+		String xml = "<BoardInfo";
+		if((pov!=null)&&(pov.length()!=0))
+		{
+			xml += " pov=\"" + pov + "\"";
+		}
+		xml+=">\n";
+		//Memory
+		if((vMemoryNodes!=null)&&(vMemoryNodes.size()>0))
+		{
+			xml +="\t<Memory>\n";
+			for(String node : vMemoryNodes)
+			{
+				if((node!=null)&&(node.length()>0))
+				{
+					xml += "\t\t<Node chip=\"" + node + "\"/>\n";
+				}
+			}
+			xml +="\t</Memory>\n";
+		}
+		//Chosen
+		if((bootArgs!=null)&&(bootArgs.length()>0))
+		{
+			xml += "\t<Chosen>\n" +
+					"\t\t<Bootargs val=\"" + bootArgs + "\"/>\n" +
+					"\t</Chosen>\n";
+		}
+		//Flash
+		for(String chip : mFlashPartitions.keySet())
+		{
+			Vector<FlashPartition> vParts = mFlashPartitions.get(chip);
+			if((vParts!=null)&&(vParts.size()>0))
+			{
+				xml += "\t<FlashPartitions";
+				if(chip!=null)
+				{
+					xml += " chip=\"" + chip + "\"";
+				}
+				xml += ">\n";
+				for(FlashPartition part : vParts)
+				{
+					xml += "\t\t<Partition name=\"" + part.getName() + "\"" +
+							" address=\"0x" + Integer.toHexString(part.getAddress()) + "\"" +
+							" size=\"0x" + Integer.toHexString(part.getSize()) + "\">\n";
+					if(part.isReadonly())
+					{
+						xml +="\t\t\t<readonly/>\n";
+					}
+					xml += "\t\t</Partition>\n";
+				}
+				xml += "\t</FlashPartitions>\n";
+			}			
+		}
+		//I2c
+		for(String chip : mI2CMaps.keySet())
+		{
+			HashMap<Integer, String> mI2CMap = mI2CMaps.get(chip);
+			if((mI2CMap!=null)&&(mI2CMap.size()>0))
+			{
+				xml += "\t<I2CBus";
+				if(chip!=null)
+				{
+					xml += " master=\"" + chip + "\"";
+				}
+				xml += ">\n";
+				for(Integer addr : mI2CMap.keySet())
+				{
+					xml += "\t\t<I2CChip addr=\"0x" + Integer.toHexString(addr) + "\"" +
+							" name=\"" + mI2CMap.get(addr) + "\"/>\n";
+				}
+				xml += "\t</I2CBus>\n";
+			}			
+		}
+		xml+="</BoardInfo>\n";
+		return xml;
+	}
 	public void setSourceFile(File sourceFile) {
 		this.sourceFile = sourceFile;
 	}
