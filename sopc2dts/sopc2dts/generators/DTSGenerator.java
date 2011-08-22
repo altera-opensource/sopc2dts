@@ -76,7 +76,8 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					+ indent(indentLevel) + "#size-cells = <1>;\n"
 					+ getDTSCpus(bi, paramAction, indentLevel)
 					+ getDTSMemoryFrom(bi, povComp, indentLevel)
-					+ indent(indentLevel++) + "sopc@0 {\n";
+					+ indent(indentLevel++) + "sopc@0 {\n"
+					+ indent(indentLevel) + "ranges ;\n";
 			} break;
 			case PCI: {
 				indentLevel++;
@@ -87,7 +88,6 @@ public class DTSGenerator extends AbstractSopcGenerator {
 				+ indent(indentLevel) + "#size-cells = <1>;\n"
 				+ (bi.getPovType().equals(PovType.CPU) ? indent(indentLevel) + "device_type = \"soc\";\n" : "")
 				+ indent(indentLevel) + "compatible = \"ALTR,avalon\",\"simple-bus\";\n"
-//				+ indent(indentLevel) + "ranges ;\n"
 				+ indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n"
 				+ getDTSBusFrom(bi, povComp, paramAction, indentLevel);
 			switch(bi.getPovType())
