@@ -5,11 +5,20 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
 	sopc2dts/generators/UBootHeaderGenerator.java \
+	sopc2dts/gui/BasicComponentComboBoxModel.java \
 	sopc2dts/gui/BasicComponentRenderer.java \
 	sopc2dts/gui/BasicComponentListItem.java \
+	sopc2dts/gui/BoardInfoPanel.java \
+	sopc2dts/gui/boardinfo/BISComponentGroup.java \
+	sopc2dts/gui/boardinfo/BISFlash.java \
+	sopc2dts/gui/boardinfo/BISGeneral.java \
+	sopc2dts/gui/boardinfo/BISI2C.java \
+	sopc2dts/gui/boardinfo/BISSubComponentTable.java \
+	sopc2dts/gui/boardinfo/BoardInfoSubPanel.java \
 	sopc2dts/gui/InputPanel.java \
 	sopc2dts/gui/OutputPanel.java \
 	sopc2dts/gui/Sopc2DTSGui.java \
+	sopc2dts/gui/ThreadedLoadPanel.java \
 	sopc2dts/lib/BoardInfo.java sopc2dts/lib/SopcComponentLib.java \
 	sopc2dts/lib/AvalonSystem.java sopc2dts/lib/BasicElement.java \
 	sopc2dts/lib/Connection.java sopc2dts/lib/Parameter.java \
