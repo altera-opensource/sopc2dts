@@ -30,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -93,17 +94,23 @@ public class BoardInfoPanel extends ThreadedLoadPanel {
 			pnlBIS[jtp.getSelectedIndex()].load(mainGui.getBoardInfo());
 		} else if(e.getSource().equals(btnSave))
 		{
-			BoardInfo bi = mainGui.getBoardInfo();
-			bisSaveAll(bi);
-			
-			BufferedWriter out;
-			try {
-				out = new BufferedWriter(new FileWriter(txtFileName.getText()));
-				out.write(bi.getXml());
-				out.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(txtFileName.getText().length()==0)
+			{
+				JOptionPane.showMessageDialog(this, "Please enter filename to save to","Save Boardinfo",JOptionPane.WARNING_MESSAGE);
+			} else {
+				BoardInfo bi = mainGui.getBoardInfo();
+				bisSaveAll(bi);
+				
+				BufferedWriter out;
+				try {
+					out = new BufferedWriter(new FileWriter(txtFileName.getText()));
+					out.write(bi.getXml());
+					out.close();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(this, "Error '" + e1.getLocalizedMessage() + "'" +
+							" while trying to save to '" + txtFileName.getText() + "'", 
+							"Boardinfo save failed", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		} else {
 			super.actionPerformed(e);
