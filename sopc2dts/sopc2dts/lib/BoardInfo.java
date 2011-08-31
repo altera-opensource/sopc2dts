@@ -38,6 +38,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.FlashPartition;
 
 public class BoardInfo implements ContentHandler, Serializable {
@@ -52,7 +53,8 @@ public class BoardInfo implements ContentHandler, Serializable {
 	String bootArgs;
 	private String pov = "";
 	private PovType povType = PovType.CPU;
-	
+	private BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
+
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
 			new HashMap<String, Vector<FlashPartition>>(4);
 
@@ -304,5 +306,11 @@ public class BoardInfo implements ContentHandler, Serializable {
 	}
 	public File getSourceFile() {
 		return sourceFile;
+	}
+	public BasicComponent.parameter_action getDumpParameters() {
+		return dumpParameters;
+	}
+	public void setDumpParameters(BasicComponent.parameter_action dumpParameters) {
+		this.dumpParameters = dumpParameters;
 	}
 }

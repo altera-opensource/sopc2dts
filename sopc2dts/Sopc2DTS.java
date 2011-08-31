@@ -56,7 +56,6 @@ public class Sopc2DTS {
 	protected CLParameter bootargs = new CLParameter("");
 	protected CLParameter sopcParameters = new CLParameter("none");
 	protected CLParameter gui = new CLParameter("" + false);
-	BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
 
 	protected static final String programName = "sopc2dts";
 	protected static final String programVersion = "0.2";
@@ -122,6 +121,16 @@ public class Sopc2DTS {
 			bInfo.setPov(pov.value);
 		}
 		bInfo.setPovType(povType.value);
+		if(sopcParameters.value.equalsIgnoreCase("none"))
+		{
+			bInfo.setDumpParameters(BasicComponent.parameter_action.NONE);
+		} else if(sopcParameters.value.equalsIgnoreCase("cmacro"))
+		{
+			bInfo.setDumpParameters(BasicComponent.parameter_action.CMACRCO);
+		} else if(sopcParameters.value.equalsIgnoreCase("all"))
+		{
+			bInfo.setDumpParameters(BasicComponent.parameter_action.ALL);
+		}
 		if(Boolean.parseBoolean(gui.value))
 		{
 			if(outputType.value.equalsIgnoreCase("dts"))
@@ -168,7 +177,7 @@ public class Sopc2DTS {
 						if(outputType.value.equalsIgnoreCase("dts"))
 						{
 							DTSGenerator dGen = new DTSGenerator(sys);
-							generatedData = dGen.getOutput(bInfo, dumpParameters);
+							generatedData = dGen.getOutput(bInfo);
 						} else if(outputType.value.equalsIgnoreCase("uboot"))
 						{
 							UBootHeaderGenerator uGen = new UBootHeaderGenerator(sys);
@@ -276,16 +285,6 @@ public class Sopc2DTS {
 		{
 			printVersion();
 			return false;
-		}
-		if(sopcParameters.value.equalsIgnoreCase("none"))
-		{
-			dumpParameters = BasicComponent.parameter_action.NONE;
-		} else if(sopcParameters.value.equalsIgnoreCase("cmacro"))
-		{
-			dumpParameters = BasicComponent.parameter_action.CMACRCO;
-		} else if(sopcParameters.value.equalsIgnoreCase("all"))
-		{
-			dumpParameters = BasicComponent.parameter_action.ALL;
 		}
 		return true;
 	}

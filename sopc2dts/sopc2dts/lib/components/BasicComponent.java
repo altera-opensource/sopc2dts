@@ -108,12 +108,11 @@ public class BasicComponent extends BasicElement {
 			return "";
 		}
 	}
-	public String toDts(BoardInfo bi, int indentLevel, BasicComponent.parameter_action paramAction)
+	public String toDts(BoardInfo bi, int indentLevel)
 	{
-		return toDts(bi, indentLevel, paramAction, null, true);
+		return toDts(bi, indentLevel, null, true);
 	}
 	public String toDts(BoardInfo bi, int indentLevel, 
-						BasicComponent.parameter_action paramAction, 
 						Connection conn, Boolean endComponent)
 	{
 		long tmpAddr = getAddrFromConnection(conn);
@@ -149,7 +148,7 @@ public class BasicComponent extends BasicElement {
 				res += AbstractSopcGenerator.indent(indentLevel) + ap.getDtsName() + " = <4>;\n";
 			}
 		}		
-		if((paramAction != parameter_action.NONE)&&(vParameters.size()>0))
+		if((bi.getDumpParameters() != parameter_action.NONE)&&(vParameters.size()>0))
 		{
 			res += AbstractSopcGenerator.indent(indentLevel) + "//Dumping SOPC parameters...\n";
 			for(Parameter bp : vParameters)
@@ -157,7 +156,7 @@ public class BasicComponent extends BasicElement {
 				String assName = bp.getName();
 				if(assName.startsWith("embeddedsw.CMacro.")) {
 					assName = assName.substring(18);
-				} else if(paramAction == parameter_action.CMACRCO) {
+				} else if(bi.getDumpParameters() == parameter_action.CMACRCO) {
 					assName = null;
 				}
 				if(assName!=null)

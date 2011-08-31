@@ -44,9 +44,6 @@ public class DTSGenerator extends AbstractSopcGenerator {
 
 	@Override
 	public String getOutput(BoardInfo bi) {
-		return getOutput(bi, BasicComponent.parameter_action.NONE);
-	}
-	public String getOutput(BoardInfo bi, BasicComponent.parameter_action paramAction) {
 		int indentLevel = 0;
 		vHandled.clear();
 		String res = "";
@@ -74,7 +71,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					+ indent(indentLevel) + "compatible = \"ALTR," + sys.getSystemName() + "\";\n"
 					+ indent(indentLevel) + "#address-cells = <1>;\n"
 					+ indent(indentLevel) + "#size-cells = <1>;\n"
-					+ getDTSCpus(bi, paramAction, indentLevel)
+					+ getDTSCpus(bi, indentLevel)
 					+ getDTSMemoryFrom(bi, povComp, indentLevel)
 					+ indent(indentLevel++) + "sopc@0 {\n"
 					+ indent(indentLevel) + "ranges ;\n";
@@ -89,12 +86,12 @@ public class DTSGenerator extends AbstractSopcGenerator {
 				+ (bi.getPovType().equals(PovType.CPU) ? indent(indentLevel) + "device_type = \"soc\";\n" : "")
 				+ indent(indentLevel) + "compatible = \"ALTR,avalon\",\"simple-bus\";\n"
 				+ indent(indentLevel) + "bus-frequency = < " + povComp.getClockRate() + " >;\n"
-				+ getDTSBusFrom(bi, povComp, paramAction, indentLevel);
+				+ getDTSBusFrom(bi, povComp, indentLevel);
 			switch(bi.getPovType())
 			{
 			case CPU: {
 				res += indent(--indentLevel) + "}; //sopc\n"
-					+ getDTSChosen(bi, paramAction, indentLevel);
+					+ getDTSChosen(bi, indentLevel);
 					
 			} break;
 			case PCI: {
@@ -105,8 +102,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		return res;
 	}
 	
-	String getDTSChosen(BoardInfo bi, 
-			BasicComponent.parameter_action paramAction, int indentLevel)
+	String getDTSChosen(BoardInfo bi, int indentLevel)
 	{
 		String res = "";
 		if((bi.getBootArgs()==null)||(bi.getBootArgs().length()==0))
@@ -120,8 +116,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 				indent(--indentLevel) + "};\n";
 		return res;		
 	}
-	String getDTSCpus(BoardInfo bi, 
-			BasicComponent.parameter_action paramAction, int indentLevel)
+	String getDTSCpus(BoardInfo bi, int indentLevel)
 	{
 		int numCPUs = 0;
 		String res="";
@@ -139,7 +134,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 					}
 				}
 				comp.setAddr(numCPUs);
-				res += comp.toDts(bi, indentLevel, paramAction);
+				res += comp.toDts(bi, indentLevel);
 				vHandled.add(comp);
 				numCPUs++;
 			}
@@ -235,8 +230,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		return res;
 	}
 
-	String getDTSBusFrom(BoardInfo bi, BasicComponent master, 
-				BasicComponent.parameter_action paramAction, int indentLevel)
+	String getDTSBusFrom(BoardInfo bi, BasicComponent master, int indentLevel)
 	{
 		String res = "";
 		if(master!=null)
@@ -254,11 +248,11 @@ public class DTSGenerator extends AbstractSopcGenerator {
 						{
 							if(!vHandled.contains(slave))
 							{
-								res += slave.toDts(bi, indentLevel,paramAction, conn,false);
+								res += slave.toDts(bi, indentLevel, conn, false);
 								vHandled.add(slave);
 								if(slave.getScd().getGroup().equalsIgnoreCase("bridge"))
 								{
-									res += "\n" + getDTSBusFrom(bi, slave, paramAction, ++indentLevel);
+									res += "\n" + getDTSBusFrom(bi, slave, ++indentLevel);
 									indentLevel--;
 								}
 								res += indent(indentLevel) + "}; //end "+slave.getScd().getGroup()+" (" + slave.getInstanceName() + ")\n\n";
