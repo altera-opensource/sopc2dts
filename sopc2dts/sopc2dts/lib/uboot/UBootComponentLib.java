@@ -139,7 +139,7 @@ public class UBootComponentLib {
 	{
 		for(UBootLibComponent lc : vComponents)
 		{
-			if(lc.isCompatible(comp.getScd().getClassName()))
+			if(lc.isCompatible(comp.getClassName()))
 			{
 				return lc;
 			}

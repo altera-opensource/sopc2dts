@@ -27,8 +27,8 @@ import sopc2dts.lib.components.base.SICEthernet;
 public class SICTrippleSpeedEthernet extends SICEthernet {
 	private static final long serialVersionUID = -3828128314484790124L;
 
-	public SICTrippleSpeedEthernet(SopcComponentDescription scd, String iName, String version) {
-		super(scd, iName, version);
+	public SICTrippleSpeedEthernet(String cName, String iName, String ver, SopcComponentDescription scd) {
+		super(cName, iName, ver, scd);
 	}
 
 	protected BasicComponent getDMAEngineForIntf(Interface intf)

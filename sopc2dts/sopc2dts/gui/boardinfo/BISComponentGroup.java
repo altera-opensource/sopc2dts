@@ -48,9 +48,8 @@ public abstract class BISComponentGroup extends BoardInfoSubPanel implements Lis
 		this.group = group;
 		if(useWildcard)
 		{
-			wildCardComp = new BasicComponent(
-				new SopcComponentDescription(group, group, "none", "any"),
-				"all","0");
+			wildCardComp = new BasicComponent(group,"all","0",
+					new SopcComponentDescription(group, group, "none", "any"));
 			componentList.setListData(new BasicComponent[]{ wildCardComp });
 		}
 		componentList.setCellRenderer(new BasicComponentRenderer());

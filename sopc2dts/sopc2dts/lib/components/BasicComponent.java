@@ -28,21 +28,24 @@ import sopc2dts.lib.Parameter;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.components.base.SICUnknown;
 
 public class BasicComponent extends BasicElement {
 	private static final long serialVersionUID = -4790737466253508122L;
 	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;
+	private String className;
 	protected String version;
 	private int addr = 0;
 	protected Vector<Interface> vInterfaces = new Vector<Interface>();
 	protected SopcComponentDescription scd;
 	
-	public BasicComponent(SopcComponentDescription scd, String iName, String ver)
+	public BasicComponent(String cName, String iName, String ver,SopcComponentDescription scd)
 	{
-		this.setScd(scd);
-		this.setInstanceName(iName);
-		version = ver;
+		this.className = cName;
+		setScd(scd);
+		this.instanceName = iName;
+		this.version = ver;
 	}
 
 	protected String getRegForDTS(int indentLevel, BasicComponent master)
@@ -206,7 +209,12 @@ public class BasicComponent extends BasicElement {
 		return true;
 	}
 	public void setScd(SopcComponentDescription scd) {
-		this.scd = scd;
+		if(scd!=null)
+		{
+			this.scd = scd;
+		} else {
+			this.scd = new SICUnknown(className);
+		}
 	}
 	public SopcComponentDescription getScd() {
 		return scd;
@@ -288,5 +296,8 @@ public class BasicComponent extends BasicElement {
 	public void removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		
+	}
+	public String getClassName() {
+		return className;
 	}
 }

@@ -23,7 +23,7 @@ import java.util.Vector;
 
 public class SopcComponentDescription implements Serializable {
 	private static final long serialVersionUID = -3651440249662676605L;
-	protected String className;
+	protected String[] classNames;
 	protected String group;
 	protected String vendor;
 	protected String device;
@@ -34,7 +34,11 @@ public class SopcComponentDescription implements Serializable {
 	
 	public SopcComponentDescription(String cn, String grp, String vnd, String dev)
 	{
-		className = cn;
+		classNames = cn.split(",");
+		for(String name : classNames)
+		{
+			name = name.trim();
+		}
 		group = grp;
 		vendor = vnd;
 		device = dev;
@@ -112,14 +116,20 @@ public class SopcComponentDescription implements Serializable {
 		return group;
 	}
 
-	public void setClassName(String className) {
-		this.className = className;
+	public String[] getClassNames() {
+		return classNames;
 	}
-
-	public String getClassName() {
-		return className;
+	public boolean isSupportingClassName(String cn)
+	{
+		for(String name : classNames)
+		{
+			if(name.equalsIgnoreCase(cn))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
-
 	public void setVendor(String vendor) {
 		this.vendor = vendor;
 	}

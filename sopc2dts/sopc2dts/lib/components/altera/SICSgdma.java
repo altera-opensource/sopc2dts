@@ -35,8 +35,8 @@ public class SICSgdma extends BasicComponent {
 		"UNKNOWN"
 	};
 	
-	public SICSgdma(SopcComponentDescription scd, String iName, String version) {
-		super(scd, iName, version);
+	public SICSgdma(String cName, String iName, String ver, SopcComponentDescription scd) {
+		super(cName, iName, ver, scd);
 	}
 
 	@Override

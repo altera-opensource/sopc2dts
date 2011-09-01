@@ -32,9 +32,8 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	SICSgdma rx_dma, tx_dma;
 	BasicComponent desc_mem;
 	
-	public TSEMonolithic(SopcComponentDescription scd, String iName,
-			String version) {
-		super(scd, iName, version);
+	public TSEMonolithic(String cName, String iName, String ver, SopcComponentDescription scd) {
+		super(cName, iName, ver, scd);
 	}
 	protected void encapsulateSGDMA(SICSgdma dma, String name)
 	{

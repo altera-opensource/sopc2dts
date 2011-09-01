@@ -52,7 +52,7 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 			prefix = definenify(comp.getInstanceName()) + '_';
 		}
 		res += "/*\n" +
-				" * Macros for module '" + comp.getInstanceName() + "', class '" + comp.getScd().getClassName() + "'.\n";
+				" * Macros for module '" + comp.getInstanceName() + "', class '" + comp.getClassName() + "'.\n";
 		if(prefix.length()>0)
 		{
 			res += " * The macros are prefixed with '" + prefix + "'.\n" +
@@ -63,7 +63,7 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 		res += " */\n";
 		if(!comp.getInstanceName().equalsIgnoreCase(pov))
 		{
-			res += "#define " + prefix + "COMPONENT_TYPE " + comp.getScd().getClassName() + "\n" +
+			res += "#define " + prefix + "COMPONENT_TYPE " + comp.getClassName() + "\n" +
 					"#define " + prefix +"COMPONENT_NAME " + comp.getInstanceName() + "\n";
 		}
 		for(Parameter ass : comp.getParams())

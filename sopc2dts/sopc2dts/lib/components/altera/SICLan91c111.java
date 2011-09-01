@@ -27,8 +27,8 @@ import sopc2dts.lib.components.base.SICEthernet;
 public class SICLan91c111 extends SICEthernet {
 	private static final long serialVersionUID = 592307298404267875L;
 
-	public SICLan91c111(SopcComponentDescription scd, String iName, String version) {
-		super(scd, iName, version);
+	public SICLan91c111(String cName, String iName, String ver, SopcComponentDescription scd) {
+		super(cName, iName, ver, scd);
 	}
 
 	@Override

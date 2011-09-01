@@ -29,7 +29,7 @@ public class QSysSubSystem extends BasicComponent {
 	protected Vector<BasicComponent> vSystemComponents = new Vector<BasicComponent>();
 
 	public QSysSubSystem(String iName, String ver) {
-		super(new SopcComponentDescription(iName, "QSys", "ALTR", iName), iName, ver);
+		super(iName, iName, ver, new SopcComponentDescription(iName, "QSys", "ALTR", iName));
 	}
 
 	public void addModule(BasicComponent bc) {

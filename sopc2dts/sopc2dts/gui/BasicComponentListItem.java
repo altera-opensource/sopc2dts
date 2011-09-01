@@ -49,13 +49,11 @@ public class BasicComponentListItem extends JPanel {
 		} else {
 			this.setOpaque(selected);
 		}
-//		this.add(new JLabel("Name"));
-//		this.add(new JLabel(bc.getInstanceName()));
 		this.add(new JLabel("Type"));
 		this.add(new JLabel(bc.getScd().getDevice()));
 		this.add(new JLabel("Group"));
 		this.add(new JLabel(bc.getScd().getGroup()));
 		this.add(new JLabel("SOPC-Class"));
-		this.add(new JLabel(bc.getScd().getClassName()));
+		this.add(new JLabel(bc.getClassName()));
 	}
 }

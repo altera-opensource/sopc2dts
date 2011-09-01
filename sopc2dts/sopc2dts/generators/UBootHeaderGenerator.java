@@ -92,7 +92,7 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 		BasicComponent comp = intf.getOwner();
 		vHandled.add(comp);
 		String res = "/* " + comp.getInstanceName() + '.' + 
-				intf.getName() + " is a " + comp.getScd().getClassName() + " */\n";
+				intf.getName() + " is a " + comp.getClassName() + " */\n";
 		res += UBootComponentLib.getInstance().getCompFor(comp).getHeadersFor(
 				memMaster, irqMaster, comp, comp.getInterfaces().indexOf(intf), offset);
 		return res;

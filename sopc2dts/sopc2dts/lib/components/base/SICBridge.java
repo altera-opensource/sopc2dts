@@ -33,8 +33,8 @@ import sopc2dts.lib.components.Interface;
 public class SICBridge extends BasicComponent {
 	private static final long serialVersionUID = -2430030898696019903L;
 
-	public SICBridge(SopcComponentDescription scd, String iName, String version) {
-		super(scd, iName, version);
+	public SICBridge(String cName, String iName, String version, SopcComponentDescription scd) {
+		super(cName, iName, version,scd);
 	}
 	
 	protected String getDtsRanges(int indentLevel, Connection conn)
@@ -78,7 +78,7 @@ public class SICBridge extends BasicComponent {
 	}
 	private void removeFromSystem(AvalonSystem sys)
 	{
-		Logger.logln("Try to eliminate " + getScd().getClassName() + 
+		Logger.logln("Try to eliminate " + getClassName() + 
 				": " + getInstanceName(), LogLevel.INFO);
 		Interface masterIntf = null, slaveIntf = null;
 		for(Interface intf : getInterfaces())
@@ -146,13 +146,13 @@ public class SICBridge extends BasicComponent {
 	public void removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		boolean remove = false;
-		if(getScd().getClassName().equalsIgnoreCase("altera_avalon_tri_state_bridge"))
+		if(getScd().isSupportingClassName("altera_avalon_tri_state_bridge"))
 		{
 			//Always remove tristate bridges.
 			remove = true;
-		} else if((getScd().getClassName().equalsIgnoreCase("altera_avalon_pipeline_bridge") ||
-				getScd().getClassName().equalsIgnoreCase("altera_avalon_clock_crossing") ||
-				getScd().getClassName().equalsIgnoreCase("altera_avalon_half_rate_bridge")) &&
+		} else if((getScd().isSupportingClassName("altera_avalon_pipeline_bridge") ||
+				getScd().isSupportingClassName("altera_avalon_clock_crossing") ||
+				getScd().isSupportingClassName("altera_avalon_half_rate_bridge")) &&
 				(!this.isTranslatingBridge()))
 		{
 			remove = true;

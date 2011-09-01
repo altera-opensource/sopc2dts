@@ -138,7 +138,7 @@ public class SopcComponentLib implements ContentHandler {
 	{
 		for(SopcComponentDescription scd : vLibComponents)
 		{
-			if(className.equalsIgnoreCase(scd.getClassName()))
+			if(scd.isSupportingClassName(className))
 			{
 				return scd;
 			}
@@ -150,30 +150,30 @@ public class SopcComponentLib implements ContentHandler {
 		if(className.equalsIgnoreCase("triple_speed_ethernet"))
 		{
 			//return new TSEModular(getScdByClassName(className), instanceName, version);			
-			return new TSEMonolithic(getScdByClassName(className), instanceName, version);			
+			return new TSEMonolithic(className, instanceName, version, getScdByClassName(className));			
 		} else if (className.equalsIgnoreCase("altera_avalon_sgdma")) {
-			return new SICSgdma(getScdByClassName(className), instanceName, version);
+			return new SICSgdma(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_avalon_epcs_flash_controller")) {
-			return new SICEpcs(getScdByClassName("altera_avalon_spi"), instanceName, version);
+			return new SICEpcs(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_avalon_lan91c111")) {
-			return new SICLan91c111(getScdByClassName(className), instanceName, version);
+			return new SICLan91c111(className, instanceName, version, getScdByClassName(className));
 		} else {
 			SopcComponentDescription scd = getScdByClassName(className);
 			if(scd!=null)
 			{
 				if (scd.getGroup().equalsIgnoreCase("bridge")) {
-					return new SICBridge(getScdByClassName(className), instanceName, version);
+					return new SICBridge(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("flash")) {
-					return new SICFlash(scd, instanceName, version);
+					return new SICFlash(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("i2c")) {
-					return new SICI2CMaster(scd, instanceName, version);
+					return new SICI2CMaster(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("ethernet")) {
-					return new SICEthernet(scd, instanceName, version);
+					return new SICEthernet(className, instanceName, version, getScdByClassName(className));
 				} else {
-					return new BasicComponent(scd,instanceName, version);
+					return new BasicComponent(className,instanceName, version,scd);
 				}
 			} else {
-				return new BasicComponent(new SICUnknown(className), instanceName, version);
+				return new BasicComponent(className, instanceName, version, null);
 			}
 		}
 	}
@@ -184,7 +184,7 @@ public class SopcComponentLib implements ContentHandler {
 			if(!(comp.getScd() instanceof SICUnknown))
 			{
 				Logger.logln("Component " + comp.getInstanceName() + " of class "
-						+ comp.getScd().getClassName() + " is self-describing "
+						+ comp.getClassName() + " is self-describing "
 						+ "but has a lib-version as well. Using self-described version",
 						LogLevel.INFO);
 			}
@@ -193,24 +193,27 @@ public class SopcComponentLib implements ContentHandler {
 			if(comp.getScd() instanceof SICUnknown)
 			{
 				Logger.logln("Component " + comp.getInstanceName() + " of class "
-						+ comp.getScd().getClassName() + " is unknown", LogLevel.WARNING);
+						+ comp.getClassName() + " is unknown", LogLevel.WARNING);
 			}
 		}
-		String className = comp.getScd().getClassName();
-		if(!comp.getScd().isRequiredParamsOk(comp))
+		String className = comp.getClassName();
+		if(comp.getScd()!=null)
 		{
-			for(SopcComponentDescription scd : vLibComponents)
+			if(!comp.getScd().isRequiredParamsOk(comp))
 			{
-				if(scd.getClassName().equalsIgnoreCase(className))
+				for(SopcComponentDescription scd : vLibComponents)
 				{
-					if(scd.isRequiredParamsOk(comp))
+					if(scd.isSupportingClassName(className))
 					{
-						comp.setScd(scd);
-						return comp;
+						if(scd.isRequiredParamsOk(comp))
+						{
+							comp.setScd(scd);
+							return comp;
+						}
 					}
-				}
-			}	
-			comp.setScd(new SICUnknown(className));
+				}	
+				comp.setScd(null);
+			}
 		}
 		return comp;
 	}

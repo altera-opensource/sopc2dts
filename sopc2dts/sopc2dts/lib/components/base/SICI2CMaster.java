@@ -12,8 +12,8 @@ import sopc2dts.lib.components.SopcComponentDescription;
 public class SICI2CMaster extends BasicComponent {
 	private static final long serialVersionUID = 8745845145232836596L;
 
-	public SICI2CMaster(SopcComponentDescription scd, String iName, String ver) {
-		super(scd, iName, ver);
+	public SICI2CMaster(String cName, String iName, String ver, SopcComponentDescription scd) {
+		super(cName, iName, ver, scd);
 	}
 	@Override
 	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)

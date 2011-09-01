@@ -118,7 +118,7 @@ class PtfHandler {
 			}
 		} else if(tag.equals("CLOCKS"))
 		{
-			BasicComponent clock = new BasicComponent(new SopcComponentDescription("CLOCKS","clock","ALTR","clock"),"clocks","0");
+			BasicComponent clock = new BasicComponent("CLOCKS","clocks","0",new SopcComponentDescription("CLOCKS","clock","ALTR","clock"));
 			int i=0;
 			while(i<vChildren.size())
 			{

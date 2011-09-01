@@ -27,12 +27,12 @@ public class SCDSelfDescribing extends SopcComponentDescription {
 
 	public SCDSelfDescribing(BasicComponent comp)
 	{
-		super(comp.getScd().getClassName(),
+		super(comp.getClassName(),
 				comp.getParamValByName("embeddedsw.dts.group"),
 				comp.getParamValByName("embeddedsw.dts.vendor"),
 				comp.getParamValByName("embeddedsw.dts.name"));
 		if(device == null) {
-			device = getClassName();
+			device = comp.getClassName();
 		}
 	}
 	
