@@ -22,7 +22,7 @@ package sopc2dts.lib;
 import sopc2dts.generators.AbstractSopcGenerator;
 
 public class Parameter {
-	public enum DataType { NUMBER, BOOLEAN, STRING };
+	public enum DataType { NUMBER, UNSIGNED, BOOLEAN, STRING };
 	String name;
 	String value;
 	DataType dataType = DataType.BOOLEAN;
@@ -31,7 +31,7 @@ public class Parameter {
 	{
 		this.name = name;
 		this.value = value;
-		dataType = t;
+		this.dataType = t;
 	}
 	public boolean isForDts()
 	{
@@ -58,6 +58,9 @@ public class Parameter {
 		} else if(dtName.equalsIgnoreCase("NUMBER"))
 		{
 			return DataType.NUMBER;
+		} else if(dtName.equalsIgnoreCase("UNSIGNED"))
+		{
+			return DataType.UNSIGNED;
 		}
 		return null;
 	}
@@ -98,6 +101,12 @@ public class Parameter {
 			res = AbstractSopcGenerator.indent(indentLevel) + dtsName;
 			switch(dt)
 			{
+			case UNSIGNED:
+				if(value.charAt(0) == '-')
+				{
+					value = String.format("0x%08X", Integer.decode(value));
+				}
+			/* Fallthrough */
 			case NUMBER: {
 				res += " = <" + value + '>';
 			} break;
