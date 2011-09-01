@@ -1,5 +1,5 @@
 <SOPC2DTS_COMPONENTLIB vendor="ALTR">
-	<S2DComponent classname="altera_nios2" group="cpu" compatDevice="nios2">
+	<S2DComponent classname="altera_nios2,altera_nios2_qsys" group="cpu" compatDevice="nios2">
 		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.CPU_FREQ"></parameter>
 		<parameter dtsName="dcache-line-size" sopcName="embeddedsw.CMacro.DCACHE_LINE_SIZE"></parameter>
 		<parameter dtsName="icache-line-size" sopcName="embeddedsw.CMacro.ICACHE_LINE_SIZE"></parameter>
@@ -60,47 +60,20 @@
 		compatDevice="ps2">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_pipeline_bridge"
-		group="bridge" compatDevice="avalon">
-		<compatible name="simple-bus"></compatible>
-	</S2DComponent>
 	<S2DComponent classname="altera_avalon_tri_state_bridge"
 		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_clock_crossing"
-		group="bridge" compatDevice="avalon">
-		<compatible name="simple-bus"></compatible>
-	</S2DComponent>
-	<S2DComponent classname="altera_avalon_half_rate_bridge"
-		group="bridge" compatDevice="avalon">
-		<compatible name="simple-bus"></compatible>
-	</S2DComponent>
-	<S2DComponent classname="altera_avalon_mm_bridge"
+	<S2DComponent classname="altera_avalon_clock_crossing,altera_avalon_mm_clock_crossing_bridge,altera_avalon_pipeline_bridge,altera_avalon_mm_bridge"
 		group="bridge" compatDevice="avalon">
 		<compatible name="simple-bus"></compatible>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cy7c1380_ssram" group="memory" compatDevice="ssram">
 	</S2DComponent>
-	<S2DComponent classname="altmemddr" group="memory"
+	<S2DComponent classname="altmemddr,ddr_sdram_component_classic,altmemddr2,ddr2_high_perf,altmemddr3,altera_uniphy_ddr3" group="memory"
 		compatDevice="altmemddr">
 	</S2DComponent>
-	<S2DComponent classname="altmemddr2" group="memory"
-		compatDevice="altmemddr2">
-	</S2DComponent>
-	<S2DComponent classname="altmemddr3" group="memory"
-		compatDevice="altmemddr3">
-	</S2DComponent>
-	<S2DComponent classname="ddr2_high_perf" group="memory"
-		compatDevice="ddr2_high_perf">
-	</S2DComponent>
-	<S2DComponent classname="altera_uniphy_ddr3" group="memory"
-		compatDevice="altera_uniphy_ddr3">
-	</S2DComponent>
 	<S2DComponent classname="altera_avalon_new_sdram_controller" group="memory"
-		compatDevice="sdram">
-	</S2DComponent>
-	<S2DComponent classname="ddr_sdram_component_classic" group="memory"
 		compatDevice="sdram">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_dma" group="dma"
@@ -143,7 +116,7 @@
 		group="perf_counter" compatDevice="perf-counter">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_sysid" group="sysid"
+	<S2DComponent classname="altera_avalon_sysid,altera_avalon_sysid_qsys" group="sysid"
 		compatDevice="sysid">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
