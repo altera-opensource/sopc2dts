@@ -82,6 +82,9 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 				{
 					bc = new Connection(masterInterface, slaveInterface, 
 							SystemDataType.STREAMING);
+				} else if(kind.equalsIgnoreCase("reset")) {
+					//Explicitly ignore resets.
+					bc = null;
 				} else {
 					Logger.logln("Unhandled connection of kind: " + kind,LogLevel.DEBUG);
 				}
