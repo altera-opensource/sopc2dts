@@ -35,7 +35,7 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 	Vector<BasicComponent> vHandled;
 	
 	public UBootHeaderGenerator(AvalonSystem s) {
-		super(s);
+		super(s, true);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getOutput(BoardInfo bi) {
+	public String getTextOutput(BoardInfo bi) {
 		String res = getSmallCopyRightNotice("header") + 
 				"#ifndef CUSTOM_FPGA_H_\n" +
 				"#define CUSTOM_FPGA_H_\n\n" +

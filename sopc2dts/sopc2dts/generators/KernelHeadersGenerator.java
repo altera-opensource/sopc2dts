@@ -27,7 +27,7 @@ import sopc2dts.lib.components.BasicComponent;
 public class KernelHeadersGenerator extends AbstractSopcGenerator {
 	boolean minimal = true;
 	public KernelHeadersGenerator(AvalonSystem s) {
-		super(s);
+		super(s,true);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class KernelHeadersGenerator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getOutput(BoardInfo bi) {
+	public String getTextOutput(BoardInfo bi) {
 		String res = null;
 		for(BasicComponent comp : sys.getSystemComponents())
 		{

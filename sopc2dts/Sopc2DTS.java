@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
@@ -30,10 +31,9 @@ import org.xml.sax.SAXException;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
-import sopc2dts.generators.DTSGenerator;
-import sopc2dts.generators.KernelHeadersGenerator;
+import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.generators.GeneratorFactory;
 import sopc2dts.generators.SopcCreateHeaderFilesImitator;
-import sopc2dts.generators.UBootHeaderGenerator;
 import sopc2dts.gui.Sopc2DTSGui;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
@@ -165,43 +165,53 @@ public class Sopc2DTS {
 						{
 							BufferedWriter out = new BufferedWriter(new FileWriter(master.getInstanceName()+".h"));
 							bInfo.setPov(master.getInstanceName());
-							out.write(fake.getOutput(bInfo));
+							out.write(fake.getTextOutput(bInfo));
 							out.close();
 						}
 					} else {
-						String generatedData = null;
+						String generatedText = null;
+						byte[] generatedBinary = null;
 						if(bootargs.value.length()>0)
 						{
 							bInfo.setBootArgs(bootargs.value);
 						}
-						if(outputType.value.equalsIgnoreCase("dts"))
+						AbstractSopcGenerator gen = GeneratorFactory.createGeneratorFor(sys, outputType.value);
+						if(gen == null)
 						{
-							DTSGenerator dGen = new DTSGenerator(sys);
-							generatedData = dGen.getOutput(bInfo);
-						} else if(outputType.value.equalsIgnoreCase("uboot"))
-						{
-							UBootHeaderGenerator uGen = new UBootHeaderGenerator(sys);
-							generatedData = uGen.getOutput(bInfo);
-						} else if(outputType.value.equalsIgnoreCase("kernel"))
-						{
-							KernelHeadersGenerator kGen = new KernelHeadersGenerator(sys);
-							generatedData = kGen.getOutput(null);
-						} else if(outputType.value.equalsIgnoreCase("kernel-full"))
-						{
-							SopcCreateHeaderFilesImitator fake = new SopcCreateHeaderFilesImitator(sys);
-							generatedData = fake.getOutput(bInfo);
+							Logger.logln("Unable to find generator for type '" + 
+									outputType.value + "'", LogLevel.ERROR);
 						} else {
-							System.out.println("Unsupported output type: " + outputType.value);
-						}
-						if(generatedData!=null)
-						{
-							if(outputFileName.value.length()==0)
+							if(gen.isTextOutput())
 							{
-								System.out.println(generatedData);
+								generatedText = gen.getTextOutput(bInfo);
 							} else {
+								generatedBinary = gen.getBinaryOutput(bInfo);
+							}
+						}
+						if(outputFileName.value.length()==0)
+						{
+							if(generatedText!=null)
+							{
+								System.out.println(generatedText);
+							} else if(generatedBinary!=null)
+							{
+								System.out.println("Generated data is binary. Unable to display. Please supply an outputfilename.");
+							} else {
+								System.out.println("Nothing was generated.");
+							}
+						} else {
+							if(generatedText != null)
+							{
 								BufferedWriter out = new BufferedWriter(new FileWriter(outputFileName.value));
-								out.write(generatedData);
+								out.write(generatedText);
 								out.close();
+							} else if(generatedBinary != null)
+							{
+								FileOutputStream out = new FileOutputStream(outputFileName.value);
+								out.write(generatedBinary);
+								out.close();
+							} else {
+								System.out.println("Nothing was generated.");
 							}
 						}
 					}

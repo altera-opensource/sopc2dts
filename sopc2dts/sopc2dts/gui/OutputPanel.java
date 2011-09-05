@@ -60,7 +60,7 @@ public class OutputPanel extends JPanel implements ActionListener {
 		if(sys!=null)
 		{
 			DTSGenerator gen = new DTSGenerator(sys);
-			txtDts.setText(gen.getOutput((bi == null ? new BoardInfo() : bi)));
+			txtDts.setText(gen.getTextOutput((bi == null ? new BoardInfo() : bi)));
 		} else {
 			txtDts.setText("");
 		}

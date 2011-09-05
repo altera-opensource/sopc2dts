@@ -44,10 +44,14 @@ public abstract class AbstractSopcGenerator {
 	" */\n";
 
 	AvalonSystem sys;
-	public AbstractSopcGenerator(AvalonSystem s)
+	boolean textOutput;
+
+	public AbstractSopcGenerator(AvalonSystem s, boolean isText)
 	{
 		sys = s;
+		textOutput = isText;
 	}
+	
 	public static String indent(int level)
 	{
 		String res = "";
@@ -57,10 +61,12 @@ public abstract class AbstractSopcGenerator {
 		}
 		return res;
 	}
+	
 	public static String definenify(String in)
 	{
 		return in.toUpperCase().replace("-", "_");
 	}
+	
 	protected static String getSmallCopyRightNotice(String componentName)
 	{
 		return "/*\n"
@@ -69,6 +75,18 @@ public abstract class AbstractSopcGenerator {
 			+ " * in cooperation with the nios2 community <Nios2-dev@sopc.et.ntust.edu.tw>\n"
 			+ " */\n";
 	}
+	
+	public boolean isTextOutput() {
+		return textOutput;
+	}
+
 	public abstract String getExtension();
-	public abstract String getOutput(BoardInfo bi);
+	public abstract String getTextOutput(BoardInfo bi);
+	/*
+	 * This function can be overridden by classes that only support binary
+	 */
+	public byte[] getBinaryOutput(BoardInfo bi)
+	{
+		return getTextOutput(bi).getBytes();
+	}
 }

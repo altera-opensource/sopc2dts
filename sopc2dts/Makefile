@@ -3,6 +3,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/LogListener.java sopc2dts/Logger.java \
 	sopc2dts/generators/AbstractSopcGenerator.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
+	sopc2dts/generators/GeneratorFactory.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
 	sopc2dts/generators/UBootHeaderGenerator.java \
 	sopc2dts/gui/BasicComponentComboBoxModel.java \

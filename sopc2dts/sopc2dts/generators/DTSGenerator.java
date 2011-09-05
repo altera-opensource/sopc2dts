@@ -34,7 +34,7 @@ import sopc2dts.lib.components.MemoryBlock;
 public class DTSGenerator extends AbstractSopcGenerator {
 	Vector<BasicComponent> vHandled = new Vector<BasicComponent>();
 	public DTSGenerator(AvalonSystem s) {
-		super(s);
+		super(s,true);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getOutput(BoardInfo bi) {
+	public String getTextOutput(BoardInfo bi) {
 		int indentLevel = 0;
 		vHandled.clear();
 		String res = "";
