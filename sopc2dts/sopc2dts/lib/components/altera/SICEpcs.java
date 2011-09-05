@@ -29,8 +29,9 @@ import sopc2dts.lib.components.base.SICFlash;
 public class SICEpcs extends SICFlash {
 	private static final long serialVersionUID = 8647857111806987880L;
 
-	public SICEpcs(String cName, String iName, String ver, SopcComponentDescription scd) {
-		super(cName, iName, ver, scd);
+	public SICEpcs(String cName, String iName, String ver) {
+		super(cName, iName, ver, new SopcComponentDescription(
+				"altera_avalon_epcs_flash_controller", "flash", "ALTR", "epcs_flash"));
 	}
 	@Override
 	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, 

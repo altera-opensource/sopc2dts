@@ -154,7 +154,7 @@ public class SopcComponentLib implements ContentHandler {
 		} else if (className.equalsIgnoreCase("altera_avalon_sgdma")) {
 			return new SICSgdma(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_avalon_epcs_flash_controller")) {
-			return new SICEpcs(className, instanceName, version, getScdByClassName(className));
+			return new SICEpcs(className, instanceName, version);
 		} else if (className.equalsIgnoreCase("altera_avalon_lan91c111")) {
 			return new SICLan91c111(className, instanceName, version, getScdByClassName(className));
 		} else {
