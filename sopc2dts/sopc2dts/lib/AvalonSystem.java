@@ -89,7 +89,10 @@ public class AvalonSystem extends BasicElement {
 			int oldSize = vSystemComponents.size();
 			BasicComponent c = vSystemComponents.get(i);
 			c.removeFromSystemIfPossible(this);
+			//Move back the number of components removed, or advance
 			i+= (vSystemComponents.size() - oldSize) + 1;
+			//Don't move back beyond the beginning.
+			if(i<0) i=0;
 		}
 	}
 
