@@ -27,40 +27,76 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import sopc2dts.generators.DTSGenerator;
+import sopc2dts.Logger;
+import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.generators.GeneratorFactory;
+import sopc2dts.generators.GeneratorFactory.GeneratorType;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 
 public class OutputPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 8995906903008952772L;
 	JTextArea txtDts = new JTextArea();
-	JButton saveDTS = new JButton("Save as DTS");
+	JButton saveAs = new JButton("Save as");
+	GeneratorType genType;
 	AvalonSystem sys;
 	BoardInfo bi;
 	
-	public OutputPanel()
+	public OutputPanel(GeneratorType outputType)
 	{
+		genType = outputType;
 		txtDts.setEditable(false);
 		txtDts.setTabSize(4);
 		JPanel pnlTop = new JPanel();
-		saveDTS.addActionListener(this);
-		pnlTop.add(saveDTS);
+		JPanel pnlLeft = new JPanel();
+		pnlLeft.setLayout(new BoxLayout(pnlLeft, BoxLayout.Y_AXIS));
+		ButtonGroup bGroup = new ButtonGroup();
+		for(GeneratorType gt : GeneratorType.values())
+		{
+			JRadioButton jrb = new JRadioButton(GeneratorFactory.getGeneratorNameByType(gt));
+			if(gt == outputType)
+			{
+				jrb.setSelected(true);
+			}
+			jrb.addActionListener(this);
+			pnlLeft.add(jrb);
+			bGroup.add(jrb);
+			JLabel lbl = new JLabel(GeneratorFactory.getGeneratorDescriptionByType(gt));
+			pnlLeft.add(lbl);
+		}
+		saveAs.addActionListener(this);
+		pnlTop.add(saveAs);
 		this.setLayout(new BorderLayout());
-		this.add(new JScrollPane(txtDts), BorderLayout.CENTER);
 		this.add(pnlTop, BorderLayout.NORTH);
+		this.add(pnlLeft, BorderLayout.WEST);
+		this.add(new JScrollPane(txtDts), BorderLayout.CENTER);
 	}
 	void updateDts()
 	{
 		if(sys!=null)
 		{
-			DTSGenerator gen = new DTSGenerator(sys);
-			txtDts.setText(gen.getTextOutput((bi == null ? new BoardInfo() : bi)));
+			AbstractSopcGenerator gen = GeneratorFactory.createGeneratorFor(sys, genType);
+			if(gen!=null)
+			{
+				if(gen.isTextOutput())
+				{
+					txtDts.setText(gen.getTextOutput((bi == null ? new BoardInfo() : bi)));
+				} else {
+					txtDts.setText("TBD");
+				}
+			} else {
+				txtDts.setText("");
+			}
 		} else {
 			txtDts.setText("");
 		}
@@ -76,7 +112,7 @@ public class OutputPanel extends JPanel implements ActionListener {
 		updateDts();
 	}
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(saveDTS))
+		if(e.getSource().equals(saveAs))
 		{
 			JFileChooser jfc = new JFileChooser();
 			if(jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
@@ -88,10 +124,14 @@ public class OutputPanel extends JPanel implements ActionListener {
 					out.write(txtDts.getText());
 					out.close();
 				} catch (IOException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					Logger.logException(ex);
 				}
 			}
+		} else if(e.getSource() instanceof JRadioButton)
+		{
+			JRadioButton jrb = (JRadioButton)e.getSource();
+			genType = GeneratorFactory.getGeneratorTypeByName(jrb.getText());
+			updateDts();
 		}
 	}
 }

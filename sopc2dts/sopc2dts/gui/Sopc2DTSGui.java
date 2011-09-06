@@ -29,6 +29,7 @@ import javax.swing.JTextArea;
 
 import sopc2dts.LogListener;
 import sopc2dts.Logger;
+import sopc2dts.generators.GeneratorFactory.GeneratorType;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 
@@ -38,7 +39,7 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 	JTextArea txtLog = new JTextArea();
 	InputPanel pnlInput;
 	BoardInfoPanel pnlBoardInfo;
-	OutputPanel pnlOutput = new OutputPanel();
+	OutputPanel pnlOutput = new OutputPanel(GeneratorType.DTS);
 	private AvalonSystem sys;
 	private BoardInfo boardInfo;
 	

@@ -133,13 +133,13 @@ public class Sopc2DTS {
 		}
 		if(Boolean.parseBoolean(gui.value))
 		{
-			if(outputType.value.equalsIgnoreCase("dts"))
+			if(!Boolean.parseBoolean(mimicAlteraTools.value))
 			{
 				Sopc2DTSGui s2dgui = new Sopc2DTSGui(inputFileName.value, bInfo);
 				s2dgui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				s2dgui.setVisible(true);
 			} else {
-				Logger.logln("GUI-Mode is only supported for dts output", 
+				Logger.logln("GUI-Mode is not supported when mimic-sopc-create-header-files is set", 
 						LogLevel.ERROR);
 			}
 		} else {
