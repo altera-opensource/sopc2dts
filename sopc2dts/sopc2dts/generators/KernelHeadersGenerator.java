@@ -47,7 +47,13 @@ public class KernelHeadersGenerator extends AbstractSopcGenerator {
 				{
 					res = copyRightNotice + 
 						"#ifndef _ALTERA_CPU_H_\n" +
-						"#define _ALTERA_CPU_H_\n\n";
+						"#define _ALTERA_CPU_H_\n\n" +
+						"/*\n" +
+						" * Warning:\n" +
+						" * from kernel 2.6.38 onwards this is not really needed anymore\n" +
+						" * Just choose \"Generic devicetree based NiosII system\" as your \n" +
+						" * target board and you should be fine.\n" +
+						" */\n\n";
 				}
 				res += "/*\n" +
 						" * Dumping parameters for " + comp.getInstanceName() + " (type " + comp.getScd().getGroup() + ")\n" +
