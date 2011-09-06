@@ -19,29 +19,40 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.generators;
 
-import sopc2dts.lib.AvalonSystem;
+import java.io.IOException;
 
-public class GeneratorFactory {
-	public static AbstractSopcGenerator createGeneratorFor(AvalonSystem sys, String type)
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
+import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.BoardInfo;
+
+public class DTBGenerator extends DTSGenerator {
+
+	public DTBGenerator(AvalonSystem s) {
+		super(s);
+		textOutput = false;
+	}
+	@Override
+	public String getExtension() {
+		return "dtb";
+	}
+	@Override
+	public byte[] getBinaryOutput(BoardInfo bi)
 	{
-		if(type.equalsIgnoreCase("dts"))
-		{
-			return new DTSGenerator(sys);
-		} else if(type.equalsIgnoreCase("dtb"))
-		{
-			return new DTBGenerator(sys);
-		} else if(type.equalsIgnoreCase("dtb-hex8"))
-		{
-			return new DTBHex8Generator(sys);
-		} else if(type.equalsIgnoreCase("u-boot")) {
-			return new UBootHeaderGenerator(sys);
-		} else if(type.equalsIgnoreCase("kernel"))
-		{
-			return new KernelHeadersGenerator(sys);
-		} else if(type.equalsIgnoreCase("kernel-full"))
-		{
-			return new SopcCreateHeaderFilesImitator(sys);
+		byte[] res = null;
+		try {
+			Process proc = Runtime.getRuntime().exec(new String[] {
+					"dtc","-I","dts","-O","dtb"});
+			proc.getOutputStream().write(getTextOutput(bi).getBytes());
+			proc.getOutputStream().close();
+			Logger.logln("dtc returned " + proc.waitFor(), LogLevel.DEBUG);
+			res = new byte[proc.getInputStream().available()];
+			proc.getInputStream().read(res);
+		} catch (IOException e) {
+			Logger.logException(e);
+		} catch (InterruptedException e) {
+			Logger.logException(e);
 		}
-		return null;
+		return res;
 	}
 }

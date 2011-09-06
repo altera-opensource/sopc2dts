@@ -3,6 +3,8 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/LogListener.java sopc2dts/Logger.java \
 	sopc2dts/generators/AbstractSopcGenerator.java \
 	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
+	sopc2dts/generators/DTBGenerator.java \
+	sopc2dts/generators/DTBHex8Generator.java \
 	sopc2dts/generators/GeneratorFactory.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
 	sopc2dts/generators/UBootHeaderGenerator.java \
@@ -20,6 +22,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/gui/OutputPanel.java \
 	sopc2dts/gui/Sopc2DTSGui.java \
 	sopc2dts/gui/ThreadedLoadPanel.java \
+	sopc2dts/lib/Bin2IHex.java \
 	sopc2dts/lib/BoardInfo.java sopc2dts/lib/SopcComponentLib.java \
 	sopc2dts/lib/AvalonSystem.java sopc2dts/lib/BasicElement.java \
 	sopc2dts/lib/Connection.java sopc2dts/lib/Parameter.java \
