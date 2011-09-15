@@ -52,7 +52,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		}
 		if(be.getPhyID()!=null)
 		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,phy-id = <" + be.getPhyID() + ">;\n";
+			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,phy-addr = <" + be.getPhyID() + ">;\n";
 		}
 		return res;
 	}
