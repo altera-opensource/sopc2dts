@@ -69,7 +69,10 @@ public abstract class BISComponentGroup extends BoardInfoSubPanel implements Lis
 	{
 		super.setBoardInfoAndSys(bi, s);
 		Vector<BasicComponent> vComp = new Vector<BasicComponent>();
-		vComp.add(wildCardComp);
+		if(wildCardComp!=null)
+		{
+			vComp.add(wildCardComp);
+		}
 		if(s!=null)
 		{
 			for(BasicComponent comp : s.getSystemComponents())
@@ -81,7 +84,7 @@ public abstract class BISComponentGroup extends BoardInfoSubPanel implements Lis
 			}
 		}
 		componentList.setListData(vComp);
-		return (vComp.size()>1);
+		return (vComp.size()>1) || ((vComp.size()>0) && (wildCardComp == null));
 	}
 
 	@Override
