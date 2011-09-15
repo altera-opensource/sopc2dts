@@ -21,8 +21,11 @@ package sopc2dts.lib.components.altera;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
+import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
@@ -35,6 +38,25 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	public TSEMonolithic(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
+	@Override
+	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
+	{
+		String res =  super.toDtsExtras(bi, indentLevel, conn, endComponent);
+		BICEthernet be = bi.getEthernetForChip(getInstanceName());
+		if(be.getMiiID()==null)
+		{
+			//Always needed for this driver! (atm)
+			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,mii-id = <0>;\n";
+		} else {
+			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,mii-id = <" + be.getMiiID() + ">;\n";
+		}
+		if(be.getPhyID()!=null)
+		{
+			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,phy-id = <" + be.getPhyID() + ">;\n";
+		}
+		return res;
+	}
+
 	protected void encapsulateSGDMA(SICSgdma dma, String name)
 	{
 		//CSR MM interface
@@ -83,7 +105,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		{
 			if(rx_dma == null)
 			{
-				Logger.logln("TSEMonolithic: No RX-DMA engine. Cannot find descriptor memory");
+				Logger.logln("TSEMonolithic: No RX-DMA engine. Cannot find descriptor memory", LogLevel.WARNING);
 			} else {
 				Interface intfDescr = rx_dma.getInterfaceByName("descriptor_read");
 				desc_mem = findSlaveComponent(intfDescr, "memory", "onchipmem");

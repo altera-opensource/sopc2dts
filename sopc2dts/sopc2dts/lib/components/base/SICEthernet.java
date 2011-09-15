@@ -42,7 +42,7 @@ public class SICEthernet extends BasicComponent {
 		String res =  AbstractSopcGenerator.indent(indentLevel) + "address-bits = <" + getAddressBits() + ">;\n"
 					+ AbstractSopcGenerator.indent(indentLevel) + "max-frame-size = <" + getMaxFrameSize() + ">;\n"
 					+ AbstractSopcGenerator.indent(indentLevel) + "local-mac-address = [ ";
-		int[] mac_address = getMacAddress();
+		int[] mac_address = getMacAddress(bi);
 		for(int i=0; i<mac_address.length; i++)
 		{
 			res += String.format("%02X ", mac_address[i]);
@@ -50,9 +50,9 @@ public class SICEthernet extends BasicComponent {
 		res += "];\n";
 		return res;
 	}
-	protected int[] getMacAddress()
+	protected int[] getMacAddress(BoardInfo bi)
 	{
-		return new int[]{ 0, 0, 0, 0, 0, 0 };
+		return bi.getEthernetForChip(getInstanceName()).getMac();
 	}
 	protected int getAddressBits()
 	{

@@ -38,6 +38,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
+import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.FlashPartition;
 
@@ -54,7 +55,7 @@ public class BoardInfo implements ContentHandler, Serializable {
 	private String pov = "";
 	private PovType povType = PovType.CPU;
 	private BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
-
+	HashMap<String, BICEthernet> mEthernet = new HashMap<String, BICEthernet>();
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
 			new HashMap<String, Vector<FlashPartition>>(4);
 
@@ -90,6 +91,10 @@ public class BoardInfo implements ContentHandler, Serializable {
 		} else if(localName.equalsIgnoreCase("Bootargs"))
 		{
 				bootArgs = atts.getValue("val");
+		} else if(localName.equalsIgnoreCase("Ethernet")) 
+		{
+			BICEthernet be = new BICEthernet(atts);
+			mEthernet.put(be.getName(), be);
 		} else if(localName.equalsIgnoreCase("FlashPartitions")) 
 		{
 			//attribute chip can be null for a wildcard/fallback map
@@ -178,6 +183,15 @@ public class BoardInfo implements ContentHandler, Serializable {
 	public void setBootArgs(String bootArgs) {
 		this.bootArgs = bootArgs;
 	}
+	public BICEthernet getEthernetForChip(String instanceName)
+	{
+		BICEthernet be = mEthernet.get(instanceName);
+		if(be==null)
+		{
+			be = new BICEthernet(instanceName);
+		}
+		return be;
+	}
 	public HashMap<Integer, String> getI2CChipsForMaster(String instanceName) {
 		HashMap<Integer, String> res = mI2CMaps.get(instanceName);
 		if(res==null)
@@ -204,6 +218,10 @@ public class BoardInfo implements ContentHandler, Serializable {
 	}
 	public PovType getPovType() {
 		return povType;
+	}
+	public void setEthernetForChip(BICEthernet be)
+	{
+		mEthernet.put(be.getName(), be);
 	}
 	public void setPovType(PovType povType) {
 		this.povType = povType;
@@ -297,6 +315,11 @@ public class BoardInfo implements ContentHandler, Serializable {
 				}
 				xml += "\t</I2CBus>\n";
 			}			
+		}
+		//Etherwebs
+		for(BICEthernet be : mEthernet.values())
+		{
+			xml += be.toXml();
 		}
 		xml+="</BoardInfo>\n";
 		return xml;

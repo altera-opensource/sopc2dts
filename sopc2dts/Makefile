@@ -26,6 +26,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/BoardInfo.java sopc2dts/lib/SopcComponentLib.java \
 	sopc2dts/lib/AvalonSystem.java sopc2dts/lib/BasicElement.java \
 	sopc2dts/lib/Connection.java sopc2dts/lib/Parameter.java \
+	sopc2dts/lib/boardinfo/BICEthernet.java \
 	sopc2dts/lib/components/BasicComponent.java \
 	sopc2dts/lib/components/Interface.java \
 	sopc2dts/lib/components/MemoryBlock.java \
