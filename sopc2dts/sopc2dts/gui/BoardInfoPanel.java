@@ -42,6 +42,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.gui.boardinfo.BISFlash;
 import sopc2dts.gui.boardinfo.BISGeneral;
 import sopc2dts.gui.boardinfo.BISI2C;
+import sopc2dts.gui.boardinfo.BISEthernet;
 import sopc2dts.gui.boardinfo.BoardInfoSubPanel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
@@ -54,6 +55,7 @@ public class BoardInfoPanel extends ThreadedLoadPanel {
 	JButton btnSave = new JButton("Save");
 	BoardInfoSubPanel[] pnlBIS = {
 			new BISGeneral(),
+			new BISEthernet(),
 			new BISFlash(),
 			new BISI2C(),
 	};

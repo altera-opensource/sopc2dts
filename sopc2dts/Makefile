@@ -13,6 +13,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/gui/BasicComponentListItem.java \
 	sopc2dts/gui/BoardInfoPanel.java \
 	sopc2dts/gui/boardinfo/BISComponentGroup.java \
+	sopc2dts/gui/boardinfo/BISEthernet.java \
 	sopc2dts/gui/boardinfo/BISFlash.java \
 	sopc2dts/gui/boardinfo/BISGeneral.java \
 	sopc2dts/gui/boardinfo/BISI2C.java \
