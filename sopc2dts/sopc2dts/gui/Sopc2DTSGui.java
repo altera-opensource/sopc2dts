@@ -39,7 +39,7 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 	JTextArea txtLog = new JTextArea();
 	InputPanel pnlInput;
 	BoardInfoPanel pnlBoardInfo;
-	OutputPanel pnlOutput = new OutputPanel(GeneratorType.DTS);
+	OutputPanel pnlOutput;
 	private AvalonSystem sys;
 	private BoardInfo boardInfo;
 	
@@ -51,6 +51,7 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 		pnlInput = new InputPanel(inpFile, this);
 		pnlBoardInfo = new BoardInfoPanel(
 				(bInfo.getSourceFile() == null ? null : bInfo.getSourceFile().getName()), this);
+		pnlOutput = new OutputPanel(GeneratorType.DTS, sys, boardInfo);
 		jtp.addTab("Input", pnlInput);
 		jtp.addTab("Boardinfo", pnlBoardInfo);
 		jtp.addTab("Output", pnlOutput);

@@ -45,15 +45,17 @@ import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 
 public class OutputPanel extends JPanel implements ActionListener {
-	private static final long serialVersionUID = 8995906903008952772L;
+	private static final long serialVersionUID = -331418388758082488L;
 	JTextArea txtDts = new JTextArea();
 	JButton saveAs = new JButton("Save as");
 	GeneratorType genType;
 	AvalonSystem sys;
 	BoardInfo bi;
 	
-	public OutputPanel(GeneratorType outputType)
+	public OutputPanel(GeneratorType outputType, AvalonSystem s, BoardInfo b)
 	{
+		sys = s;
+		bi = b;
 		genType = outputType;
 		txtDts.setEditable(false);
 		txtDts.setTabSize(4);
