@@ -95,11 +95,6 @@ public class Sopc2DTS {
 	{
 		BoardInfo bInfo = null;
 		File f;
-		if(inputFileName.value.length()==0)
-		{
-			System.out.println("No input file specified!");
-			printUsage();
-		}
 		if(boardFileName.value.length()>0)
 		{
 			try {
@@ -143,6 +138,12 @@ public class Sopc2DTS {
 						LogLevel.ERROR);
 			}
 		} else {
+			if(inputFileName.value.length()==0)
+			{
+				System.out.println("No input file specified!");
+				printUsage();
+				return;
+			}
 			f = new File(inputFileName.value);
 			if(f.exists())
 			{
