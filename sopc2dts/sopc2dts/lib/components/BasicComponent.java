@@ -47,7 +47,14 @@ public class BasicComponent extends BasicElement {
 		this.instanceName = iName;
 		this.version = ver;
 	}
-
+	protected BasicComponent(BasicComponent bc)
+	{
+		super(bc);
+		this.instanceName = bc.instanceName;
+		this.className = bc.className;
+		this.version = bc.className;
+		this.scd = bc.scd;
+	}
 	protected String getRegForDTS(int indentLevel, BasicComponent master)
 	{
 		String res = "";

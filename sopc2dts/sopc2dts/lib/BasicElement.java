@@ -24,8 +24,17 @@ import java.util.Vector;
 
 public class BasicElement implements Serializable {
 	private static final long serialVersionUID = -1672549052228353372L;
-	protected Vector<Parameter> vParameters = new Vector<Parameter>();
-	
+	protected Vector<Parameter> vParameters;
+
+	protected BasicElement()
+	{
+		vParameters = new Vector<Parameter>();
+	}
+	protected BasicElement(BasicElement be)
+	{
+		//Shallow copy
+		this.vParameters = be.vParameters;
+	}
 	public boolean addParam(Parameter bp)
 	{
 		return vParameters.add(bp);
