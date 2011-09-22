@@ -76,10 +76,6 @@ public class AvalonSystem extends BasicElement {
 	}
 	public void recheckComponents()
 	{
-		for(BasicComponent comp : vSystemComponents)
-		{
-			SopcComponentLib.getInstance().finalCheckOnComponent(comp);
-		}
 		/*
 		 * Now remove tristate (and other unneeded) bridges. If any.
 		 * Also flatten hierarchical qsys designs.
@@ -94,6 +90,9 @@ public class AvalonSystem extends BasicElement {
 			//Don't move back beyond the beginning.
 			if(i<0) i=0;
 		}
+		for(BasicComponent comp : vSystemComponents)
+		{
+			SopcComponentLib.getInstance().finalCheckOnComponent(comp);
+		}
 	}
-
 }

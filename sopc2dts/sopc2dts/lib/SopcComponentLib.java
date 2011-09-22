@@ -41,6 +41,7 @@ import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.components.altera.GenericTristateController;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
@@ -134,7 +135,7 @@ public class SopcComponentLib implements ContentHandler {
 		}
 	}
 
-	protected SopcComponentDescription getScdByClassName(String className)
+	public SopcComponentDescription getScdByClassName(String className)
 	{
 		for(SopcComponentDescription scd : vLibComponents)
 		{
@@ -157,6 +158,8 @@ public class SopcComponentLib implements ContentHandler {
 			return new SICEpcs(className, instanceName, version);
 		} else if (className.equalsIgnoreCase("altera_avalon_lan91c111")) {
 			return new SICLan91c111(className, instanceName, version, getScdByClassName(className));
+		} else if (className.equalsIgnoreCase("altera_generic_tristate_controller")) {
+			return new GenericTristateController(className, instanceName, version);
 		} else {
 			SopcComponentDescription scd = getScdByClassName(className);
 			if(scd!=null)

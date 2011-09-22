@@ -32,6 +32,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/Interface.java \
 	sopc2dts/lib/components/MemoryBlock.java \
 	sopc2dts/lib/components/SopcComponentDescription.java \
+	sopc2dts/lib/components/altera/GenericTristateController.java \
 	sopc2dts/lib/components/altera/SICEpcs.java \
 	sopc2dts/lib/components/altera/SICLan91c111.java \
 	sopc2dts/lib/components/altera/SICSgdma.java \

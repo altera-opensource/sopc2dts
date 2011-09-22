@@ -29,6 +29,11 @@ import sopc2dts.lib.components.BasicComponent;
 
 public class SICFlash extends BasicComponent {
 	private static final long serialVersionUID = -8631549827116928831L;
+	
+	public SICFlash(BasicComponent bc)
+	{
+		super(bc);
+	}
 	public SICFlash(String cName, String iName, String version, SopcComponentDescription scd) {
 		super(cName, iName, version, scd);
 	}
@@ -52,6 +57,14 @@ public class SICFlash extends BasicComponent {
 	@Override
 	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
+		String res = AbstractSopcGenerator.indent(indentLevel) + "bank-width = <"+getBankWidth()+">;\n" +
+					AbstractSopcGenerator.indent(indentLevel) + "device-width = <1>;\n" +
+					partitionsForDts(bi, indentLevel);
+
+		return res;	
+	}
+	protected int getBankWidth()
+	{
 		int bankw = 2;
 		try {
 			String sdw = getParamValByName("dataWidth");
@@ -63,11 +76,7 @@ public class SICFlash extends BasicComponent {
 			//Default to 16bit on failure
 			bankw = 2;
 		}
-		String res = AbstractSopcGenerator.indent(indentLevel) + "bank-width = <"+bankw+">;\n" +
-					AbstractSopcGenerator.indent(indentLevel) + "device-width = <1>;\n" +
-					partitionsForDts(bi, indentLevel);
-
-		return res;	
+		return bankw;
 	}
 	protected String partitionsForDts(BoardInfo bi, int indentLevel)
 	{

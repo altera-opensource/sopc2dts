@@ -47,12 +47,14 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 	{
 		boolean valid = true;
 		if(k.equalsIgnoreCase("avalon_master") || 
-				k.equalsIgnoreCase("avalon_tristate_master"))
+				k.equalsIgnoreCase("avalon_tristate_master") ||
+				k.equalsIgnoreCase("tristate_conduit_master"))
 		{
 			type = SystemDataType.MEMORY_MAPPED;
 			isMaster = true;
 		} else if(k.equalsIgnoreCase("avalon_slave") ||
-				k.equalsIgnoreCase("avalon_tristate_slave"))
+				k.equalsIgnoreCase("avalon_tristate_slave") ||
+				k.equalsIgnoreCase("tristate_conduit_slave"))
 		{
 			type = SystemDataType.MEMORY_MAPPED;
 			isMaster = false;

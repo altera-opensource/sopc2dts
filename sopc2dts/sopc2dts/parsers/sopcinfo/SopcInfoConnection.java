@@ -68,6 +68,11 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 					bc = new Connection(masterInterface, slaveInterface, 
 							SystemDataType.MEMORY_MAPPED);
 					bc.setConnValue(Integer.decode(getParamValue("baseAddress")));
+				} else if(kind.equalsIgnoreCase("tristate_conduit"))
+				{
+					bc = new Connection(masterInterface, slaveInterface, 
+							SystemDataType.MEMORY_MAPPED);
+					bc.setConnValue(0);
 				} else if(kind.equalsIgnoreCase("clock"))
 				{
 					bc = new Connection(masterInterface, slaveInterface, 
