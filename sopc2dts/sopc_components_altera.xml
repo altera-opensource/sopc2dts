@@ -99,6 +99,10 @@
 		compatDevice="pll">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
+	<S2DComponent classname="altpll" group="clock"
+		compatDevice="pll">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+	</S2DComponent>
 	<S2DComponent classname="altera_avalon_timer" group="timer"
 		compatDevice="timer">
 		<parameter dtsName="clock-frequency"></parameter>
