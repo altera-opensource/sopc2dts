@@ -90,6 +90,7 @@
 		compatDevice="fifo">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
+	<S2DComponent classname="altera_tristate_conduit_bridge" group="ignore"></S2DComponent>
 	<S2DComponent classname="data_format_adapter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_pixel_converter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_video_sync_generator"
@@ -148,4 +149,12 @@
 	</S2DComponent>
 	<S2DComponent classname="multiplexer" group="ignore"></S2DComponent>
 	<S2DComponent classname="demultiplexer" group="ignore"></S2DComponent>
+	<S2DComponent classname="alt_vip_tpg" group="vip-tpg"
+		compatDevice="vip-testpattern-generator">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+	</S2DComponent>
+	<S2DComponent classname="alt_vip_swi" group="vip-switch"
+		compatDevice="vip-video-switch">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
