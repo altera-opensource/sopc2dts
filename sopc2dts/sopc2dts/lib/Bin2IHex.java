@@ -33,7 +33,8 @@ public class Bin2IHex {
 	{
 		byte cksum = 0;
 		cksum += size;
-		cksum += (address & 0xFFFF);
+		cksum += (address & 0xFF);
+		cksum += ((address>>8) & 0xFF);
 		String res = String.format(":%02X%04X00", size, address & 0xFFFF);
 		while(size>0)
 		{
@@ -42,7 +43,7 @@ public class Bin2IHex {
 			pos++;
 			size--;
 		}
-		res += String.format("%02X\n", (~cksum) & 0xFF);
+		res += String.format("%02X\n", (-cksum) & 0xFF);
 		return res;
 	}
 }
