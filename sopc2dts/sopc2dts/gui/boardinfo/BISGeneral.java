@@ -130,11 +130,14 @@ public class BISGeneral extends BoardInfoSubPanel {
 					}
 				}
 				memComponentList.setListData(vMemComponents);
-				for(i=0; i<vMemComponents.size(); i++)
+				if(bi.getMemoryNodes()!=null)
 				{
-					if(bi.getMemoryNodes().contains(vMemComponents.get(i).getInstanceName()))
+					for(i=0; i<vMemComponents.size(); i++)
 					{
-						memComponentList.addSelectionInterval(i, i);
+						if(bi.getMemoryNodes().contains(vMemComponents.get(i).getInstanceName()))
+						{
+							memComponentList.addSelectionInterval(i, i);
+						}
 					}
 				}
 			} else {
