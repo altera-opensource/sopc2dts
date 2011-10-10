@@ -68,10 +68,15 @@ public class GenericTristateController extends BasicComponent {
 		String driverType = getParamValByName("embeddedsw.configuration.softwareDriver");
 		if(driverType==null)
 		{
+			driverType = getParamValByName("embeddedsw.configuration.hwClassnameDriverSupportDefault");
+		}
+		if(driverType==null)
+		{
 			Logger.logln("GenericTristateController: " + getInstanceName()
 					+ " failed to detect driver type.", LogLevel.WARNING);
 		} else {
-			if(driverType.equalsIgnoreCase("altera_avalon_cfi_flash_driver"))
+			if(driverType.equalsIgnoreCase("altera_avalon_cfi_flash_driver") ||
+					driverType.equalsIgnoreCase("altera_avalon_cfi_flash"))
 			{
 				Logger.logln("GenericTristateController: " + getInstanceName() 
 						+ " seems to be a CFI-Flash chip.", LogLevel.INFO);
