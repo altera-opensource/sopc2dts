@@ -44,6 +44,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/base/SICI2CMaster.java \
 	sopc2dts/lib/components/base/SICEthernet.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
+	sopc2dts/lib/components/nxp/USBHostControllerISP1xxx.java \
 	sopc2dts/lib/uboot/UBootComponentLib.java \
 	sopc2dts/lib/uboot/UBootLibComponent.java \
 	sopc2dts/parsers/BasicSystemLoader.java \

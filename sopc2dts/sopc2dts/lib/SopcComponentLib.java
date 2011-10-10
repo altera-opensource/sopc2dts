@@ -52,6 +52,7 @@ import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.components.base.SICEthernet;
 import sopc2dts.lib.components.base.SICI2CMaster;
 import sopc2dts.lib.components.base.SICUnknown;
+import sopc2dts.lib.components.nxp.USBHostControllerISP1xxx;
 
 public class SopcComponentLib implements ContentHandler {
 	private SopcComponentDescription currScd;
@@ -158,6 +159,9 @@ public class SopcComponentLib implements ContentHandler {
 			return new SICEpcs(className, instanceName, version);
 		} else if (className.equalsIgnoreCase("altera_avalon_lan91c111")) {
 			return new SICLan91c111(className, instanceName, version, getScdByClassName(className));
+		} else if (className.equalsIgnoreCase("isp116x") || 
+				className.equalsIgnoreCase("ISP1362_CTRL")) {
+			return new USBHostControllerISP1xxx(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_generic_tristate_controller")) {
 			return new GenericTristateController(className, instanceName, version);
 		} else {
