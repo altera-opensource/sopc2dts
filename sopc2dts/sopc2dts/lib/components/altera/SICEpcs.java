@@ -22,7 +22,7 @@ package sopc2dts.lib.components.altera;
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
-import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
 
@@ -30,8 +30,7 @@ public class SICEpcs extends SICFlash {
 	private static final long serialVersionUID = 8647857111806987880L;
 
 	public SICEpcs(String cName, String iName, String ver) {
-		super(cName, iName, ver, new SopcComponentDescription(
-				"altera_avalon_epcs_flash_controller", "flash", "ALTR", "epcs_flash"));
+		super(cName, iName, ver, SopcComponentLib.getInstance().getScdByClassName("altera_avalon_spi"));
 	}
 	@Override
 	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, 
