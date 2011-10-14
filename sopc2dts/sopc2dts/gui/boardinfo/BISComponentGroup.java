@@ -77,7 +77,7 @@ public abstract class BISComponentGroup extends BoardInfoSubPanel implements Lis
 		{
 			for(BasicComponent comp : s.getSystemComponents())
 			{
-				if(comp.getScd().getGroup().equalsIgnoreCase(group))
+				if(matchComponent(comp))
 				{
 					vComp.add(comp);
 				}
@@ -86,7 +86,10 @@ public abstract class BISComponentGroup extends BoardInfoSubPanel implements Lis
 		componentList.setListData(vComp);
 		return (vComp.size()>1) || ((vComp.size()>0) && (wildCardComp == null));
 	}
-
+	protected boolean matchComponent(BasicComponent comp)
+	{
+		return comp.getScd().getGroup().equalsIgnoreCase(group);
+	}
 	@Override
 	public void setGuiEnabled(boolean ena) {
 		componentList.setEnabled(ena);

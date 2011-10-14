@@ -30,6 +30,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.FlashPartition;
+import sopc2dts.lib.components.base.SICFlash;
 
 public class BISFlash extends BISSubComponentTable {
 	private static final long serialVersionUID = 1531418789892150665L;
@@ -51,6 +52,17 @@ public class BISFlash extends BISSubComponentTable {
 	public void setGuiEnabled(boolean ena) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected boolean matchComponent(BasicComponent comp)
+	{
+		if(comp instanceof SICFlash)
+		{
+			return true;
+		} else {
+			return super.matchComponent(comp);
+		}
 	}
 
 	@Override
