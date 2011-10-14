@@ -172,7 +172,12 @@ public class BoardInfo implements ContentHandler, Serializable {
 			throws SAXException {
 	}
 	public void setPov(String pov) {
-		this.pov = pov;
+		if(pov!=null)
+		{
+			this.pov = pov;
+		} else {
+			this.pov = "";
+		}
 	}
 	public String getPov() {
 		return pov;
