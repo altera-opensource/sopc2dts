@@ -46,6 +46,7 @@ public class SICEpcs extends SICFlash {
 		String res = "\n" + AbstractSopcGenerator.indent(indentLevel++) + "m25p80@0 {\n"
 					+ super.toDtsExtrasFirst(bi, indentLevel, conn, endComponent)
 					+ AbstractSopcGenerator.indent(indentLevel) + "compatible = \"m25p80\";\n"
+					+ AbstractSopcGenerator.indent(indentLevel) + "spi-max-frequency = <25000000>;\n"
 					+ AbstractSopcGenerator.indent(indentLevel) + "reg = <0>;\n"
 					+ partitionsForDts(bi, indentLevel);
 		
