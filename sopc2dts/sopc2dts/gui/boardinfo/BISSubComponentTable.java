@@ -42,7 +42,10 @@ public abstract class BISSubComponentTable extends BISComponentGroup implements 
 	JButton btnRemove = new JButton("Remove");
 	
 	public BISSubComponentTable(String name, String group) {
-		super(name,group,true);
+		this(name,group,true);
+	}
+	public BISSubComponentTable(String name, String group, boolean useWildcard) {
+		super(name,group,useWildcard);
 		tblSubComps.setAutoCreateRowSorter(true);
 		tblSubComps.setShowGrid(true);
 		tblSubComps.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
