@@ -70,7 +70,7 @@
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_cy7c1380_ssram" group="memory" compatDevice="ssram">
 	</S2DComponent>
-	<S2DComponent classname="altmemddr,ddr_sdram_component_classic,altmemddr2,ddr2_high_perf,altmemddr3,altera_uniphy_ddr3" group="memory"
+	<S2DComponent classname="altmemddr,ddr_sdram_component_classic,altmemddr2,ddr2_high_perf,altmemddr3,altera_uniphy_ddr3,altera_mem_if_ddr2_emif,altera_mem_if_ddr3_emif" group="memory"
 		compatDevice="altmemddr">
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_new_sdram_controller" group="memory"
