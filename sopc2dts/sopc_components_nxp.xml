@@ -4,4 +4,7 @@
 	<S2DComponent classname="isp116x" group="isp1161a"
 		compatDevice="isp1161a">
 	<compatible name="nxp,isp116x"></compatible></S2DComponent>
+	<S2DComponent classname="isp1761" group="isp1761"
+		compatDevice="isp1760">
+	<compatible name="nxp,usb-isp1761"></compatible></S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
