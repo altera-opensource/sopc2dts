@@ -40,6 +40,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/TSEModular.java \
 	sopc2dts/lib/components/altera/TSEMonolithic.java \
 	sopc2dts/lib/components/base/FlashPartition.java \
+	sopc2dts/lib/components/base/SCDSelfDescribing.java \
 	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
 	sopc2dts/lib/components/base/SICI2CMaster.java \
 	sopc2dts/lib/components/base/SICEthernet.java \
