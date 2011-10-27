@@ -25,6 +25,7 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SICEthernet;
 
 public class SICTrippleSpeedEthernet extends SICEthernet {
+	enum PhyMode { MII, GMII, RGMII, SGMII };
 	private static final long serialVersionUID = -3828128314484790124L;
 
 	public SICTrippleSpeedEthernet(String cName, String iName, String ver, SopcComponentDescription scd) {
@@ -45,5 +46,35 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 			return comp;
 		}
 		return null;
+	}
+	protected PhyMode getPhyMode()
+	{
+		String phyModeString = getParamValByName("ifGMII");
+		PhyMode pm = PhyMode.RGMII;
+		if(phyModeString.equals("MII"))
+		{
+			pm = PhyMode.MII;
+		} else if(phyModeString.equals("MII_GMII"))
+		{
+			pm = PhyMode.GMII;
+		} else if(phyModeString.equals("RGMII"))
+		{
+			pm = PhyMode.RGMII;
+		} else if(phyModeString.equals("SGMII"))
+		{
+			pm = PhyMode.SGMII;
+		}
+		return pm;
+	}
+	protected String getPhyModeString()
+	{
+		switch(getPhyMode())
+		{
+		case MII:	return "mii";
+		case GMII:	return "gmii";
+		case RGMII:	return "rgmii";
+		case SGMII:	return "sgmii";
+		default:	return "unknown";
+		}
 	}
 }

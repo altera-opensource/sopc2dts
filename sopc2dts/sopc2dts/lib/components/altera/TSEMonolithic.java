@@ -43,6 +43,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	{
 		String res =  super.toDtsExtras(bi, indentLevel, conn, endComponent);
 		BICEthernet be = bi.getEthernetForChip(getInstanceName());
+		res += AbstractSopcGenerator.indent(indentLevel) + "phy-mode = \"" + getPhyModeString() + "\";\n";
 		if(be.getMiiID()==null)
 		{
 			//Always needed for this driver! (atm)
