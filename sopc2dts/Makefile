@@ -17,6 +17,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/gui/boardinfo/BISFlash.java \
 	sopc2dts/gui/boardinfo/BISGeneral.java \
 	sopc2dts/gui/boardinfo/BISI2C.java \
+	sopc2dts/gui/boardinfo/BISSpi.java \
 	sopc2dts/gui/boardinfo/BISSubComponentTable.java \
 	sopc2dts/gui/boardinfo/BoardInfoSubPanel.java \
 	sopc2dts/gui/InputPanel.java \
@@ -28,6 +29,10 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/AvalonSystem.java sopc2dts/lib/BasicElement.java \
 	sopc2dts/lib/Connection.java sopc2dts/lib/Parameter.java \
 	sopc2dts/lib/boardinfo/BICEthernet.java \
+	sopc2dts/lib/boardinfo/BICSpi.java \
+	sopc2dts/lib/boardinfo/BoardInfoComponent.java \
+	sopc2dts/lib/boardinfo/SpiSlave.java \
+	sopc2dts/lib/boardinfo/SpiSlaveMMC.java \
 	sopc2dts/lib/components/BasicComponent.java \
 	sopc2dts/lib/components/Interface.java \
 	sopc2dts/lib/components/MemoryBlock.java \
@@ -44,6 +49,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
 	sopc2dts/lib/components/base/SICI2CMaster.java \
 	sopc2dts/lib/components/base/SICEthernet.java \
+	sopc2dts/lib/components/base/SICSpiMaster.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
 	sopc2dts/lib/components/nxp/USBHostControllerISP1xxx.java \
 	sopc2dts/lib/uboot/UBootComponentLib.java \

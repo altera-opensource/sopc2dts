@@ -39,6 +39,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.boardinfo.BICEthernet;
+import sopc2dts.lib.boardinfo.BoardInfoComponent;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.FlashPartition;
 
@@ -51,11 +52,12 @@ public class BoardInfo implements ContentHandler, Serializable {
 	String flashChip;
 	Vector<FlashPartition> vPartitions;
 	Vector<String> vMemoryNodes;
+	Vector<BoardInfoComponent> vBics = new Vector<BoardInfoComponent>();
 	String bootArgs;
+	BoardInfoComponent currBic;
 	private String pov = "";
 	private PovType povType = PovType.CPU;
 	private BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
-	HashMap<String, BICEthernet> mEthernet = new HashMap<String, BICEthernet>();
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
 			new HashMap<String, Vector<FlashPartition>>(4);
 
@@ -85,63 +87,82 @@ public class BoardInfo implements ContentHandler, Serializable {
 	}
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
-		if(localName.equalsIgnoreCase("BoardInfo"))
+		if(currBic != null)
 		{
-			setPov(atts.getValue("pov"));
-		} else if(localName.equalsIgnoreCase("Bootargs"))
-		{
-				bootArgs = atts.getValue("val");
-		} else if(localName.equalsIgnoreCase("Ethernet")) 
-		{
-			BICEthernet be = new BICEthernet(atts);
-			mEthernet.put(be.getName(), be);
-		} else if(localName.equalsIgnoreCase("FlashPartitions")) 
-		{
-			//attribute chip can be null for a wildcard/fallback map
-			vPartitions = new Vector<FlashPartition>(); 
-			mFlashPartitions.put(atts.getValue("chip"), vPartitions);
-		} else if(localName.equalsIgnoreCase("I2CBus")) 
-		{
-			//attribute master can be null for a wildcard/fallback map
-			mI2C = new HashMap<Integer, String>(4); 
-			mI2CMaps.put(atts.getValue("master"), mI2C);
-		} else if(localName.equalsIgnoreCase("I2CChip")) 
-		{
-			mI2C.put(Integer.decode(atts.getValue("addr")),atts.getValue("name"));
-		} else if(localName.equalsIgnoreCase("Memory"))
-		{
-			vMemoryNodes = new Vector<String>();
-		} else if(localName.equalsIgnoreCase("Node"))
-		{
-			if(vMemoryNodes!=null)
+			currBic.startElement(uri, localName, qName, atts);
+		} else {
+			currBic = BoardInfoComponent.getBicFor(localName, atts);
+			if(currBic != null)
 			{
-				vMemoryNodes.add(atts.getValue("chip"));
+				vBics.add(currBic);
+			} else {
+				if(localName.equalsIgnoreCase("BoardInfo"))
+				{
+					setPov(atts.getValue("pov"));
+				} else if(localName.equalsIgnoreCase("Bootargs"))
+				{
+						bootArgs = atts.getValue("val");
+				} else if(localName.equalsIgnoreCase("FlashPartitions")) 
+				{
+					//attribute chip can be null for a wildcard/fallback map
+					vPartitions = new Vector<FlashPartition>(); 
+					mFlashPartitions.put(atts.getValue("chip"), vPartitions);
+				} else if(localName.equalsIgnoreCase("I2CBus")) 
+				{
+					//attribute master can be null for a wildcard/fallback map
+					mI2C = new HashMap<Integer, String>(4); 
+					mI2CMaps.put(atts.getValue("master"), mI2C);
+				} else if(localName.equalsIgnoreCase("I2CChip")) 
+				{
+					mI2C.put(Integer.decode(atts.getValue("addr")),atts.getValue("name"));
+				} else if(localName.equalsIgnoreCase("Memory"))
+				{
+					vMemoryNodes = new Vector<String>();
+				} else if(localName.equalsIgnoreCase("Node"))
+				{
+					if(vMemoryNodes!=null)
+					{
+						vMemoryNodes.add(atts.getValue("chip"));
+					}
+				} else if(localName.equalsIgnoreCase("Partition"))
+				{
+					if(vPartitions!=null)
+					{
+						part = new FlashPartition();
+						part.setName(atts.getValue("name"));
+						part.setAddress(Integer.decode(atts.getValue("address")));
+						part.setSize(Integer.decode(atts.getValue("size")));
+						vPartitions.add(part);
+					}
+				} else if(localName.equalsIgnoreCase("readonly"))
+				{
+					part.setReadonly(true);
+				} else if(!localName.equalsIgnoreCase("Chosen"))
+				{
+					currTag = localName;
+					Logger.logln("Boardinfo: Unhandled element " + localName, LogLevel.WARNING);
+				}				
 			}
-		} else if(localName.equalsIgnoreCase("Partition"))
-		{
-			if(vPartitions!=null)
-			{
-				part = new FlashPartition();
-				part.setName(atts.getValue("name"));
-				part.setAddress(Integer.decode(atts.getValue("address")));
-				part.setSize(Integer.decode(atts.getValue("size")));
-				vPartitions.add(part);
-			}
-		} else if(localName.equalsIgnoreCase("readonly"))
-		{
-			part.setReadonly(true);
-		} else if(!localName.equalsIgnoreCase("Chosen"))
-		{
-			currTag = localName;
-			Logger.logln("Boardinfo: Unhandled element " + localName, LogLevel.WARNING);
-		}
+		} 
 	}
 
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
+		if(currBic!=null)
+		{
+			currBic.characters(ch, start, length);
+		}
 	}
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
+		if(currBic!=null)
+		{
+			currBic.endElement(uri, localName, qName);
+			if(localName.equalsIgnoreCase(currBic.getXmlTagName()))
+			{
+				currBic = null;
+			}
+		}
 	}
 
 
@@ -188,14 +209,40 @@ public class BoardInfo implements ContentHandler, Serializable {
 	public void setBootArgs(String bootArgs) {
 		this.bootArgs = bootArgs;
 	}
+	public BoardInfoComponent getBicForChip(String instanceName)
+	{
+		for(BoardInfoComponent bic : vBics)
+		{
+			if(instanceName.equalsIgnoreCase(bic.getInstanceName()))
+			{
+				return bic;
+			}
+		}
+		return null;
+	}
+	public void setBic(BoardInfoComponent newBic)
+	{
+		BoardInfoComponent oldBic = getBicForChip(newBic.getInstanceName());
+		if(oldBic==null)
+		{
+			vBics.add(newBic);
+		} else if(!oldBic.equals(newBic))
+		{
+			vBics.remove(oldBic);
+			vBics.add(newBic);
+		}
+	}
 	public BICEthernet getEthernetForChip(String instanceName)
 	{
-		BICEthernet be = mEthernet.get(instanceName);
-		if(be==null)
+		BoardInfoComponent bic = getBicForChip(instanceName);
+		if(bic!=null)
 		{
-			be = new BICEthernet(instanceName);
+			if(bic instanceof BICEthernet)
+			{
+				return (BICEthernet) bic;
+			}
 		}
-		return be;
+		return new BICEthernet(instanceName);
 	}
 	public HashMap<Integer, String> getI2CChipsForMaster(String instanceName) {
 		HashMap<Integer, String> res = mI2CMaps.get(instanceName);
@@ -226,7 +273,12 @@ public class BoardInfo implements ContentHandler, Serializable {
 	}
 	public void setEthernetForChip(BICEthernet be)
 	{
-		mEthernet.put(be.getName(), be);
+		BoardInfoComponent old = getBicForChip(be.getInstanceName());
+		if(old!=null)
+		{
+			vBics.remove(old);
+		}
+		vBics.add(be);
 	}
 	public void setPovType(PovType povType) {
 		this.povType = povType;
@@ -321,10 +373,10 @@ public class BoardInfo implements ContentHandler, Serializable {
 				xml += "\t</I2CBus>\n";
 			}			
 		}
-		//Etherwebs
-		for(BICEthernet be : mEthernet.values())
+		//BICs
+		for(BoardInfoComponent bic : vBics)
 		{
-			xml += be.toXml();
+			xml += bic.getXml();
 		}
 		xml+="</BoardInfo>\n";
 		return xml;

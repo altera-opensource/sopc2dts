@@ -51,6 +51,8 @@ public abstract class BISSubComponentTable extends BISComponentGroup implements 
 		tblSubComps.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tblSubComps.setGridColor(Color.LIGHT_GRAY);
 		JPanel pnlBtns = new JPanel();
+		btnAdd.setEnabled(false);
+		btnRemove.setEnabled(false);
 		btnAdd.addActionListener(this);
 		btnRemove.addActionListener(this);
 		pnlBtns.add(btnAdd);
@@ -60,21 +62,27 @@ public abstract class BISSubComponentTable extends BISComponentGroup implements 
 		this.add(pnlCenter, BorderLayout.CENTER);
 	}
 
+	protected void addSubComponent(TableModel mod)
+	{
+		String name = JOptionPane.showInputDialog("Please give the name");
+		if(name!=null)
+		{
+			addSubComponent(mod, name);
+		}
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		if(e.getSource().equals(btnAdd))
 		{
-			String name = JOptionPane.showInputDialog("Please give the name");
-			if(name!=null)
-			{
-				addSubComponent(tblSubComps.getModel(), name);
-			}
+			addSubComponent(tblSubComps.getModel());
 		} else if(e.getSource().equals(btnRemove))
 		{
 			int index = tblSubComps.getSelectedRow();
 			if(index>=0)
 			{
-				if(JOptionPane.showConfirmDialog(this, "Remove selected entry?","Confirm remove",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+				if(JOptionPane.showConfirmDialog(this, "Remove selected entry?",
+						"Confirm remove",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 				{
 					removeSubComponent(tblSubComps.getModel(), index);
 				}
@@ -84,6 +92,8 @@ public abstract class BISSubComponentTable extends BISComponentGroup implements 
 	protected void selectedComponent(BasicComponent comp)
 	{
 		tblSubComps.setModel(tableModelForComponent(comp));
+		btnAdd.setEnabled(true);
+		btnRemove.setEnabled(true);
 	}
 	protected abstract void addSubComponent(TableModel mod, String name);
 	protected abstract void removeSubComponent(TableModel mod, int index);
@@ -93,7 +103,10 @@ public abstract class BISSubComponentTable extends BISComponentGroup implements 
 	@Override
 	public void load(BoardInfo bi) {
 		bInfo = bi;
-		selectedComponent(currComp);
+		if(currComp!=null) 
+		{
+			selectedComponent(currComp);
+		}
 	}
 	protected abstract void save(BoardInfo bi, TableModel tm);
 	@Override

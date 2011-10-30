@@ -43,12 +43,13 @@ import sopc2dts.gui.boardinfo.BISFlash;
 import sopc2dts.gui.boardinfo.BISGeneral;
 import sopc2dts.gui.boardinfo.BISI2C;
 import sopc2dts.gui.boardinfo.BISEthernet;
+import sopc2dts.gui.boardinfo.BISSpi;
 import sopc2dts.gui.boardinfo.BoardInfoSubPanel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 
 public class BoardInfoPanel extends ThreadedLoadPanel {
-	private static final long serialVersionUID	= 5544769127979495936L;
+	private static final long serialVersionUID = 3765844437274914520L;
 	JTabbedPane jtp = new JTabbedPane();
 	JButton btnApply = new JButton("Apply");
 	JButton btnRevert = new JButton("Revert");
@@ -58,6 +59,7 @@ public class BoardInfoPanel extends ThreadedLoadPanel {
 			new BISEthernet(),
 			new BISFlash(),
 			new BISI2C(),
+			new BISSpi(),
 	};
 	public BoardInfoPanel(String fName, Sopc2DTSGui parent)
 	{

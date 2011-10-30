@@ -51,6 +51,7 @@ import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.components.base.SICEthernet;
 import sopc2dts.lib.components.base.SICI2CMaster;
+import sopc2dts.lib.components.base.SICSpiMaster;
 import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.lib.components.nxp.USBHostControllerISP1xxx;
 
@@ -174,6 +175,8 @@ public class SopcComponentLib implements ContentHandler {
 					return new SICFlash(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("i2c")) {
 					return new SICI2CMaster(className, instanceName, version, getScdByClassName(className));
+				} else if (scd.getGroup().equalsIgnoreCase("spi")) {
+					return new SICSpiMaster(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("ethernet")) {
 					return new SICEthernet(className, instanceName, version, getScdByClassName(className));
 				} else {
