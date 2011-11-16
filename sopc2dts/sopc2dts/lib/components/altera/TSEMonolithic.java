@@ -19,12 +19,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
+import java.util.Vector;
+
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
@@ -142,7 +145,12 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 					Logger.logln("Warning decriptor memory connected through a bridge. " +
 							"I'll probably mess things up trying to guess what memory I'm connected to...",
 							LogLevel.WARNING);
-					res = findSlaveComponent(res.getInterfaceByName("m1"), group, device);
+					Vector<Interface> vIntf = res.getInterfaces(SystemDataType.MEMORY_MAPPED, true);
+					res = null;
+					for(int i=0; (i<vIntf.size()) && (res==null); i++)
+					{
+						res = findSlaveComponent(vIntf.get(i), group, device);
+					}
 				} else {
 					if(group!=null)
 					{

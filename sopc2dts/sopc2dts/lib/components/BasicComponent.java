@@ -235,6 +235,19 @@ public class BasicComponent extends BasicElement {
 	public Vector<Interface> getInterfaces() {
 		return vInterfaces;
 	}
+	public Vector<Interface> getInterfaces(SystemDataType ofType, Boolean isMaster)
+	{
+		Vector<Interface> vRes = new Vector<Interface>();
+		for(Interface intf: vInterfaces)
+		{
+			if(((ofType == null) || (intf.getType().equals(ofType))) &&
+					((isMaster == null) || (intf.isMaster == isMaster)))
+			{
+				vRes.add(intf);
+			}
+		}
+		return vRes;
+	}
 	public void setAddr(int addr) {
 		this.addr = addr;
 	}
@@ -245,19 +258,16 @@ public class BasicComponent extends BasicElement {
 	public Vector<Connection> getConnections(SystemDataType ofType, Boolean isMaster, BasicComponent toComponent)
 	{
 		Vector<Connection> conns = new Vector<Connection>();
-		for(Interface intf : vInterfaces)
+		Vector<Interface> vInterf = getInterfaces(ofType, isMaster);
+		for(Interface intf : vInterf)
 		{
-			if(((ofType == null) || (intf.getType().equals(ofType))) &&
-					((isMaster == null) || (intf.isMaster == isMaster)))
+			for(Connection conn : intf.getConnections())
 			{
-				for(Connection conn : intf.getConnections())
+				if((toComponent == null) || 
+						(intf.isMaster && conn.getSlaveModule().equals(toComponent)) ||
+						(!intf.isMaster && conn.getMasterModule().equals(toComponent)))
 				{
-					if((toComponent == null) || 
-							(intf.isMaster && conn.getSlaveModule().equals(toComponent)) ||
-							(!intf.isMaster && conn.getMasterModule().equals(toComponent)))
-					{
-						conns.add(conn);
-					}
+					conns.add(conn);
 				}
 			}
 		}
