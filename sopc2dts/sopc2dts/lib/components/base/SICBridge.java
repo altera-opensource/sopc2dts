@@ -76,7 +76,7 @@ public class SICBridge extends BasicComponent {
 				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n" +
 				getDtsRanges(indentLevel,conn);
 	}
-	private void removeFromSystem(AvalonSystem sys)
+	private boolean removeFromSystem(AvalonSystem sys)
 	{
 		Logger.logln("Try to eliminate " + getClassName() + 
 				": " + getInstanceName(), LogLevel.INFO);
@@ -101,7 +101,7 @@ public class SICBridge extends BasicComponent {
 		{
 			//That shouldn't happen
 			Logger.logln("MasterIF " + masterIntf + " slaveIF " + slaveIntf, LogLevel.WARNING);
-			return;
+			return false;
 		}
 		Connection masterConn;
 		while(slaveIntf.getConnections().size()>0)
@@ -141,9 +141,12 @@ public class SICBridge extends BasicComponent {
 			slaveConn.getSlaveInterface().getConnections().remove(slaveConn);
 			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size(), LogLevel.DEBUG);
 		}
+		//Finally remove ourselves
+		sys.getSystemComponents().remove(this);
+		return true;
 	}
 	@Override
-	public void removeFromSystemIfPossible(AvalonSystem sys)
+	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		boolean remove = false;
 		if(getScd().isSupportingClassName("altera_avalon_tri_state_bridge"))
@@ -159,7 +162,9 @@ public class SICBridge extends BasicComponent {
 		}
 		if(remove)
 		{
-			removeFromSystem(sys);
+			return removeFromSystem(sys);
+		} else {
+			return false;
 		}
 	}
 	protected boolean isTranslatingBridge()

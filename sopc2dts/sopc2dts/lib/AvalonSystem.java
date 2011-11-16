@@ -80,15 +80,13 @@ public class AvalonSystem extends BasicElement {
 		 * Now remove tristate (and other unneeded) bridges. If any.
 		 * Also flatten hierarchical qsys designs.
 		 */
-		for(int i=0; i<vSystemComponents.size();)
+		for(int i=0; i<vSystemComponents.size();i++)
 		{
-			int oldSize = vSystemComponents.size();
-			BasicComponent c = vSystemComponents.get(i);
-			c.removeFromSystemIfPossible(this);
-			//Move back the number of components removed, or advance
-			i+= (vSystemComponents.size() - oldSize) + 1;
-			//Don't move back beyond the beginning.
-			if(i<0) i=0;
+			if(vSystemComponents.get(i).removeFromSystemIfPossible(this))
+			{
+				//Restart loop after modifications...
+				i=0;
+			}
 		}
 		for(BasicComponent comp : vSystemComponents)
 		{

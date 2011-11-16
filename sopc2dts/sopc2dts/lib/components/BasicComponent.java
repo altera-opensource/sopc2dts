@@ -309,10 +309,11 @@ public class BasicComponent extends BasicElement {
 	/*
 	 * Subclasses can implement this to optimize systems and/or flatten 
 	 * otherwise needless complex systems
+	 * returns true when the system is modified
 	 */
-	public void removeFromSystemIfPossible(AvalonSystem sys)
+	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
-		
+		return false;
 	}
 	public String getClassName() {
 		return className;

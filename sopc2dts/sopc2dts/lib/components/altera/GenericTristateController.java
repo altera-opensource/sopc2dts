@@ -63,8 +63,9 @@ public class GenericTristateController extends BasicComponent {
 	 * but also add ourselve in a new form....
 	 */
 	@Override
-	public void removeFromSystemIfPossible(AvalonSystem sys)
+	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
+		boolean bChanged = false;
 		String driverType = getParamValByName("embeddedsw.configuration.softwareDriver");
 		if(driverType==null)
 		{
@@ -90,10 +91,12 @@ public class GenericTristateController extends BasicComponent {
 					intf.setOwner(flash);
 				}
 				sys.getSystemComponents().add(flash);
+				bChanged = true;
 			} else {
 				Logger.logln("GenericTristateController: " + getInstanceName() 
 						+ " is of unsupported type: " + driverType, LogLevel.WARNING);
 			}
 		}
+		return bChanged;
 	}
 }

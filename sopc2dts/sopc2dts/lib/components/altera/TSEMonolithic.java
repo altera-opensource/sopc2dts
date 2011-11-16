@@ -76,8 +76,9 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		vInterfaces.add(intf);
 		intf.setOwner(this);
 	}
-	public void removeFromSystemIfPossible(AvalonSystem sys)
+	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
+		boolean bChanged = false;
 		BasicComponent comp;
 		if(rx_dma == null)
 		{
@@ -89,6 +90,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 			} else {
 				rx_dma = (SICSgdma)comp;
 				sys.getSystemComponents().remove(comp);
+				bChanged = true;
 				encapsulateSGDMA(rx_dma, "rx");
 			}
 		}
@@ -102,6 +104,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 			} else {
 				tx_dma = (SICSgdma)comp;
 				sys.getSystemComponents().remove(comp);
+				bChanged = true;
 				encapsulateSGDMA(tx_dma, "tx");
 			}
 		}
@@ -122,6 +125,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 				if(desc_mem!=null)
 				{
 					sys.getSystemComponents().remove(desc_mem);
+					bChanged = true;
 					Interface s1 = desc_mem.getInterfaceByName("s1");
 					desc_mem.getInterfaces().remove(s1);
 					s1.setOwner(this);
@@ -131,6 +135,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 				}
 			}
 		}
+		return bChanged;
 	}
 	BasicComponent findSlaveComponent(Interface intf, String group, String device)
 	{
