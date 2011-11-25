@@ -240,7 +240,7 @@ public class DTSGenerator extends AbstractSopcGenerator {
 //				res += indent(indentLevel) + "//Port " + intf.getName() + " of " + master.getInstanceName() + " type: " + intf.getType() + " isMaster: " + intf.isMaster() + "\n";
 				if(intf.isMemoryMaster())
 				{
-					res += indent(indentLevel) + "//Port " + intf.getName() + " of " + master.getInstanceName() + "\n";
+//					res += indent(indentLevel) + "//Port " + intf.getName() + " of " + master.getInstanceName() + "\n";
 					for(Connection conn : intf.getConnections())
 					{
 						BasicComponent slave = conn.getSlaveModule();						
@@ -248,14 +248,22 @@ public class DTSGenerator extends AbstractSopcGenerator {
 						{
 							if(!vHandled.contains(slave))
 							{
-								res += slave.toDts(bi, indentLevel, conn, false);
-								vHandled.add(slave);
 								if(slave.getScd().getGroup().equalsIgnoreCase("bridge"))
 								{
-									res += "\n" + getDTSBusFrom(bi, slave, ++indentLevel);
+									vHandled.add(slave);
+									String bridgeContents = getDTSBusFrom(bi, slave, ++indentLevel);
 									indentLevel--;
+									if(bridgeContents.length()>0)
+									{
+										res += slave.toDts(bi, indentLevel, conn, false);
+										res += "\n" + bridgeContents;
+										res += indent(indentLevel) + "}; //end "+slave.getScd().getGroup()+" (" + slave.getInstanceName() + ")\n\n";
+									}
+								} else {
+									res += slave.toDts(bi, indentLevel, conn, false);
+									vHandled.add(slave);
+									res += indent(indentLevel) + "}; //end "+slave.getScd().getGroup()+" (" + slave.getInstanceName() + ")\n\n";
 								}
-								res += indent(indentLevel) + "}; //end "+slave.getScd().getGroup()+" (" + slave.getInstanceName() + ")\n\n";
 							}
 						}
 					}

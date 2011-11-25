@@ -23,6 +23,7 @@ import java.util.Vector;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.BasicElement;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
+import sopc2dts.lib.components.base.SICBridge;
 
 
 public class Interface extends BasicElement {
@@ -101,8 +102,24 @@ public class Interface extends BasicElement {
 		{
 			for(Connection conn : vConnections)
 			{
-				MemoryBlock mem = new MemoryBlock(conn.getSlaveModule(), conn.getConnValue(), conn.getSlaveInterface().getInterfaceValue());
-				vMemoryMap.add(mem);
+				if(conn.getSlaveModule() instanceof SICBridge)
+				{
+					/* Get bridged components as well. */
+					Vector<MemoryBlock> vBridgedMap = new Vector<MemoryBlock>();
+					for(Interface bridgeMaster : conn.getSlaveModule().getInterfaces(SystemDataType.MEMORY_MAPPED, true))
+					{
+						vBridgedMap.addAll(bridgeMaster.getMemoryMap());
+					}
+					for(MemoryBlock mb : vBridgedMap)
+					{
+						//Offset with bridges base.
+						mb.base += conn.getConnValue();
+					}
+					vMemoryMap.addAll(vBridgedMap);
+				} else {
+					MemoryBlock mem = new MemoryBlock(conn.getSlaveModule(), conn.getConnValue(), conn.getSlaveInterface().getInterfaceValue());
+					vMemoryMap.add(mem);
+				}
 			}
 		}
 		return vMemoryMap;
