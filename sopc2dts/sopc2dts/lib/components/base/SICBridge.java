@@ -23,6 +23,7 @@ import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
@@ -76,7 +77,7 @@ public class SICBridge extends BasicComponent {
 				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n" +
 				getDtsRanges(indentLevel,conn);
 	}
-	private boolean removeFromSystem(AvalonSystem sys)
+	private boolean removeFromSystemMM(AvalonSystem sys)
 	{
 		Logger.logln("Try to eliminate " + getClassName() + 
 				": " + getInstanceName(), LogLevel.INFO);
@@ -145,27 +146,83 @@ public class SICBridge extends BasicComponent {
 		sys.getSystemComponents().remove(this);
 		return true;
 	}
+	private boolean removeFromSystemStreaming(AvalonSystem sys)
+	{
+		Interface masterIntf = null, slaveIntf = null;
+		masterIntf = getInterfaces(SystemDataType.STREAMING, true).firstElement();
+		slaveIntf = getInterfaces(SystemDataType.STREAMING, false).firstElement();
+		if((masterIntf!=null)&&(slaveIntf!=null))
+		{
+			Connection conn = slaveIntf.getConnections().firstElement();
+			Connection oldConn = masterIntf.getConnections().firstElement();
+			if(conn!=null)
+			{
+				//Remove clocks
+				for(Interface intf : getInterfaces(SystemDataType.CLOCK,false))
+				{
+					for(Connection clkConn : intf.getConnections())
+					{
+						clkConn.getMasterInterface().getConnections().remove(clkConn);
+					}
+				}
+				
+				conn.setSlaveInterface(oldConn.getSlaveInterface());
+				oldConn.getSlaveInterface().getConnections().remove(oldConn);
+				oldConn.getSlaveInterface().getConnections().add(conn);
+				sys.getSystemComponents().remove(this);
+				return true;				
+			}
+		}
+		return false;
+	}
 	@Override
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
-		boolean remove = false;
-		if(getScd().isSupportingClassName("altera_avalon_tri_state_bridge"))
+		if(isStreamingBridge())
 		{
-			//Always remove tristate bridges.
-			remove = true;
-		} else if((getScd().isSupportingClassName("altera_avalon_pipeline_bridge") ||
-				getScd().isSupportingClassName("altera_avalon_clock_crossing") ||
-				getScd().isSupportingClassName("altera_avalon_half_rate_bridge")) &&
-				(!this.isTranslatingBridge()))
-		{
-			remove = true;
-		}
-		if(remove)
-		{
-			return removeFromSystem(sys);
+			return removeFromSystemStreaming(sys);
 		} else {
-			return false;
+			boolean remove = false;
+			if(getScd().isSupportingClassName("altera_avalon_tri_state_bridge"))
+			{
+				//Always remove tristate bridges.
+				remove = true;
+			} else if((getScd().isSupportingClassName("altera_avalon_pipeline_bridge") ||
+					getScd().isSupportingClassName("altera_avalon_clock_crossing") ||
+					getScd().isSupportingClassName("altera_avalon_half_rate_bridge")) &&
+					(!this.isTranslatingBridge()))
+			{
+				remove = true;
+			}
+			if(remove)
+			{
+				return removeFromSystemMM(sys);
+			} else {
+				return false;
+			}
 		}
+	}
+	protected boolean isStreamingBridge()
+	{
+		int numStreamMasters = 0;
+		int numStreamSlaves = 0;
+		for(Interface intf : vInterfaces)
+		{
+			if(intf.isMemorySlave())
+			{
+				return false;
+			}
+			if(intf.getType() == SystemDataType.STREAMING)
+			{
+				if(intf.isMaster())
+				{
+					numStreamMasters++;
+				} else {
+					numStreamSlaves++;
+				}
+			}
+		}
+		return ((numStreamMasters==1) && (numStreamSlaves==1));
 	}
 	protected boolean isTranslatingBridge()
 	{
