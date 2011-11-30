@@ -82,20 +82,20 @@ public class BISGeneral extends BoardInfoSubPanel {
 			if(povName.length == 2)
 			{
 				bi.setPov(povName[1]);
-				Vector<String> vMem = new Vector<String>();
-				for(int i=0; i<memComponentList.getModel().getSize(); i++)
-				{
-					if(memComponentList.isSelectedIndex(i))
-					{
-						Logger.logln("Selected memory: " + ((BasicComponent)(memComponentList.getModel().getElementAt(i))).getInstanceName(), LogLevel.DEBUG);
-						vMem.add(((BasicComponent)(memComponentList.getModel().getElementAt(i))).getInstanceName());
-					}
-				}
-				bi.setMemoryNodes(vMem);
 			} else {
 				Logger.logln("Failed to parse POV component name");
 			}
 		}
+		Vector<String> vMem = new Vector<String>();
+		for(int i=0; i<memComponentList.getModel().getSize(); i++)
+		{
+			if(memComponentList.isSelectedIndex(i))
+			{
+				Logger.logln("Selected memory: " + ((BasicComponent)(memComponentList.getModel().getElementAt(i))).getInstanceName(), LogLevel.DEBUG);
+				vMem.add(((BasicComponent)(memComponentList.getModel().getElementAt(i))).getInstanceName());
+			}
+		}
+		bi.setMemoryNodes(vMem);
 	}
 
 	@Override
