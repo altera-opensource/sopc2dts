@@ -19,6 +19,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
+
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
@@ -50,19 +53,23 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 	protected PhyMode getPhyMode()
 	{
 		String phyModeString = getParamValByName("ifGMII");
+		String phyModeStringsgmii = getParamValByName("enable_sgmii");
 		PhyMode pm = PhyMode.RGMII;
-		if(phyModeString.equals("MII"))
+		if(phyModeStringsgmii.equals("true"))
 		{
-			pm = PhyMode.MII;
-		} else if(phyModeString.equals("MII_GMII"))
-		{
-			pm = PhyMode.GMII;
-		} else if(phyModeString.equals("RGMII"))
-		{
-			pm = PhyMode.RGMII;
-		} else if(phyModeString.equals("SGMII"))
-		{
-			pm = PhyMode.SGMII;
+			Logger.logln("enable_sgmii");	
+		        pm = PhyMode.SGMII;
+                } else {
+			if(phyModeString.equals("MII"))
+			{
+				pm = PhyMode.MII;
+			} else if(phyModeString.equals("MII_GMII"))
+			{
+				pm = PhyMode.GMII;
+			} else if(phyModeString.equals("RGMII"))
+			{
+				pm = PhyMode.RGMII;
+			}
 		}
 		return pm;
 	}
