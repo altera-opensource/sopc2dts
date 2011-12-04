@@ -60,7 +60,7 @@ public class GenericTristateController extends BasicComponent {
 	}
 	/**
 	 * This is kinda abusing the function, because we _will_ try to remove ourselve
-	 * but also add ourselve in a new form....
+	 * but also add ourselves in a new form....
 	 */
 	@Override
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
@@ -85,11 +85,6 @@ public class GenericTristateController extends BasicComponent {
 				
 				flash.setScd(SopcComponentLib.getInstance().getScdByClassName("altera_avalon_cfi_flash"));
 				sys.getSystemComponents().remove(this);
-				flash.getInterfaces().addAll(vInterfaces);
-				for(Interface intf : flash.getInterfaces())
-				{
-					intf.setOwner(flash);
-				}
 				sys.getSystemComponents().add(flash);
 				bChanged = true;
 			} else {
