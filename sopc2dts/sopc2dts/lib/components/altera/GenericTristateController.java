@@ -28,7 +28,6 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.Parameter;
 import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.BasicComponent;
-import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.components.base.SICUnknown;
 

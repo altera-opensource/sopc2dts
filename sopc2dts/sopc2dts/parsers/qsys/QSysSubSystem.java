@@ -28,6 +28,10 @@ public class QSysSubSystem extends BasicComponent {
 	private static final long serialVersionUID = 1961793436374250055L;
 	protected Vector<BasicComponent> vSystemComponents = new Vector<BasicComponent>();
 
+	public QSysSubSystem(BasicComponent comp)
+	{
+		super(comp);
+	}
 	public QSysSubSystem(String iName, String ver) {
 		super(iName, iName, ver, new SopcComponentDescription(iName, "QSys", "ALTR", iName));
 	}
@@ -45,5 +49,9 @@ public class QSysSubSystem extends BasicComponent {
 			}
 		}
 		return null;
+	}
+	public Vector<BasicComponent> getSystemComponents()
+	{
+		return vSystemComponents;
 	}
 }

@@ -47,6 +47,7 @@ import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICUnknown;
 
 public class QSysSystemLoader implements ContentHandler {
+	private enum LoadType { SYSTEM, SUBSYSTEM, SUBSYSTEM_RELOAD };
 	private AvalonSystem currSystem;
 	private QSysSubSystem currSubSystem;
 	private BasicElement currElement;
@@ -54,26 +55,42 @@ public class QSysSystemLoader implements ContentHandler {
 	private File sourceFile;
 	private XMLReader xmlReader;
 	private String hierName;
-	private boolean isHierComponent;
+	private String hierPrefix;
+	LoadType loadType;
 	SopcComponentLib lib = SopcComponentLib.getInstance();
 	public synchronized AvalonSystem loadSystem(File source)
 	{
-		loadQSys(source, null, false);
+		loadQSys(source, null, LoadType.SYSTEM);
 		return currSystem;
 	}
 	public synchronized QSysSubSystem loadSubSystem(File source, String name)
 	{
-		loadQSys(source, name, true);
+		loadQSys(source, name, LoadType.SUBSYSTEM);
 		return currSubSystem;
 	}
-	public synchronized void loadQSys(File source, String name, boolean hier)
+	public synchronized void reloadSubSystem(File source, AvalonSystem sys, BasicComponent comp)
 	{
-		isHierComponent = hier;
-		if(isHierComponent)
+		currSubSystem = new QSysSubSystem(comp);
+		currSystem = sys;
+		loadQSys(source, comp.getInstanceName(), LoadType.SUBSYSTEM_RELOAD);
+	}
+	private synchronized void loadQSys(File source, String name, LoadType lType)
+	{
+		loadType = lType;
+		switch(loadType)
 		{
-			hierName = name;
-		} else {
+		case SYSTEM: {
 			hierName = parseValue("$${FILE_NAME}", source);
+			hierPrefix = "";
+		} break;
+		case SUBSYSTEM: { 
+			hierName = name;
+			hierPrefix = "";
+		} break;
+		case SUBSYSTEM_RELOAD: {
+			hierName = name;
+			hierPrefix = name + '_';
+		}
 		}
 		try {
 			Logger.logln("Trying to load " + source.getCanonicalPath(), LogLevel.DEBUG);
@@ -82,11 +99,11 @@ public class QSysSystemLoader implements ContentHandler {
 			xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setContentHandler(this);
 			xmlReader.parse(in);
-			if(currSystem!=null)
+			if((currSystem!=null)&&(loadType!=LoadType.SUBSYSTEM_RELOAD))
 			{
 				currSystem.recheckComponents();
-				flattenDesign();
 			}
+			flattenDesign();
 			Logger.logln("Loaded " + source.getCanonicalPath(), LogLevel.DEBUG);
 		} catch (SAXException e) {
 			e.printStackTrace();
@@ -117,13 +134,18 @@ public class QSysSystemLoader implements ContentHandler {
 					Interface intf = qss.getInterfaces().firstElement();
 					String internalName = intf.getParamValByName("internal");
 					BasicComponent internalComponent = qss.getComponentByName(internalName.split("\\.")[0]);
-					if(internalComponent.getInterfaceByName(internalName.split("\\.")[1])==null)
+					Interface internalIntf = internalComponent.getInterfaceByName(internalName.split("\\.")[1]);
+					if(internalIntf == null)
 					{
 						//Just move the interface inwards :)
 						internalComponent.getInterfaces().add(intf);
 						intf.setOwner(internalComponent);
 					} else {
-						Logger.logln("Interface merging on hierarchical QSys designs is not yet supported.",LogLevel.WARNING);
+						while(intf.getConnections().size()>0)
+						{
+							intf.getConnections().firstElement().connect(internalIntf);
+						}
+//						Logger.logln("Interface merging on hierarchical QSys designs is not yet supported.",LogLevel.WARNING);
 					}
 					qss.getInterfaces().remove(0);
 				}
@@ -143,16 +165,16 @@ public class QSysSystemLoader implements ContentHandler {
 	}
 	public BasicComponent getComponentByName(String name)
 	{
-		if(isHierComponent)
+		if(loadType == LoadType.SUBSYSTEM)
 		{
 			return currSubSystem.getComponentByName(name);
 		} else {
-			return currSystem.getComponentByName(name);
+			return currSystem.getComponentByName(hierPrefix+name);
 		}
 	}
 	public Vector<BasicComponent> getComponents()
 	{
-		if(isHierComponent)
+		if(loadType == LoadType.SUBSYSTEM)
 		{
 			return currSubSystem.vSystemComponents;
 		} else {
@@ -180,25 +202,39 @@ public class QSysSystemLoader implements ContentHandler {
 			Attributes atts) throws SAXException {
 		if(localName.equalsIgnoreCase("system"))
 		{
-			if(isHierComponent)
+			switch(loadType)
 			{
-				currSubSystem = new QSysSubSystem(hierName,
-						atts.getValue("version"));
-				currElement = currModule = currSubSystem;
-			} else {
+			case SYSTEM: {
 				currSystem = new AvalonSystem(hierName,
 						atts.getValue("version"), sourceFile);
 				currElement = currSystem;
+			} break;
+			case SUBSYSTEM: {
+				currSubSystem = new QSysSubSystem(hierName,
+						atts.getValue("version"));
+				currElement = currModule = currSubSystem;
+			} break;
+			case SUBSYSTEM_RELOAD: {
+				currElement = currModule = currSubSystem;
+			} break;
 			}
 		} else if(localName.equalsIgnoreCase("parameter")) {
 			currElement.addParam(new Parameter(atts.getValue("name"), 
 					atts.getValue("value"), getDataTypeFromValue(atts.getValue("value"))));
 		} else if(localName.equalsIgnoreCase("interface")) {
 			if (currModule != null) {
-				Interface intf = new Interface(atts.getValue("name"),
-						getSystemDataTypeByName(atts.getValue("type")),
-						(atts.getValue("dir").equalsIgnoreCase("start")), currModule);
-				currModule.getInterfaces().add(intf);
+				Interface intf = null;
+				if(loadType == LoadType.SUBSYSTEM_RELOAD)
+				{
+					intf = currModule.getInterfaceByName(atts.getValue("name"));
+				}
+				if(intf == null)
+				{
+					intf = new Interface(atts.getValue("name"),
+							getSystemDataTypeByName(atts.getValue("type")),
+							(atts.getValue("dir").equalsIgnoreCase("start")), currModule);
+					currModule.getInterfaces().add(intf);
+				}
 				String internal = atts.getValue("internal");
 				if(internal != null)
 				{
@@ -206,30 +242,43 @@ public class QSysSystemLoader implements ContentHandler {
 				}
 			}
 		} else if(localName.equalsIgnoreCase("module")) {
-			String kind = atts.getValue("kind");
-			currModule = lib.getComponentForClass(kind, atts.getValue("name"), atts.getValue("version"));
-			if(currModule.getScd() instanceof SICUnknown)
+			switch(loadType)
 			{
-				File f = new File(sourceFile.getParent() + File.separatorChar + kind + ".qsys");
-				if(f.exists())
-				{
-					QSysSystemLoader qsl = new QSysSystemLoader();
-					currModule = qsl.loadSubSystem(f,atts.getValue("name"));
-				} else {
-					try {
-						Logger.logln("Nothing known about modules of kind: " + kind + 
-								" and " + f.getCanonicalPath() + " Does not exist", LogLevel.WARNING);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				case SYSTEM: 
+				case SUBSYSTEM: {
+					String kind = atts.getValue("kind");
+					currModule = lib.getComponentForClass(kind, atts.getValue("name"), atts.getValue("version"));
+					if(currModule.getScd() instanceof SICUnknown)
+					{
+						File f = new File(sourceFile.getParent() + File.separatorChar + kind + ".qsys");
+						if(f.exists())
+						{
+							QSysSystemLoader qsl = new QSysSystemLoader();
+							currModule = qsl.loadSubSystem(f,atts.getValue("name"));
+						} else {
+							try {
+								Logger.logln("Nothing known about modules of kind: " + kind + 
+										" and " + f.getCanonicalPath() + " Does not exist", LogLevel.WARNING);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 					}
-				}
-			}
-			if(isHierComponent)
-			{
-				currSubSystem.addModule(currModule);
-			} else {
-				currSystem.getSystemComponents().add(currModule);
+					if(loadType == LoadType.SUBSYSTEM)
+					{
+						currSubSystem.addModule(currModule);
+					} else {
+						currSystem.getSystemComponents().add(currModule);
+					}
+				} break;
+				case SUBSYSTEM_RELOAD: {
+					currModule = currSystem.getComponentByName(currSubSystem.getInstanceName() + '_' + atts.getValue("name"));
+					if(currModule == null)
+					{
+						Logger.logln("Failed to find matching component in sopinfo for " + atts.getValue("name"), LogLevel.WARNING);
+					}
+				} break;
 			}
 			currElement = currModule;
 		} else if(localName.equalsIgnoreCase("connection")) {
@@ -242,22 +291,23 @@ public class QSysSystemLoader implements ContentHandler {
 				Logger.logln("Cannot find master and/or slave to connect (" + start + " to " + end + ')', LogLevel.WARNING);
 			} else {
 				SystemDataType dt = getSystemDataTypeByName(atts.getValue("kind"));
+				//XXX fixme
 				Interface mIntf = master.getInterfaceByName(start.split("\\.")[1]);
 				Interface sIntf = slave.getInterfaceByName(end.split("\\.")[1]);
 				if(mIntf==null)
 				{
 					mIntf = new Interface(start.split("\\.")[1], dt, true, master);
+					System.err.println("Invented master interface: " + mIntf.getName());
 					master.getInterfaces().add(mIntf);
 				}
 				if(sIntf==null)
 				{
 					sIntf = new Interface(end.split("\\.")[1], dt, false, slave);
+					System.err.println("Invented slave interface: " + sIntf.getName());
 					slave.getInterfaces().add(sIntf);
 				}
-				Connection bc = new Connection(mIntf, sIntf, dt);
-				currElement = bc;
-				mIntf.getConnections().add(bc);
-				sIntf.getConnections().add(bc);
+				Connection conn = new Connection(mIntf, sIntf, dt, true);
+				currElement = conn;
 				if(dt == SystemDataType.CLOCK)
 				{
 					if(mIntf.getInterfaceValue()==0)
@@ -268,7 +318,7 @@ public class QSysSystemLoader implements ContentHandler {
 							mIntf.setInterfaceValue(Integer.decode(clockRate));
 						}
 					}
-					bc.setConnValue(mIntf.getInterfaceValue());
+					conn.setConnValue(mIntf.getInterfaceValue());
 				}
 			}
 		} else if(!localName.equalsIgnoreCase("component")) {

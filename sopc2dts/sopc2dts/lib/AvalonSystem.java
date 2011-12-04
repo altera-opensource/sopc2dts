@@ -22,7 +22,12 @@ package sopc2dts.lib;
 import java.io.File;
 import java.util.Vector;
 
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.components.Interface;
+import sopc2dts.lib.components.base.SICUnknown;
+import sopc2dts.parsers.qsys.QSysSystemLoader;
 
 public class AvalonSystem extends BasicElement {
 	private static final long serialVersionUID = -4412823810569371574L;
@@ -77,6 +82,22 @@ public class AvalonSystem extends BasicElement {
 	public void recheckComponents()
 	{
 		/*
+		 * Try to find hierarchy
+		 */
+		for(int i=0; i<vSystemComponents.size();i++)
+		{
+			BasicComponent comp = vSystemComponents.get(i);
+			if((comp.getScd() instanceof SICUnknown) && 
+					(comp.getParamValByName("AUTO_GENERATION_ID")!=null))
+			{
+				if(removeHierarchicalWrapperComponent(comp))
+				{
+					//Restart loop after modifications...
+					i=0;
+				}
+			}
+		}
+		/*
 		 * Now remove tristate (and other unneeded) bridges. If any.
 		 * Also flatten hierarchical qsys designs.
 		 */
@@ -92,5 +113,41 @@ public class AvalonSystem extends BasicElement {
 		{
 			SopcComponentLib.getInstance().finalCheckOnComponent(comp);
 		}
+	}
+	private boolean removeHierarchicalWrapperComponent(BasicComponent comp)
+	{
+		Logger.logln("Found possible QSys subsytem " + comp.getInstanceName() + " of type " + comp.getClassName(), LogLevel.DEBUG);
+		Logger.logln("Trying to find matching QSys file", LogLevel.DEBUG);
+		File qsysFile = new File(sourceFile.getAbsoluteFile().getParent()+ File.separator + comp.getClassName() + ".qsys");
+		if(qsysFile.exists())
+		{
+			Logger.logln("Using " + qsysFile.getAbsolutePath(), LogLevel.DEBUG);
+			QSysSystemLoader qsl = new QSysSystemLoader();
+			qsl.reloadSubSystem(qsysFile, this, comp);
+			while(comp.getInterfaces().size()>0)
+			{
+				Interface intf = comp.getInterfaces().firstElement();
+				String internalName = intf.getParamValByName("internal");
+				BasicComponent internalComponent = getComponentByName(comp.getInstanceName() + '_' + internalName.split("\\.")[0]);
+				Interface internalIntf = internalComponent.getInterfaceByName(internalName.split("\\.")[1]);
+				if(internalIntf == null)
+				{
+					//Just move the interface inwards :)
+					internalComponent.getInterfaces().add(intf);
+					intf.setOwner(internalComponent);
+				} else {
+					while(intf.getConnections().size()>0)
+					{
+						intf.getConnections().firstElement().connect(internalIntf);
+					}
+				}
+				comp.getInterfaces().remove(0);
+			}
+			vSystemComponents.remove(comp); 
+			return true;
+		} else {
+			Logger.logln(qsysFile.getAbsolutePath() + " does not exist");
+		}
+		return false;
 	}
 }
