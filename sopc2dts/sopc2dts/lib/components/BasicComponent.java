@@ -54,6 +54,11 @@ public class BasicComponent extends BasicElement {
 		this.className = bc.className;
 		this.version = bc.className;
 		this.scd = bc.scd;
+		this.vInterfaces = bc.vInterfaces;
+		for(Interface intf : vInterfaces)
+		{
+			intf.setOwner(this);
+		}
 	}
 	protected String getRegForDTS(int indentLevel, BasicComponent master)
 	{
