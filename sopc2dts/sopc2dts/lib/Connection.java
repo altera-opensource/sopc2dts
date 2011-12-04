@@ -33,9 +33,19 @@ public class Connection extends BasicElement {
 	
 	public Connection(Interface master, Interface slave, SystemDataType t)
 	{
+		this(master, slave, t, false);
+	}
+	public Connection(Interface master, Interface slave, SystemDataType t, boolean connect)
+	{
 		type = t;
-		masterInterface = master;
-		slaveInterface = slave;
+		if(connect)
+		{
+			connectMaster(master);
+			connectSlave(slave);
+		} else {
+			masterInterface = master;
+			slaveInterface = slave;
+		}
 	}
 	
 	public Connection(Connection org) {
@@ -44,7 +54,34 @@ public class Connection extends BasicElement {
 		slaveInterface = org.slaveInterface;
 		connValue = org.connValue;
 	}
-
+	
+	public void connect(Interface intf)
+	{
+		if(intf.isMaster())
+		{
+			connectMaster(intf);
+		} else {
+			connectSlave(intf);
+		}
+	}
+	public void connectMaster(Interface intf)
+	{
+		if(masterInterface!=null)
+		{
+			masterInterface.getConnections().remove(this);
+		}
+		masterInterface = intf;
+		masterInterface.getConnections().add(this);
+	}
+	public void connectSlave(Interface intf)
+	{
+		if(slaveInterface!=null)
+		{
+			slaveInterface.getConnections().remove(this);
+		}
+		slaveInterface = intf;
+		slaveInterface.getConnections().add(this);
+	}
 	public long getConnValue()
 	{
 		return connValue;
