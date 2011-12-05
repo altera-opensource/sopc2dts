@@ -128,10 +128,8 @@ public class PtfSystemLoader {
 				irqSI = new Interface("PtfIrqSlave", SystemDataType.INTERRUPT, false, irqMaster);
 				comp.getInterfaces().add(irqSI);
 			}
-			Connection conn = new Connection(irqMI, irqSI, SystemDataType.INTERRUPT);
+			Connection conn = new Connection(irqMI, irqSI, SystemDataType.INTERRUPT, true);
 			conn.setConnValue(conVal);
-			irqSI.getConnections().add(conn);
-			irqMI.getConnections().add(conn);
 		}		
 	}
 	protected void connectMemoryMapped(Interface intf, String connName)
@@ -152,9 +150,7 @@ public class PtfSystemLoader {
 				Interface mi = master.getInterfaceByName(masterIntf);
 				if(mi!=null)
 				{
-					Connection conn = new Connection(mi, intf, intf.getType());
-					mi.getConnections().add(conn);
-					intf.getConnections().add(conn);
+					Connection conn = new Connection(mi, intf, intf.getType(),true);
 					if(conVal!=null)
 					{
 						try {

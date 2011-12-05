@@ -158,10 +158,8 @@ class PtfHandler {
 				{
 					Interface clkSI = new Interface("PtfClk", SystemDataType.CLOCK, false, comp);
 					comp.getInterfaces().add(clkSI);
-					Connection conn = new Connection(clkMI, clkSI, SystemDataType.CLOCK);
+					Connection conn = new Connection(clkMI, clkSI, SystemDataType.CLOCK, true);
 					conn.setConnValue(clkMI.getInterfaceValue());
-					clkSI.getConnections().add(conn);
-					clkMI.getConnections().add(conn);
 				}
 			}
 			system.getSystemComponents().add(comp);
