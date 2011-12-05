@@ -83,8 +83,8 @@ public class GenericTristateController extends BasicComponent {
 				SICFlash flash = new SICFlash(this);
 				
 				flash.setScd(SopcComponentLib.getInstance().getScdByClassName("altera_avalon_cfi_flash"));
-				sys.getSystemComponents().remove(this);
-				sys.getSystemComponents().add(flash);
+				sys.removeSystemComponent(this);
+				sys.addSystemComponent(flash);
 				bChanged = true;
 			} else {
 				Logger.logln("GenericTristateController: " + getInstanceName() 

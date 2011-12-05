@@ -119,7 +119,7 @@ public class SopcInfoSystemLoader implements ContentHandler {
 		{
 			currComp = lib.getComponentForClass(atts.getValue("kind"),
 					atts.getValue("name"), atts.getValue("version"));
-			currSystem.getSystemComponents().add(currComp);
+			currSystem.addSystemComponent(currComp);
 			@SuppressWarnings("unused")
 			SopcInfoComponent c = new SopcInfoComponent(this, xmlReader, currComp);
 		} else if(localName.equalsIgnoreCase("connection")) {

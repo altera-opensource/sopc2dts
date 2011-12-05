@@ -143,7 +143,7 @@ public class SICBridge extends BasicComponent {
 			Logger.logln("Slave count: " + slaveConn.getSlaveInterface().getConnections().size(), LogLevel.DEBUG);
 		}
 		//Finally remove ourselves
-		sys.getSystemComponents().remove(this);
+		sys.removeSystemComponent(this);
 		return true;
 	}
 	private boolean removeFromSystemStreaming(AvalonSystem sys)
@@ -169,7 +169,7 @@ public class SICBridge extends BasicComponent {
 				conn.setSlaveInterface(oldConn.getSlaveInterface());
 				oldConn.getSlaveInterface().getConnections().remove(oldConn);
 				oldConn.getSlaveInterface().getConnections().add(conn);
-				sys.getSystemComponents().remove(this);
+				sys.removeSystemComponent(this);
 				return true;				
 			}
 		}

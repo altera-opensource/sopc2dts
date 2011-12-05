@@ -89,7 +89,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 				rx_dma = null;
 			} else {
 				rx_dma = (SICSgdma)comp;
-				sys.getSystemComponents().remove(comp);
+				sys.removeSystemComponent(comp);
 				bChanged = true;
 				encapsulateSGDMA(rx_dma, "rx");
 			}
@@ -103,7 +103,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 				tx_dma = null;
 			} else {
 				tx_dma = (SICSgdma)comp;
-				sys.getSystemComponents().remove(comp);
+				sys.removeSystemComponent(comp);
 				bChanged = true;
 				encapsulateSGDMA(tx_dma, "tx");
 			}
@@ -124,7 +124,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 				}
 				if(desc_mem!=null)
 				{
-					sys.getSystemComponents().remove(desc_mem);
+					sys.removeSystemComponent(desc_mem);
 					bChanged = true;
 					Interface s1 = desc_mem.getInterfaceByName("s1");
 					desc_mem.getInterfaces().remove(s1);

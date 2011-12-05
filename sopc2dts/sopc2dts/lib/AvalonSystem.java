@@ -43,9 +43,12 @@ public class AvalonSystem extends BasicElement {
 		sourceFile = f;
 		systemName = name;
 	}
+	public boolean addSystemComponent(BasicComponent comp) {
+		return vSystemComponents.add(comp);
+	}
 	public BasicComponent getComponentByName(String name)
 	{
-		for(BasicComponent c : getSystemComponents())
+		for(BasicComponent c : vSystemComponents)
 		{
 			if(c.getInstanceName().equalsIgnoreCase(name))
 			{
@@ -149,5 +152,8 @@ public class AvalonSystem extends BasicElement {
 			Logger.logln(qsysFile.getAbsolutePath() + " does not exist");
 		}
 		return false;
+	}
+	public boolean removeSystemComponent(BasicComponent comp) {
+		return vSystemComponents.remove(comp);
 	}
 }

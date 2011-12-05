@@ -269,7 +269,7 @@ public class QSysSystemLoader implements ContentHandler {
 					{
 						currSubSystem.addModule(currModule);
 					} else {
-						currSystem.getSystemComponents().add(currModule);
+						currSystem.addSystemComponent(currModule);
 					}
 				} break;
 				case SUBSYSTEM_RELOAD: {

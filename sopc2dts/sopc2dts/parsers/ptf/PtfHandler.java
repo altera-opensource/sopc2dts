@@ -130,7 +130,7 @@ class PtfHandler {
 					i++;
 				}
 			}
-			system.getSystemComponents().add(clock);			
+			system.addSystemComponent(clock);			
 		} else if(tag.equals("MODULE"))
 		{
 			BasicComponent comp = SopcComponentLib.getInstance().getComponentForClass(
@@ -162,7 +162,7 @@ class PtfHandler {
 					conn.setConnValue(clkMI.getInterfaceValue());
 				}
 			}
-			system.getSystemComponents().add(comp);
+			system.addSystemComponent(comp);
 		} else if(tag.equals("MASTERED_BY"))
 		{
 			String baseAddr = mapAssignments.get("Offset_Address");
