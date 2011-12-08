@@ -36,11 +36,17 @@
 		<parameter dtsName="current-speed" sopcName="embeddedsw.CMacro.BAUD"></parameter>
 		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.FREQ"></parameter>
 	</S2DComponent>
+	<S2DComponent classname="fifoed_avalon_uart" group="serial"
+		compatDevice="uart">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+		<parameter dtsName="current-speed" sopcName="embeddedsw.CMacro.BAUD"></parameter>
+		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.FREQ"></parameter>
+	</S2DComponent>
 	<S2DComponent classname="fifoed_avalon_uart_classic" group="serial"
 		compatDevice="uart">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 		<parameter dtsName="current-speed" sopcName="embeddedsw.CMacro.BAUD"></parameter>
-		<parameter dtsName="clock-frequency"></parameter>
+		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.FREQ"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_jtag_uart" group="serial"
 		compatDevice="juart">
@@ -85,6 +91,7 @@
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="clock_source" group="ignore"></S2DComponent>
+        <S2DComponent classname="altera_clock_bridge" group="ignore"></S2DComponent>
 	<S2DComponent classname="timing_adapter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_fifo" group="fifo"
 		compatDevice="fifo">
