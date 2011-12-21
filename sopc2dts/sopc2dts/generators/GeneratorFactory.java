@@ -81,7 +81,7 @@ public class GeneratorFactory {
 		} else if(type.equalsIgnoreCase("dtb-hex8"))
 		{
 			return GeneratorType.DTB_IHEX8;
-		} else if(type.equalsIgnoreCase("u-boot")) {
+		} else if(type.equalsIgnoreCase("u-boot") || type.equalsIgnoreCase("uboot")) {
 			return GeneratorType.U_BOOT;
 		} else if(type.equalsIgnoreCase("kernel"))
 		{
@@ -95,23 +95,26 @@ public class GeneratorFactory {
 	}
 	public static AbstractSopcGenerator createGeneratorFor(AvalonSystem sys, GeneratorType genType)
 	{
-		switch(genType)
+		if(genType != null)
 		{
-		case DTS: {
-			return new DTSGenerator(sys);			
-		}
-		case DTB: {
-			return new DTBGenerator(sys);
-		}
-		case DTB_IHEX8: {
-			return new DTBHex8Generator(sys);
-		}
-		case U_BOOT: {
-			return new UBootHeaderGenerator(sys);
-		}
-		case KERNEL_HEADERS: {
-			return new KernelHeadersGenerator(sys);	
-		}
+			switch(genType)
+			{
+			case DTS: {
+				return new DTSGenerator(sys);			
+			}
+			case DTB: {
+				return new DTBGenerator(sys);
+			}
+			case DTB_IHEX8: {
+				return new DTBHex8Generator(sys);
+			}
+			case U_BOOT: {
+				return new UBootHeaderGenerator(sys);
+			}
+			case KERNEL_HEADERS: {
+				return new KernelHeadersGenerator(sys);	
+			}
+			}
 		}
 		return null;
 	}
