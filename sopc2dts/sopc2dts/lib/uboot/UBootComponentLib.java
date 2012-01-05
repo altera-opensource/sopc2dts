@@ -39,7 +39,7 @@ public class UBootComponentLib {
 		props.put("CONFIG_SYS_DCACHELINE_SIZE", "prop|embeddedsw.CMacro.DCACHE_LINE_SIZE");
 		/* TODO This is a hack. doesn't work for nommu */
 		vComponents.add(new UBootLibComponent(
-				new String[] { "altera_nios2"}, props, 
+				new String[] { "altera_nios2","altera_nios2_qsys"}, props, 
 				String.format("#define IO_REGION_BASE\t0x%08X\n",UBootLibComponent.IO_REGION_BASE_MMU)));
 		
 		props = new HashMap<String, String>();
