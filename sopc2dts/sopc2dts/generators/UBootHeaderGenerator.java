@@ -122,9 +122,10 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 		} else {
 			for(BasicComponent bc : sys.getMasterComponents())
 			{
+				Logger.logln("Considering " + bc.getInstanceName());
 				if(bc.getScd().getGroup().equalsIgnoreCase("cpu"))
 				{
-					return pov;
+					return bc;
 				}
 			}
 		}
