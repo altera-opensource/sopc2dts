@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -47,20 +47,9 @@ public class DTSGenerator extends AbstractSopcGenerator {
 		int indentLevel = 0;
 		vHandled.clear();
 		String res = "";
-		BasicComponent povComp = getComponentByName(bi.getPov());
-		if(povComp==null)
+		BasicComponent povComp = getPovComponent(bi);
+		if(povComp != null)
 		{
-			//Just find the first master...
-			Vector<BasicComponent> vMasters = sys.getMasterComponents();
-			if(vMasters.size()>0)
-			{
-				povComp = vMasters.get(0);
-			}
-		}
-		if(povComp == null)
-		{
-			Logger.logln("Could not find pov: " + bi.getPov(), LogLevel.ERROR);
-		} else {
 			res = getSmallCopyRightNotice("devicetree")
 				+ "/dts-v1/;\n"
 				+ "/ {\n";
@@ -271,17 +260,5 @@ public class DTSGenerator extends AbstractSopcGenerator {
 			}
 		}
 		return res;
-	}
-
-	public BasicComponent getComponentByName(String name)
-	{
-		for(BasicComponent c : sys.getSystemComponents())
-		{
-			if(c.getInstanceName().equalsIgnoreCase(name))
-			{
-				return c;
-			}
-		}
-		return null;
 	}
 }

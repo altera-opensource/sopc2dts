@@ -24,6 +24,9 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropByte;
+import sopc2dts.lib.devicetree.DTPropNumber;
 /*
  * This class handles all default network stuff, subclasses can override 
  * defaults declared in this class, or just don't and keep 'm simple.
@@ -49,6 +52,22 @@ public class SICEthernet extends BasicComponent {
 		}
 		res += "];\n";
 		return res;
+	}
+	@Override
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		DTNode node = super.toDTNode(bi, conn);
+		node.addProperty(new DTPropNumber("address-bits", Long.valueOf(getAddressBits())));
+		node.addProperty(new DTPropNumber("max-frame-size", Long.valueOf(getMaxFrameSize())));
+		DTPropByte dtpb = new DTPropByte("local-mac-address");
+		dtpb.getValues().clear();
+		int[] mac_address = getMacAddress(bi);
+		for(int i=0; i<mac_address.length; i++)
+		{
+			dtpb.addValue(mac_address[i]);
+		}		
+		node.addProperty(dtpb);
+		return node;
 	}
 	protected int[] getMacAddress(BoardInfo bi)
 	{

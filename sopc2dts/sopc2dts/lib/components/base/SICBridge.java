@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.base;
 
+import java.util.Vector;
+
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.AbstractSopcGenerator;
@@ -29,6 +31,10 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropBool;
+import sopc2dts.lib.devicetree.DTPropHexNumber;
+import sopc2dts.lib.devicetree.DTPropNumber;
 
 
 public class SICBridge extends BasicComponent {
@@ -38,9 +44,9 @@ public class SICBridge extends BasicComponent {
 		super(cName, iName, version,scd);
 	}
 	
-	protected String getDtsRanges(int indentLevel, Connection conn)
+	protected Vector<Long> getDtRanges(Connection conn)
 	{
-		String res = "";
+		Vector<Long> vRanges = new Vector<Long>();
 		for(Interface master : getInterfaces())
 		{
 			if(master.isMemoryMaster())
@@ -50,32 +56,58 @@ public class SICBridge extends BasicComponent {
 					long size = 0;
 					Interface childIf=childConn.getSlaveInterface();
 					if(childIf!=null) size = childIf.getInterfaceValue();
-					if(res.length()==0)
-					{
-						res = AbstractSopcGenerator.indent(indentLevel) + "ranges = <"; 
-					} else {
-						res += "\n" + AbstractSopcGenerator.indent(indentLevel) + "\t";
-					}					
-					res += String.format("0x%08X 0x%08X 0x%08X", childConn.getConnValue(),
-							childConn.getConnValue() + conn.getConnValue(), size);
+					vRanges.add(childConn.getConnValue());
+					vRanges.add(childConn.getConnValue() + conn.getConnValue());
+					vRanges.add(size);
 				}
 			}
 		}
-		if(res.length() == 0)
-		{
-			res = AbstractSopcGenerator.indent(indentLevel) + "ranges;\n";
-		} else {
-			res += ">;\n";
-		}
-		return res;
+		return vRanges;
 	}
 
 	@Override
 	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
-		return AbstractSopcGenerator.indent(indentLevel) + "#address-cells = <1>;\n" +
-				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n" +
-				getDtsRanges(indentLevel,conn);
+		String res = AbstractSopcGenerator.indent(indentLevel) + "#address-cells = <1>;\n" +
+				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n";
+		Vector<Long> vRanges = getDtRanges(conn);
+		if(vRanges.size()>0)
+		{
+			res += AbstractSopcGenerator.indent(indentLevel) + "ranges = <";
+			for(int i=0; i<vRanges.size(); i++)
+			{
+				if(i>0)
+				{
+					if(i%3==0)
+					{
+						res += "\n" + AbstractSopcGenerator.indent(indentLevel) + "\t";
+					} else {
+						res += ' ';
+					}
+				}
+				res += String.format("0x%08X", vRanges.get(i));
+			}
+			res += ">;\n";
+		} else {
+			res += AbstractSopcGenerator.indent(indentLevel) + "ranges;\n";
+		}
+		return res;
+	}
+
+	@Override
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		DTNode dtn = super.toDTNode(bi, conn);
+		Vector<Long> vRanges = getDtRanges(conn);
+		dtn.addProperty(new DTPropNumber("#address-cells", 1L));
+		dtn.addProperty(new DTPropNumber("#size-cells", 1L));
+		if(vRanges.isEmpty())
+		{
+			dtn.addProperty(new DTPropBool("ranges"));
+		} else {
+			dtn.addProperty(new DTPropHexNumber("ranges",vRanges));			
+		}
+		return dtn;
 	}
 	private boolean removeFromSystemMM(AvalonSystem sys)
 	{

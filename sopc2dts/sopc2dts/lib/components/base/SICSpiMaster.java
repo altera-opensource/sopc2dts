@@ -26,6 +26,8 @@ import sopc2dts.lib.boardinfo.BoardInfoComponent;
 import sopc2dts.lib.boardinfo.SpiSlave;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropNumber;
 
 public class SICSpiMaster extends BasicComponent {
 	private static final long serialVersionUID = 5186841425372630796L;
@@ -33,6 +35,30 @@ public class SICSpiMaster extends BasicComponent {
 	public SICSpiMaster(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
+	@Override
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		DTNode node = super.toDTNode(bi, conn);
+		BoardInfoComponent bs = bi.getBicForChip(getInstanceName()); 
+		if(bs!=null)
+		{
+			if(bs instanceof BICSpi)
+			{
+				BICSpi bSpi = (BICSpi)bs;
+				if(!bSpi.getSlaves().isEmpty())
+				{
+					node.addProperty(new DTPropNumber("#address-cells", 1L));
+					node.addProperty(new DTPropNumber("#size-cells", 0L));
+					for(SpiSlave slave : bSpi.getSlaves())
+					{
+						node.addChild(slave.toDTNode(bi));
+					}
+				}
+			}
+		}
+		return node;
+	}
+
 	@Override
 	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{

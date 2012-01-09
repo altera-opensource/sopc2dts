@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011-2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,7 @@ package sopc2dts.generators;
 import sopc2dts.lib.AvalonSystem;
 
 public class GeneratorFactory {
-	public enum GeneratorType { DTS, DTB, DTB_IHEX8, U_BOOT, KERNEL_HEADERS };
+	public enum GeneratorType { DTS, DTB, DTB_IHEX8, U_BOOT, KERNEL_HEADERS, DTS_OLD, DTB_OLD };
 
 	public static String getGeneratorNameByType(GeneratorType genType)
 	{
@@ -31,8 +31,14 @@ public class GeneratorFactory {
 		case DTS: {
 			return "dts"; 
 		}
+		case DTS_OLD: {
+			return "dts-old";
+		}
 		case DTB: {
 			return "dtb";
+		}
+		case DTB_OLD: {
+			return "dtb-old";
 		}
 		case DTB_IHEX8: {
 			return "dtb-hex8";
@@ -42,7 +48,6 @@ public class GeneratorFactory {
 		}
 		case KERNEL_HEADERS: {
 			return "kernel";
-			
 		}
 		}
 		return null;
@@ -51,10 +56,12 @@ public class GeneratorFactory {
 	{
 		switch(genType)
 		{
-		case DTS: {
+		case DTS:
+		case DTS_OLD: {
 			return "<HTML>Device Tree Source<BR>A textual representation of the system.</HTML>"; 
 		}
-		case DTB: {
+		case DTB:
+		case DTB_OLD: {
 			return "<HTML>Device Tree Blob<BR>A compiled version of the dts</HTML>";
 		}
 		case DTB_IHEX8: {
@@ -65,7 +72,6 @@ public class GeneratorFactory {
 		}
 		case KERNEL_HEADERS: {
 			return "<HTML>Linux Kernel headers.<BR>Not really needed anymore</HTML>";
-			
 		}
 		}
 		return null;
@@ -75,9 +81,15 @@ public class GeneratorFactory {
 		if(type.equalsIgnoreCase("dts"))
 		{
 			return GeneratorType.DTS;
+		} else if(type.equalsIgnoreCase("dts-old"))
+		{
+			return GeneratorType.DTS_OLD;
 		} else if(type.equalsIgnoreCase("dtb"))
 		{
 			return GeneratorType.DTB;
+		} else if(type.equalsIgnoreCase("dtb-old"))
+		{
+			return GeneratorType.DTB_OLD;
 		} else if(type.equalsIgnoreCase("dtb-hex8"))
 		{
 			return GeneratorType.DTB_IHEX8;
@@ -100,9 +112,15 @@ public class GeneratorFactory {
 			switch(genType)
 			{
 			case DTS: {
+				return new DTSGenerator2(sys);
+			}
+			case DTS_OLD: {
 				return new DTSGenerator(sys);			
 			}
 			case DTB: {
+				return new DTBGenerator2(sys);
+			}
+			case DTB_OLD: {
 				return new DTBGenerator(sys);
 			}
 			case DTB_IHEX8: {

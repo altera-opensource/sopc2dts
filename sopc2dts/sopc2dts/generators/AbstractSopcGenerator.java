@@ -19,8 +19,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.generators;
 
+import java.util.Vector;
+
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.components.BasicComponent;
 
 public abstract class AbstractSopcGenerator {
 	protected static String copyRightNotice = "/*\n" +
@@ -88,5 +93,70 @@ public abstract class AbstractSopcGenerator {
 	public byte[] getBinaryOutput(BoardInfo bi)
 	{
 		return getTextOutput(bi).getBytes();
+	}
+	protected BasicComponent getPovComponent(BoardInfo bi)
+	{
+		BasicComponent povComp = sys.getComponentByName(bi.getPov());
+		if(povComp == null)
+		{
+			if((bi.getPov() == null) || (bi.getPov().isEmpty()))
+			{
+				Logger.logln("No point of view specified. Trying to find one.", LogLevel.INFO);
+			} else {
+				Logger.logln("Point of view: '" + bi.getPov() + "' could not be found. Trying to find another one.", LogLevel.WARNING);
+			}
+			Vector<BasicComponent> vMasters = sys.getMasterComponents();
+			if(vMasters.isEmpty())
+			{
+				Logger.logln("System appears to not contain any master components!", LogLevel.ERROR);
+			} else {
+				switch(bi.getPovType())
+				{
+				case CPU: {
+					//Find a CPU
+					for(BasicComponent comp : vMasters)
+					{
+						if(comp.getScd().getGroup().equals("cpu"))
+						{
+							Logger.logln("Found a cpu of type " + comp.getClassName() + " named " + comp.getInstanceName(), LogLevel.INFO);
+							return comp;
+						}
+					}
+				} break;
+				case PCI: {
+					//First do a strict run
+					for(BasicComponent comp : vMasters)
+					{
+						if(comp.getScd().getGroup().toLowerCase().contains("pci"))
+						{
+							Logger.logln("Found a master of type " + comp.getClassName() + " named " + comp.getInstanceName(), LogLevel.INFO);
+							return comp;
+						}
+					}
+					//Then a weaker one
+					for(BasicComponent comp : vMasters)
+					{
+						if(comp.getClassName().toLowerCase().contains("pci"))
+						{
+							Logger.logln("Found a master of type " + comp.getClassName() + " named " + comp.getInstanceName(), LogLevel.INFO);
+							return comp;
+						}
+					}
+					//Then just return anything remotely matching
+					for(BasicComponent comp : vMasters)
+					{
+						if(comp.getInstanceName().toLowerCase().contains("pci"))
+						{
+							Logger.logln("Found a master of type " + comp.getClassName() + " named " + comp.getInstanceName(), LogLevel.WARNING);
+							return comp;
+						}
+					}
+				} break;
+				}
+				povComp = vMasters.firstElement();
+				Logger.logln("Unable to find a master of type " + bi.getPovType().name() + ". Randomly selecting the first master we find (" + povComp.getInstanceName() + ").", LogLevel.WARNING);
+			}
+		}
+		return povComp;
 	}
 }

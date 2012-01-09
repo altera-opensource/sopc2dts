@@ -19,7 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.nxp;
 
-import sopc2dts.generators.AbstractSopcGenerator;
+import java.util.Vector;
+
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
@@ -32,9 +33,11 @@ public class USBHostControllerISP1xxx extends BasicComponent {
 			SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
-	protected String getRegForDTS(int indentLevel, BasicComponent master)
+	
+	@Override
+	protected Vector<Long> getReg(BasicComponent master) 
 	{
-		String res = "";
+		Vector<Long> vRegs = new Vector<Long>();
 		for(Interface intf : vInterfaces)
 		{
 			if(intf.isMemorySlave())
@@ -50,21 +53,14 @@ public class USBHostControllerISP1xxx extends BasicComponent {
 				}
 				if((conn!=null) && (intf!=null))
 				{
-					if(res.length()==0)
-					{
-						res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
-					}
 					long addr = getAddrFromConnection(conn);
-					res += " 0x" + Long.toHexString(addr) + " 0x04 " +
-							" 0x" + Long.toHexString(addr + 4) + " 0x04";
+					vRegs.add(addr);
+					vRegs.add(4L);
+					vRegs.add(addr+4);
+					vRegs.add(4L);
 				}
 			}
 		}
-		if(res.length()>0)
-		{
-			res += ">;\n";
-		}
-		return res;
+		return vRegs;
 	}
-
 }

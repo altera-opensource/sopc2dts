@@ -2,10 +2,14 @@
 SOURCES=Sopc2DTS.java \
 	sopc2dts/LogListener.java sopc2dts/Logger.java \
 	sopc2dts/generators/AbstractSopcGenerator.java \
-	sopc2dts/generators/DTSGenerator.java sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/DTBGenerator.java \
+	sopc2dts/generators/DTBGenerator2.java \
 	sopc2dts/generators/DTBHex8Generator.java \
+	sopc2dts/generators/DTGenerator.java \
+	sopc2dts/generators/DTSGenerator.java \
+	sopc2dts/generators/DTSGenerator2.java \
 	sopc2dts/generators/GeneratorFactory.java \
+	sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
 	sopc2dts/generators/UBootHeaderGenerator.java \
 	sopc2dts/gui/BasicComponentComboBoxModel.java \
@@ -52,6 +56,16 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/base/SICSpiMaster.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
 	sopc2dts/lib/components/nxp/USBHostControllerISP1xxx.java \
+	sopc2dts/lib/devicetree/DTBlob.java \
+	sopc2dts/lib/devicetree/DTElement.java \
+	sopc2dts/lib/devicetree/DTNode.java \
+	sopc2dts/lib/devicetree/DTPropBool.java \
+	sopc2dts/lib/devicetree/DTPropByte.java \
+	sopc2dts/lib/devicetree/DTPropHexNumber.java \
+	sopc2dts/lib/devicetree/DTPropNumber.java \
+	sopc2dts/lib/devicetree/DTPropPHandle.java \
+	sopc2dts/lib/devicetree/DTPropString.java \
+	sopc2dts/lib/devicetree/DTProperty.java \
 	sopc2dts/lib/uboot/UBootComponentLib.java \
 	sopc2dts/lib/uboot/UBootLibComponent.java \
 	sopc2dts/parsers/BasicSystemLoader.java \

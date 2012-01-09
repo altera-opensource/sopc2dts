@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -20,25 +20,34 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.generators;
 
 import sopc2dts.lib.AvalonSystem;
-import sopc2dts.lib.Bin2IHex;
-import sopc2dts.lib.Bin2IHex.HexTypes;
 import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.devicetree.DTBlob;
+import sopc2dts.lib.devicetree.DTNode;
 
-public class DTBHex8Generator extends AbstractSopcGenerator {
-	private DTBGenerator2 dtbGen;
-	public DTBHex8Generator(AvalonSystem s) {
-		super(s, true);
-		dtbGen = new DTBGenerator2(s);
+public class DTBGenerator2 extends DTGenerator {
+
+	public DTBGenerator2(AvalonSystem s) {
+		super(s, false);
 	}
 
 	@Override
 	public String getExtension() {
-		return "hex";
+		return "dtb";
 	}
 
 	@Override
 	public String getTextOutput(BoardInfo bi) {
-		return Bin2IHex.toHex(dtbGen.getBinaryOutput(bi), HexTypes.I8Hex);
+		return null;
+	}
+
+	@Override
+	public byte[] getBinaryOutput(BoardInfo bi)
+	{
+		DTBlob dtb = new DTBlob();
+		DTNode root = getDTOutput(bi);
+		root.setName("");
+		dtb.setRootNode(root);
+		return dtb.getBytes();
 	}
 
 }

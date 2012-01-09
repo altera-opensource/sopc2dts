@@ -20,8 +20,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.components.altera;
 
 import sopc2dts.Logger;
-import sopc2dts.Logger.LogLevel;
-
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;

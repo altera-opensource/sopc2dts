@@ -21,6 +21,8 @@ package sopc2dts.lib.components;
 
 import java.util.Vector;
 
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BasicElement;
@@ -29,6 +31,12 @@ import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.base.SICUnknown;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropBool;
+import sopc2dts.lib.devicetree.DTPropHexNumber;
+import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTPropPHandle;
+import sopc2dts.lib.devicetree.DTPropString;
 
 public class BasicComponent extends BasicElement {
 	private static final long serialVersionUID = -4790737466253508122L;
@@ -60,9 +68,9 @@ public class BasicComponent extends BasicElement {
 			intf.setOwner(this);
 		}
 	}
-	protected String getRegForDTS(int indentLevel, BasicComponent master)
+	protected Vector<Long> getReg(BasicComponent master)
 	{
-		String res = "";
+		Vector<Long> vRegs = new Vector<Long>();		
 		for(Interface intf : vInterfaces)
 		{
 			if(intf.isMemorySlave())
@@ -78,25 +86,31 @@ public class BasicComponent extends BasicElement {
 				}
 				if((conn!=null) && (intf!=null))
 				{
-					if(res.length()==0)
-					{
-						res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
-					}
-					res += " 0x" + Long.toHexString(getAddrFromConnection(conn)) + 
-							" 0x" + Long.toHexString(intf.getInterfaceValue());
+					vRegs.add(getAddrFromConnection(conn));
+					vRegs.add(intf.getInterfaceValue());
 				}
 			}
 		}
-		if(res.length()>0)
+		return vRegs;
+	}
+
+	protected String getRegForDTS(int indentLevel, BasicComponent master)
+	{
+		String res = "";
+		Vector<Long> vRegs = getReg(master);
+		if(vRegs.size()>0)
 		{
+			res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
+			for(Long regV : vRegs)
+			{
+				res += " 0x" + Long.toHexString(regV);
+			}
 			res += ">;\n";
 		}
 		return res;
 	}
-
-	protected String getInterruptsForDTS(int indentLevel)
+	protected BasicComponent getInterrupts(Vector<Long> vIrqs)
 	{
-		String interrupts =AbstractSopcGenerator.indent(indentLevel) + "interrupts = <";
 		BasicComponent irqParent = null;
 		for(Interface intf : getInterfaces())
 		{
@@ -106,22 +120,35 @@ public class BasicComponent extends BasicElement {
 				{
 					if(irqParent==null)
 					{
-							irqParent = intf.getConnections().get(0).getMasterModule();
+						irqParent = intf.getConnections().get(0).getMasterModule();
+					} else if(!intf.getConnections().get(0).getMasterModule().equals(irqParent)) {
+						Logger.logln(instanceName +": Multiple interrupt parents are (currently) not supported!", LogLevel.WARNING);
 					}
 					if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
 					{
-						interrupts += " " + intf.getConnections().get(0).getConnValue();
+						vIrqs.add(intf.getConnections().get(0).getConnValue());
 					}
 				}
 			}
 		}
+		return irqParent;
+	}
+	protected String getInterruptsForDTS(int indentLevel)
+	{
+		String interrupts = "";
+		Vector<Long> vIrqs = new Vector<Long>();
+		BasicComponent irqParent = getInterrupts(vIrqs);
 		if(irqParent!=null)
 		{
-			return AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + irqParent.getInstanceName() + " >;\n" +
-					interrupts + " >;\n";
-		} else {
-			return "";
+			interrupts = AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + irqParent.getInstanceName() + " >;\n" +
+					AbstractSopcGenerator.indent(indentLevel) + "interrupts = <";
+			for(Long irq : vIrqs)
+			{
+				interrupts += " " + irq;
+			}
+			interrupts += " >;\n";
 		}
+		return interrupts;
 	}
 	public String toDts(BoardInfo bi, int indentLevel)
 	{
@@ -146,7 +173,11 @@ public class BasicComponent extends BasicElement {
 		{
 			res += getRegForDTS(indentLevel, conn.getMasterModule());
 		}
-		res += getInterruptMasterDesc(indentLevel);
+		if(isInterruptMaster())
+		{
+			res += AbstractSopcGenerator.indent(indentLevel) + "interrupt-controller;\n" +
+					AbstractSopcGenerator.indent(indentLevel) + "#interrupt-cells = <1>;\n";
+		}
 		res += getInterruptsForDTS(indentLevel);
 		for(SopcComponentDescription.SICAutoParam ap : getScd().getAutoParams())
 		{
@@ -168,7 +199,7 @@ public class BasicComponent extends BasicElement {
 			res += AbstractSopcGenerator.indent(indentLevel) + "//Dumping SOPC parameters...\n";
 			for(Parameter bp : vParameters)
 			{
-				String assName = bp.getName();
+				String assName = new String(bp.getName());
 				if(assName.startsWith("embeddedsw.CMacro.")) {
 					assName = assName.substring(18);
 				} else if(bi.getDumpParameters() == parameter_action.CMACRCO) {
@@ -186,16 +217,78 @@ public class BasicComponent extends BasicElement {
 		if(endComponent) res += AbstractSopcGenerator.indent(--indentLevel) + "};\n";
 		return res;
 	}
-	private String getInterruptMasterDesc(int indentLevel) {
-		for(Interface intf : getInterfaces())
+
+	public DTNode toDTNode(BoardInfo bi,Connection conn)
+	{
+		DTNode node = new DTNode(getScd().getGroup() + "@0x" + Long.toHexString(getAddrFromConnection(conn)), instanceName);
+		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
-			if(intf.isIRQMaster())
+			node.addProperty(new DTPropString("device_type",getScd().getGroup()));
+		}
+		node.addProperty(new DTPropString("compatible", getScd().getCompatibles(version)));
+		
+		//Registers
+		if (getScd().getGroup().equalsIgnoreCase("cpu"))
+		{
+			node.addProperty(new DTPropHexNumber("reg",new Long(getAddr())));
+		} else if(conn!=null)
+		{
+			Vector<Long> vRegs = getReg(conn.getMasterModule());
+			if(vRegs.size()>0)
 			{
-				return AbstractSopcGenerator.indent(indentLevel) + "interrupt-controller;\n" +
-				AbstractSopcGenerator.indent(indentLevel) + "#interrupt-cells = <1>;\n";
+				node.addProperty(new DTPropHexNumber("reg",vRegs));
 			}
 		}
-		return "";
+
+		//Interrupts
+		Vector<Long> vIrqs = new Vector<Long>();
+		BasicComponent irqParent = getInterrupts(vIrqs);
+		if(irqParent!=null)
+		{
+			node.addProperty(new DTPropPHandle("interrupt-parent", irqParent.getInstanceName()));
+			node.addProperty(new DTPropNumber("interrupts",vIrqs));
+		}
+		if(isInterruptMaster())
+		{
+			node.addProperty(new DTPropBool("interrupt-controller"));
+			node.addProperty(new DTPropNumber("#interrupt-cells", 1L));
+		}
+
+		Vector<Parameter> vParamTodo = new Vector<Parameter>(vParameters);
+		for(SopcComponentDescription.SICAutoParam ap : getScd().getAutoParams())
+		{
+			Parameter bp = getParamByName(ap.getSopcInfoName());
+			if(bp!=null)
+			{
+				node.addProperty(bp.toDTProperty(ap.getDtsName(), 
+						Parameter.getDataTypeByName(ap.getForceType())));
+				vParamTodo.remove(bp);
+			} else if(ap.getDtsName().equalsIgnoreCase("clock-frequency"))
+			{
+				node.addProperty(new DTPropNumber(ap.getDtsName(), getClockRate()));
+			} else if(ap.getDtsName().equalsIgnoreCase("regstep"))
+			{
+				node.addProperty(new DTPropNumber(ap.getDtsName(), 4L));
+			}
+		}		
+		if((bi.getDumpParameters() != parameter_action.NONE)&&(vParamTodo.size()>0))
+		{
+			for(Parameter bp : vParamTodo)
+			{
+				String assName = bp.getName();
+				if(assName.startsWith("embeddedsw.CMacro.")) {
+					assName = assName.substring(18);
+				} else if(bi.getDumpParameters() == parameter_action.CMACRCO) {
+					assName = null;
+				}
+				if(assName!=null)
+				{
+					assName = assName.replace('_', '-');
+					node.addProperty(bp.toDTProperty(scd.getVendor() + ',' + assName));
+				}
+			}
+		}
+		return node;
 	}
 	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
@@ -215,6 +308,17 @@ public class BasicComponent extends BasicElement {
 			}
 		}
 		return null;
+	}
+	public boolean isInterruptMaster()
+	{
+		for(Interface intf : getInterfaces())
+		{
+			if(intf.isIRQMaster())
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	public Boolean isUsefullForDTS()
 	{
@@ -260,6 +364,10 @@ public class BasicComponent extends BasicElement {
 		return addr;
 	}
 
+	public Vector<Connection> getConnections(SystemDataType ofType, Boolean isMaster)
+	{
+		return getConnections(ofType, isMaster, null);
+	}
 	public Vector<Connection> getConnections(SystemDataType ofType, Boolean isMaster, BasicComponent toComponent)
 	{
 		Vector<Connection> conns = new Vector<Connection>();

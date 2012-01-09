@@ -25,12 +25,30 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTPropString;
 
 public class SICEpcs extends SICFlash {
 	private static final long serialVersionUID = 8647857111806987880L;
 
 	public SICEpcs(String cName, String iName, String ver) {
 		super(cName, iName, ver, SopcComponentLib.getInstance().getScdByClassName("altera_avalon_spi"));
+	}
+	
+	@Override
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		DTNode node = super.toDTNode(bi, conn);
+		node.addProperty(new DTPropNumber("#address-cells", 1L));
+		node.addProperty(new DTPropNumber("#size-cells", 0L));
+		DTNode m25p80 = new DTNode("m25p80@0");
+		m25p80.addProperty(new DTPropString("compatible", "m25p80"));
+		m25p80.addProperty(new DTPropNumber("spi-max-frequency", 25000000L));
+		m25p80.addProperty(new DTPropNumber("reg", 0L));
+		addPartitionsToDTNode(bi, m25p80);
+		node.addChild(m25p80);
+		return node;
 	}
 	@Override
 	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, 

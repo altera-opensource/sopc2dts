@@ -26,6 +26,10 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropBool;
+import sopc2dts.lib.devicetree.DTPropHexNumber;
+import sopc2dts.lib.devicetree.DTPropNumber;
 
 public class SICFlash extends BasicComponent {
 	private static final long serialVersionUID = -8631549827116928831L;
@@ -38,6 +42,43 @@ public class SICFlash extends BasicComponent {
 		super(cName, iName, version, scd);
 	}
 
+	protected DTNode addPartitionsToDTNode(BoardInfo bi, DTNode node)
+	{
+		Vector<FlashPartition> vPartitions = bi.getPartitionsForChip(this.getInstanceName());
+		if(vPartitions != null)
+		{
+			if(vPartitions.size()>0)
+			{
+				node.addProperty(new DTPropNumber("#address-cells", 1L));
+				node.addProperty(new DTPropNumber("#size-cells", 1L));
+			}
+			for(FlashPartition part : vPartitions)
+			{
+				DTNode dtPart = new DTNode(part.getName() + '@' + Integer.toHexString(part.getAddress()));
+				Vector<Long> vReg = new Vector<Long>();
+				vReg.add(Long.valueOf(part.getAddress()));
+				vReg.add(Long.valueOf(part.getSize()));
+				dtPart.addProperty(new DTPropHexNumber("reg", vReg));
+				if(part.isReadonly())
+				{
+					dtPart.addProperty(new DTPropBool("read-only"));
+				}
+				node.addChild(dtPart);
+			}
+		}
+		return node;
+	}
+	@Override
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		//XXX Refactor to get cfi stuff to seperate class
+		DTNode node = super.toDTNode(bi, conn);
+		node.addProperty(new DTPropNumber("bank-width", Long.valueOf(getBankWidth())));
+		node.addProperty(new DTPropNumber("device-width", 1L));
+		node = addPartitionsToDTNode(bi, node);
+		return node;
+	}
+	
 	@Override
 	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
 	{
@@ -51,6 +92,7 @@ public class SICFlash extends BasicComponent {
 					AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n";
 			}
 		}
+		
 		return res;
 	}
 	

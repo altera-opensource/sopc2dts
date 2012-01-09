@@ -22,6 +22,11 @@ package sopc2dts.lib.boardinfo;
 import org.xml.sax.Attributes;
 
 import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropHexNumber;
+import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTPropString;
 
 public class SpiSlave {
 	public static String[] slaveTypeNames = {
@@ -74,6 +79,14 @@ public class SpiSlave {
 				" compatible=\"" + compatible +"\" maxfreq=\"" + spiMaxFrequency + "\"" +
 				" cpol=\"" + cpol + "\" cpha=\"" + cpha + "\" csHigh=\"" + csHigh + "\">" +
 				"</SpiSlave>\n";
+	}
+	public DTNode toDTNode(BoardInfo bi)
+	{
+		DTNode node = new DTNode("name" + '@' + reg);
+		node.addProperty(new DTPropString("compatible", compatible));
+		node.addProperty(new DTPropNumber("spi-max-frequency", Long.valueOf(spiMaxFrequency)));
+		node.addProperty(new DTPropHexNumber("reg", Long.valueOf(reg)));
+		return node;
 	}
 	public String toDts(int indentLevel)
 	{

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public

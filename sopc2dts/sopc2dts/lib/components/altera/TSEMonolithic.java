@@ -32,6 +32,9 @@ import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTPropString;
 
 public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	private static final long serialVersionUID = -599101440215652950L;
@@ -60,7 +63,25 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		}
 		return res;
 	}
-
+	@Override 
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		DTNode node = super.toDTNode(bi, conn);
+		BICEthernet be = bi.getEthernetForChip(getInstanceName());
+		node.addProperty(new DTPropString("phy-mode", getPhyModeString()));
+		if(be.getMiiID()==null)
+		{
+			//Always needed for this driver! (atm)
+			node.addProperty(new DTPropNumber("ALTR,mii-id", 0L));
+		} else {
+			node.addProperty(new DTPropNumber("ALTR,mii-id", Long.valueOf(be.getMiiID())));
+		}
+		if(be.getPhyID()!=null)
+		{
+			node.addProperty(new DTPropNumber("ALTR,mii-id", Long.valueOf(be.getPhyID())));
+		}
+		return node;
+	}
 	protected void encapsulateSGDMA(SICSgdma dma, String name)
 	{
 		//CSR MM interface

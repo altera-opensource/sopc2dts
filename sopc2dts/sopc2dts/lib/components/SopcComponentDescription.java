@@ -205,23 +205,36 @@ public class SopcComponentDescription implements Serializable {
 		return compat;
 	}
 	public String getCompatible(String version) {
-		String res = "\"" + vendor + ',' + device;
+		String res = "";
+		Vector<String> vCompatibles = getCompatibles(version);
+		for(String comp : vCompatibles)
+		{
+			if(!res.isEmpty())
+			{
+				res += ',';
+			}
+			res += "\"" + comp + "\"";
+		}
+		return res;
+	}
+	public Vector<String> getCompatibles(String version) {
+		Vector<String> vRes = new Vector<String>();
+		String res = vendor + ',' + device;
 		if(version!=null)
 		{
-			res += '-' + version + '\"';
+			res += '-' + version;
+			vRes.add(res);			
 			String bwCompatVersion = getCompatibleVersion(version);
 			if(bwCompatVersion!=null)
 			{
-				res += ",\"" + vendor + ',' + device + '-' + bwCompatVersion + "\"";
+				res = vendor + ',' + device + '-' + bwCompatVersion;
+				vRes.add(res);
 			}
 		} else {
-			res += "\"";
+			vRes.add(res);
 		}
-		for(String comp : vCompatible)
-		{
-			res += ",\"" + comp + "\"";
-		}
-		return res;
+		vRes.addAll(vCompatible);
+		return vRes;
 	}
 
 	public void setAutoParams(Vector<SICAutoParam> vAutoParams) {
