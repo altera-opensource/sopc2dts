@@ -39,7 +39,6 @@ import sopc2dts.lib.devicetree.DTPropPHandle;
 import sopc2dts.lib.devicetree.DTPropString;
 
 public class BasicComponent extends BasicElement {
-	private static final long serialVersionUID = -4790737466253508122L;
 	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;
 	private String className;

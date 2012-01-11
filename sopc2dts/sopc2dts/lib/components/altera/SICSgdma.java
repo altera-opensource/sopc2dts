@@ -28,7 +28,7 @@ import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropNumber;
 
 public class SICSgdma extends BasicComponent {
-	private static final long serialVersionUID = 8433191352014071041L;
+
 	public static final String[] TYPE_NAMES = {
 		"MEMORY_TO_MEMORY",
 		"MEMORY_TO_STREAM",

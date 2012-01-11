@@ -18,11 +18,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components;
-import java.io.Serializable;
+
 import java.util.Vector;
 
-public class SopcComponentDescription implements Serializable {
-	private static final long serialVersionUID = -3651440249662676605L;
+public class SopcComponentDescription {
 	protected String[] classNames;
 	protected String group;
 	protected String vendor;

@@ -30,7 +30,6 @@ import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropString;
 
 public class SICEpcs extends SICFlash {
-	private static final long serialVersionUID = 8647857111806987880L;
 
 	public SICEpcs(String cName, String iName, String ver) {
 		super(cName, iName, ver, SopcComponentLib.getInstance().getScdByClassName("altera_avalon_spi"));

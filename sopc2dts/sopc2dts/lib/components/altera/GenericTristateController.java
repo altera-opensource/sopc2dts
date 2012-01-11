@@ -32,7 +32,6 @@ import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.components.base.SICUnknown;
 
 public class GenericTristateController extends BasicComponent {
-	private static final long serialVersionUID = -8170741481169652008L;
 
 	public GenericTristateController(String cName, String iName, String ver) {
 		super(cName, iName, ver, new SICUnknown(cName));

@@ -30,7 +30,6 @@ import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.parsers.qsys.QSysSystemLoader;
 
 public class AvalonSystem extends BasicElement {
-	private static final long serialVersionUID = -4412823810569371574L;
 	public enum SystemDataType { MEMORY_MAPPED, STREAMING, INTERRUPT, CLOCK, 
 		CUSTOM_INSTRUCTION, RESET, CONDUIT };
 	protected String versionStr = "";

@@ -30,7 +30,6 @@ import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropNumber;
 
 public class SICSpiMaster extends BasicComponent {
-	private static final long serialVersionUID = 5186841425372630796L;
 
 	public SICSpiMaster(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);

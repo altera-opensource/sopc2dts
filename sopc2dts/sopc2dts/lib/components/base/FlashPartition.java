@@ -19,10 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.base;
 
-import java.io.Serializable;
-
-public class FlashPartition implements Serializable {
-	private static final long serialVersionUID = -4893851504958583588L;
+public class FlashPartition {
 	private String name;
 	private int address;
 	private int size;

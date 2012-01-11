@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -43,9 +42,8 @@ import sopc2dts.lib.boardinfo.BoardInfoComponent;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.FlashPartition;
 
-public class BoardInfo implements ContentHandler, Serializable {
+public class BoardInfo implements ContentHandler {
 	public enum PovType { CPU, PCI };
-	private static final long serialVersionUID = -6963198643520147067L;
 	FlashPartition part;
 	private File sourceFile;
 	String currTag;

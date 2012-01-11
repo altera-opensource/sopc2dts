@@ -37,7 +37,6 @@ import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropString;
 
 public class TSEMonolithic extends SICTrippleSpeedEthernet {
-	private static final long serialVersionUID = -599101440215652950L;
 	SICSgdma rx_dma, tx_dma;
 	BasicComponent desc_mem;
 	

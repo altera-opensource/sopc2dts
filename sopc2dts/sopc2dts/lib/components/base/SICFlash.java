@@ -32,7 +32,6 @@ import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
 
 public class SICFlash extends BasicComponent {
-	private static final long serialVersionUID = -8631549827116928831L;
 	
 	public SICFlash(BasicComponent bc)
 	{

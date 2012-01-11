@@ -25,7 +25,6 @@ import sopc2dts.lib.components.Interface;
 
 
 public class Connection extends BasicElement {
-	private static final long serialVersionUID = 7253221484142129261L;
 	protected Interface masterInterface;
 	protected Interface slaveInterface;	
 	protected SystemDataType type = SystemDataType.CONDUIT;

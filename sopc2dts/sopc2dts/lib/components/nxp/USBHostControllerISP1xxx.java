@@ -27,7 +27,6 @@ import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 
 public class USBHostControllerISP1xxx extends BasicComponent {
-	private static final long serialVersionUID = 6744716322519288192L;
 
 	public USBHostControllerISP1xxx(String cName, String iName, String ver,
 			SopcComponentDescription scd) {

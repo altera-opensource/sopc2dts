@@ -27,7 +27,6 @@ import sopc2dts.lib.components.base.SICEthernet;
 
 public class SICTrippleSpeedEthernet extends SICEthernet {
 	enum PhyMode { MII, GMII, RGMII, SGMII };
-	private static final long serialVersionUID = -3828128314484790124L;
 
 	public SICTrippleSpeedEthernet(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);

@@ -25,7 +25,6 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
 
 public class QSysSubSystem extends BasicComponent {
-	private static final long serialVersionUID = 1961793436374250055L;
 	protected Vector<BasicComponent> vSystemComponents = new Vector<BasicComponent>();
 
 	public QSysSubSystem(BasicComponent comp)

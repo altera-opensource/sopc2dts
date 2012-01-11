@@ -34,7 +34,7 @@ import sopc2dts.lib.devicetree.DTPropNumber;
  * rather a convenience class to help the lazy people such as myself.
  */
 public class SICEthernet extends BasicComponent {
-	private static final long serialVersionUID = -5419573431636445762L;
+
 	public SICEthernet(String cName, String iName, String version, SopcComponentDescription scd) {
 		super(cName, iName, version, scd);
 	}

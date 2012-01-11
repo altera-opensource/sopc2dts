@@ -38,7 +38,6 @@ import sopc2dts.lib.devicetree.DTPropNumber;
 
 
 public class SICBridge extends BasicComponent {
-	private static final long serialVersionUID = -2430030898696019903L;
 
 	public SICBridge(String cName, String iName, String version, SopcComponentDescription scd) {
 		super(cName, iName, version,scd);

@@ -23,7 +23,6 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
 
 public class SCDSelfDescribing extends SopcComponentDescription {
-	private static final long serialVersionUID = -5986234098493565920L;
 
 	public SCDSelfDescribing(BasicComponent comp)
 	{

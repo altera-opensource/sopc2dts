@@ -33,7 +33,6 @@ import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropString;
 
 public class SICI2CMaster extends BasicComponent {
-	private static final long serialVersionUID = 8745845145232836596L;
 
 	public SICI2CMaster(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
