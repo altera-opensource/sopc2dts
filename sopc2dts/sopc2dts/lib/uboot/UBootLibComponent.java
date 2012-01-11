@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@ import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.components.Interface;
 
 public class UBootLibComponent {
 	public static final long KERNEL_REGION_BASE_NOMMU	= 0x00000000l;
@@ -147,9 +148,18 @@ public class UBootLibComponent {
 					} else if(valType[1].equalsIgnoreCase("irq"))
 					{
 						res += getInterruptDefinesForConn(irqMaster, comp, define);
-					} else if(valType[1].equalsIgnoreCase("size"))
+					} else if(valType[1].startsWith("size"))
 					{
-						val = String.format("0x%08X", comp.getInterfaces().get(ifNum).getInterfaceValue());
+						if(valType[1].length()==5)
+						{
+							Vector<Interface> vIntf = comp.getInterfaces(SystemDataType.MEMORY_MAPPED, false);
+							if(vIntf.size()>(valType[1].charAt(4)-0x30))
+							{
+								val = String.format("0x%08X", vIntf.get(valType[1].charAt(4)-0x30).getInterfaceValue());
+							}
+						} else {
+							val = String.format("0x%08X", comp.getInterfaces().get(ifNum).getInterfaceValue());
+						}
 					} else {
 						val = "Don't know how to generate " + valType[1];
 					}

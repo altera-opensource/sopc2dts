@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ public class UBootComponentLib {
 		props = new HashMap<String, String>();
 		props.put("CONFIG_SYS_SYSID_BASE",		"gen|ioaddr");
 		vComponents.add(new UBootLibComponent(
-				new String[] { "altera_avalon_sysid"}, props, null));
+				new String[] { "altera_avalon_sysid", "altera_avalon_sysid_qsys"}, props, null));
 		
 		props = new HashMap<String, String>();
 		props.put("CONFIG_SYS_GPIO_BASE",		"gen|ioaddr");
@@ -109,14 +109,15 @@ public class UBootComponentLib {
 		props.put("CONFIG_SYS_SDRAM_BASE",		"gen|kerneladdr");
 		props.put("CONFIG_SYS_SDRAM_SIZE",		"gen|size");
 		vComponents.add(new UBootLibComponent(
-				new String[] { "ddr_sdram_component_classic", "*altera_avalon_new_sdram_controller*", "*altmemddr*" }, 
+				new String[] { "ddr_sdram_component_classic", "*altera_avalon_new_sdram_controller*", "*altmemddr*", "altera_mem_if_ddr*" }, 
 				props, null));
 
 		props = new HashMap<String, String>();
 		props.put("CONFIG_SYS_ALTERA_TSE_MAC_BASE","gen|ioaddr0");
 		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_RX_BASE","gen|ioaddr1");
 		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_TX_BASE","gen|ioaddr2");
-		props.put("CONFIG_SYS_ALTERA_TSE_DESC","gen|ioaddr3");
+		props.put("CONFIG_SYS_ALTERA_TSE_DESC_BASE","gen|ioaddr3");
+		props.put("CONFIG_SYS_ALTERA_TSE_DESC_SIZE","gen|size3");
 		props.put("CONFIG_SYS_ALTERA_TSE_RX_FIFO", "prop|embeddedsw.CMacro.RECEIVE_FIFO_DEPTH");
 		props.put("CONFIG_SYS_ALTERA_TSE_TX_FIFO", "prop|embeddedsw.CMacro.TRANSMIT_FIFO_DEPTH");
 		vComponents.add(new UBootLibComponent(
