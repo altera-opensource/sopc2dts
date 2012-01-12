@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,7 @@ import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
+import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.parsers.qsys.QSysSystemLoader;
 
@@ -96,6 +97,45 @@ public class AvalonSystem extends BasicElement {
 				{
 					//Restart loop after modifications...
 					i=0;
+				}
+			}
+		}
+		for(BasicComponent comp : vSystemComponents)
+		{
+			for(SopcComponentDescription.TransparentInterfaceBridge bridge : comp.getScd().getTransparentBridges())
+			{
+				Interface masterIntf = comp.getInterfaceByName(bridge.getMasterIntfName());
+				Interface slaveIntf = comp.getInterfaceByName(bridge.getSlaveIntfName());
+				if((masterIntf!=null)&&(slaveIntf!=null))
+				{
+					if(masterIntf.getType().equals(slaveIntf.getType()))
+					{
+						switch(masterIntf.getType())
+						{
+						case STREAMING: {
+							Connection connToMaster = slaveIntf.getConnections().firstElement();
+							Connection connToSlave = masterIntf.getConnections().firstElement();
+							if((connToMaster!=null)&&(connToSlave!=null))
+							{
+								@SuppressWarnings("unused")
+								Connection newConn = new Connection(connToMaster.getMasterInterface(), 
+										connToSlave.getSlaveInterface(), masterIntf.getType(), true);
+								connToMaster.getMasterInterface().getConnections().remove(connToMaster);
+								connToSlave.getSlaveInterface().getConnections().remove(connToSlave);
+							}
+						} break;
+						default: {
+							Logger.logln("Transparent bridge in " + 
+									comp.getInstanceName() + " of type " + comp.getClassName() + " is not yet supported.", LogLevel.WARNING);
+						}
+						}
+					} else {
+						Logger.logln("Master and slave interfaces for the Transparent bridge in " + 
+								comp.getInstanceName() + " of type " + comp.getClassName() + " have different types.", LogLevel.WARNING);
+					}
+				} else {
+					Logger.logln("Failed to find interfaces for the Transparent bridge in " + 
+							comp.getInstanceName() + " of type " + comp.getClassName(), LogLevel.WARNING);
 				}
 			}
 		}

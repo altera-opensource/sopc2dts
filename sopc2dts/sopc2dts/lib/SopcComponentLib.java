@@ -263,6 +263,10 @@ public class SopcComponentLib implements ContentHandler {
 			} else if((localName.equalsIgnoreCase("CompatibleVersion"))&&(currScd!=null))
 			{
 				currScd.addCompatibleVersion(atts.getValue("value"));
+			} else if((localName.equalsIgnoreCase("TransparentInterfaceBridge"))&&(currScd!=null))
+			{
+				currScd.getTransparentBridges().add(currScd.new TransparentInterfaceBridge(
+						atts.getValue("master"), atts.getValue("slave")));
 			} else {
 				System.out.println("New element " + localName);
 			}
@@ -279,6 +283,7 @@ public class SopcComponentLib implements ContentHandler {
 					(!localName.equalsIgnoreCase("compatible")) &&
 					(!localName.equalsIgnoreCase("parameter")) &&
 					(!localName.equalsIgnoreCase("RequiredParameter")) &&
+					(!localName.equalsIgnoreCase("TransparentInterfaceBridge")) &&
 					(!localName.equalsIgnoreCase("CompatibleVersion"))) 
 			{
 				System.out.println("End element " + localName);

@@ -164,4 +164,9 @@
 		compatDevice="vip-video-switch">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
+	<S2DComponent classname="altera_avalon_sc_fifo" group="fifo"
+		compatDevice="sc-fifo">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+		<TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
+	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
