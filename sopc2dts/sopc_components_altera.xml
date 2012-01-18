@@ -98,7 +98,9 @@
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="altera_tristate_conduit_bridge" group="ignore"></S2DComponent>
-	<S2DComponent classname="data_format_adapter" group="ignore"></S2DComponent>
+	<S2DComponent classname="data_format_adapter" group="ignore">
+	                <TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
+	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pixel_converter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_video_sync_generator"
 		group="ignore">
