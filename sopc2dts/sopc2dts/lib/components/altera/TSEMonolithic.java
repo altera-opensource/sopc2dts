@@ -96,64 +96,57 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		vInterfaces.add(intf);
 		intf.setOwner(this);
 	}
+	protected SICSgdma findSGDMA(boolean receiver)
+	{
+		SICSgdma dma = null;
+		String sRxTx = (receiver ? "RX" : "TX");
+		Interface intf = getInterfaceByName((receiver ? "receive" : "transmit"));
+		if(intf==null)
+		{
+			intf = getInterfaceByName((receiver ? "receive_0" : "transmit_0"));
+		}
+		if(intf==null)
+		{
+			intf = getInterfaces(SystemDataType.STREAMING, receiver).firstElement();
+			Logger.logln("TSEMonolithic: TSE named " + getInstanceName() + 
+					" does not have a port named '" + (receiver ? "receive" : "transmit") +"'." +
+					" Randomly trying first streaming " + sRxTx + " port (" + intf.getName() + ")", LogLevel.WARNING);
+		}
+		BasicComponent comp = getDMAEngineForIntf(intf);
+		if((comp == null))
+		{
+			Logger.logln("TSEMonolithic: Failed to find SGDMA " + sRxTx + " engine", LogLevel.WARNING);
+			rx_dma = null;
+			
+		} else if(!(comp instanceof SICSgdma))
+		{
+			Logger.logln("TSEMonolithic: Failed to find SGDMA " + sRxTx + " engine", LogLevel.WARNING);
+			Logger.logln("TSEMonolithic: Found " + comp.getInstanceName() + " of class " + comp.getClassName() + " instead.", LogLevel.DEBUG);
+		} else {
+			dma = (SICSgdma)comp;
+		}
+		return dma;
+	}
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		boolean bChanged = false;
 		BasicComponent comp;
 		if(rx_dma == null)
 		{
-			Interface intf = getInterfaceByName("receive");
-			if(intf==null)
+			rx_dma = findSGDMA(true);
+			if(rx_dma != null)
 			{
-				intf = getInterfaceByName("receive_0");
-			}
-			if(intf==null)
-			{
-				intf = getInterfaces(SystemDataType.STREAMING, true).firstElement();
-				Logger.logln("TSEMonolithic: TSE named " + getInstanceName() + " does not have a port named 'receive'. Randomly trying first streaming out port (" + intf.getName() + ")", LogLevel.WARNING);
-			}
-			comp = getDMAEngineForIntf(intf);
-			if((comp == null))
-			{
-				Logger.logln("TSEMonolithic: Failed to find SGDMA RX engine", LogLevel.WARNING);
-				rx_dma = null;
-				
-			} else if(!(comp instanceof SICSgdma))
-			{
-				Logger.logln("TSEMonolithic: Failed to find SGDMA RX engine", LogLevel.WARNING);
-				Logger.logln("TSEMonolithic: Found " + comp.getInstanceName() + " of class " + comp.getClassName() + " instead.", LogLevel.DEBUG);
-			} else {
-				rx_dma = (SICSgdma)comp;
-				sys.removeSystemComponent(comp);
+				sys.removeSystemComponent(rx_dma);
 				bChanged = true;
 				encapsulateSGDMA(rx_dma, "rx");
 			}
 		}
 		if(tx_dma == null)
 		{
-			Interface intf = getInterfaceByName("transmit");
-			if(intf==null)
+			tx_dma = findSGDMA(false);
+			if(tx_dma != null)
 			{
-				intf = getInterfaceByName("transmit_0");
-			}
-			if(intf==null)
-			{
-				intf = getInterfaces(SystemDataType.STREAMING, false).firstElement();
-				Logger.logln("TSEMonolithic: TSE named " + getInstanceName() + " does not have a port named 'transmit'. Randomly trying first streaming in port (" + intf.getName() + ")", LogLevel.WARNING);
-			}
-			comp = getDMAEngineForIntf(intf);
-			if((comp == null))
-			{
-				Logger.logln("TSEMonolithic: Failed to find SGDMA TX engine", LogLevel.WARNING);
-				rx_dma = null;
-				
-			} else if(!(comp instanceof SICSgdma))
-			{
-				Logger.logln("TSEMonolithic: Failed to find SGDMA TX engine", LogLevel.WARNING);
-				Logger.logln("TSEMonolithic: Found " + comp.getInstanceName() + " of class " + comp.getClassName() + " instead.", LogLevel.DEBUG);
-			} else {
-				tx_dma = (SICSgdma)comp;
-				sys.removeSystemComponent(comp);
+				sys.removeSystemComponent(tx_dma);
 				bChanged = true;
 				encapsulateSGDMA(tx_dma, "tx");
 			}
