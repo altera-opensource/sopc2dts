@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.components.altera;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
@@ -44,6 +45,9 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 				comp = intf.getConnections().firstElement().getMasterModule();
 			}
 			return comp;
+		} else if (intf!=null)
+		{
+			Logger.logln("Interface " + intf.getName() + " has no connections.", LogLevel.INFO);
 		}
 		return null;
 	}

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -102,11 +102,26 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		BasicComponent comp;
 		if(rx_dma == null)
 		{
-			comp = getDMAEngineForIntf(getInterfaceByName("receive"));
-			if((comp == null) || !(comp instanceof SICSgdma))
+			Interface intf = getInterfaceByName("receive");
+			if(intf==null)
+			{
+				intf = getInterfaceByName("receive_0");
+			}
+			if(intf==null)
+			{
+				intf = getInterfaces(SystemDataType.STREAMING, true).firstElement();
+				Logger.logln("TSEMonolithic: TSE named " + getInstanceName() + " does not have a port named 'receive'. Randomly trying first streaming out port (" + intf.getName() + ")", LogLevel.WARNING);
+			}
+			comp = getDMAEngineForIntf(intf);
+			if((comp == null))
 			{
 				Logger.logln("TSEMonolithic: Failed to find SGDMA RX engine", LogLevel.WARNING);
 				rx_dma = null;
+				
+			} else if(!(comp instanceof SICSgdma))
+			{
+				Logger.logln("TSEMonolithic: Failed to find SGDMA RX engine", LogLevel.WARNING);
+				Logger.logln("TSEMonolithic: Found " + comp.getInstanceName() + " of class " + comp.getClassName() + " instead.", LogLevel.DEBUG);
 			} else {
 				rx_dma = (SICSgdma)comp;
 				sys.removeSystemComponent(comp);
@@ -116,11 +131,26 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		}
 		if(tx_dma == null)
 		{
-			comp = getDMAEngineForIntf(getInterfaceByName("transmit"));
-			if((comp == null) || !(comp instanceof SICSgdma))
+			Interface intf = getInterfaceByName("transmit");
+			if(intf==null)
+			{
+				intf = getInterfaceByName("transmit_0");
+			}
+			if(intf==null)
+			{
+				intf = getInterfaces(SystemDataType.STREAMING, false).firstElement();
+				Logger.logln("TSEMonolithic: TSE named " + getInstanceName() + " does not have a port named 'transmit'. Randomly trying first streaming in port (" + intf.getName() + ")", LogLevel.WARNING);
+			}
+			comp = getDMAEngineForIntf(intf);
+			if((comp == null))
 			{
 				Logger.logln("TSEMonolithic: Failed to find SGDMA TX engine", LogLevel.WARNING);
-				tx_dma = null;
+				rx_dma = null;
+				
+			} else if(!(comp instanceof SICSgdma))
+			{
+				Logger.logln("TSEMonolithic: Failed to find SGDMA TX engine", LogLevel.WARNING);
+				Logger.logln("TSEMonolithic: Found " + comp.getInstanceName() + " of class " + comp.getClassName() + " instead.", LogLevel.DEBUG);
 			} else {
 				tx_dma = (SICSgdma)comp;
 				sys.removeSystemComponent(comp);
