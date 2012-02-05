@@ -31,11 +31,6 @@ public class KernelHeadersGenerator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getExtension() {
-		return "h";
-	}
-
-	@Override
 	public String getTextOutput(BoardInfo bi) {
 		String res = null;
 		for(BasicComponent comp : sys.getSystemComponents())

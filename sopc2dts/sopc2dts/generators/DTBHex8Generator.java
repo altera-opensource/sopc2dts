@@ -32,11 +32,6 @@ public class DTBHex8Generator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getExtension() {
-		return "hex";
-	}
-
-	@Override
 	public String getTextOutput(BoardInfo bi) {
 		return Bin2IHex.toHex(dtbGen.getBinaryOutput(bi), HexTypes.I8Hex);
 	}

@@ -85,7 +85,6 @@ public abstract class AbstractSopcGenerator {
 		return textOutput;
 	}
 
-	public abstract String getExtension();
 	public abstract String getTextOutput(BoardInfo bi);
 	/*
 	 * This function can be overridden by classes that only support binary

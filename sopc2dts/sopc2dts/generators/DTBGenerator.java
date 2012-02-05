@@ -32,10 +32,7 @@ public class DTBGenerator extends DTSGenerator {
 		super(s);
 		textOutput = false;
 	}
-	@Override
-	public String getExtension() {
-		return "dtb";
-	}
+
 	@Override
 	public byte[] getBinaryOutput(BoardInfo bi)
 	{

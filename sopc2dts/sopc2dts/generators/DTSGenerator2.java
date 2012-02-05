@@ -30,10 +30,6 @@ public class DTSGenerator2 extends DTGenerator {
 	}
 
 	@Override
-	public String getExtension() {
-		return "dts";
-	}
-	@Override
 	public String getTextOutput(BoardInfo bi) {
 		String res = getSmallCopyRightNotice("devicetree")
 					+ "/dts-v1/;\n";

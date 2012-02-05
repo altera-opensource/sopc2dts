@@ -38,11 +38,6 @@ public class SopcCreateHeaderFilesImitator extends AbstractSopcGenerator {
 				" */\n" + copyRightNotice;
 	}
 
-	@Override
-	public String getExtension() {
-		return "h";
-	}
-
 	protected String dumpComponent(BasicComponent comp, String pov)
 	{
 		String res = "";

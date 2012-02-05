@@ -31,11 +31,6 @@ public class DTBGenerator2 extends DTGenerator {
 	}
 
 	@Override
-	public String getExtension() {
-		return "dtb";
-	}
-
-	@Override
 	public String getTextOutput(BoardInfo bi) {
 		return null;
 	}

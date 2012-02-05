@@ -38,11 +38,6 @@ public class DTSGenerator extends AbstractSopcGenerator {
 	}
 
 	@Override
-	public String getExtension() {
-		return "dts";
-	}
-
-	@Override
 	public String getTextOutput(BoardInfo bi) {
 		int indentLevel = 0;
 		vHandled.clear();
