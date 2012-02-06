@@ -1,6 +1,6 @@
 <SOPC2DTS_COMPONENTLIB vendor="nxp">
 	<S2DComponent classname="ISP1362_CTRL" group="isp1362" compatDevice="isp1362">
-	</S2DComponent>
+	<compatible name="nxp,usb-isp1362"></compatible></S2DComponent>
 	<S2DComponent classname="isp116x" group="isp1161a"
 		compatDevice="isp1161a">
 	<compatible name="nxp,isp116x"></compatible></S2DComponent>
