@@ -1,0 +1,5 @@
+<SOPC2DTS_COMPONENTLIB vendor="fps">
+	<S2DComponent classname="sdio_host" group="sdio_host" compatDevice="mmc">
+		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.FREQ"></parameter>
+	</S2DComponent>
+</SOPC2DTS_COMPONENTLIB>
