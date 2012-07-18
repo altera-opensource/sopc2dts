@@ -48,35 +48,46 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		vHandled = new Vector<BasicComponent>();
 		DTNode rootNode = new DTNode("/");
 		BasicComponent povComponent = getPovComponent(bi);
+		DTNode sopcNode;
+		DTNode chosenNode;
 		if(povComponent!=null)
 		{
-			DTNode cpuNode = getCpuNodes(bi);
-			DTNode memNode = getMemoryNode(bi, povComponent);
-			DTNode sopcNode = new DTNode("sopc@0");
-			DTNode chosenNode = getChosenNode(bi);
-			
-			DTPropString dtps = new DTPropString("model","ALTR," + sys.getSystemName());
+			if(bi.getPovType().equals(PovType.CPU))
+			{
+				DTNode cpuNode = getCpuNodes(bi);
+				DTNode memNode = getMemoryNode(bi, povComponent);
+				sopcNode = new DTNode("sopc@0");
+				chosenNode = getChosenNode(bi);
+				DTPropString dtps = new DTPropString("model","ALTR," + sys.getSystemName());
+				rootNode.addProperty(dtps);
+				dtps = new DTPropString("compatible","ALTR," + sys.getSystemName());
+				rootNode.addProperty(dtps);
+				rootNode.addChild(cpuNode);
+				rootNode.addChild(memNode);
+				sopcNode.addProperty(new DTPropString("device_type", "soc"));
+			} else {
+				sopcNode = rootNode;
+				chosenNode = null;
+			}
 			DTPropNumber dtpn = new DTPropNumber("#address-cells",1L);
-			rootNode.addProperty(dtps);
-			dtps = new DTPropString("compatible","ALTR," + sys.getSystemName());
-			rootNode.addProperty(dtps);
 			rootNode.addProperty(dtpn);
 			dtpn = new DTPropNumber("#size-cells",1L);
 			rootNode.addProperty(dtpn);
-			rootNode.addChild(cpuNode);
-			rootNode.addChild(memNode);
+
 			sopcNode = getSlavesFor(bi, povComponent, sopcNode);
 			sopcNode.addProperty(new DTPropBool("ranges"));
 			sopcNode.addProperty(new DTPropNumber("#address-cells",1L));
 			sopcNode.addProperty(new DTPropNumber("#size-cells",1L));
-			sopcNode.addProperty(new DTPropString("device_type", "soc"));
 			Vector<String> vCompat = new Vector<String>();
 			vCompat.add("ALTR,avalon");
 			vCompat.add("simple-bus");
 			sopcNode.addProperty(new DTPropString("compatible", vCompat));
 			sopcNode.addProperty(new DTPropNumber("bus-frequency", povComponent.getClockRate()));
-			rootNode.addChild(sopcNode);
-			rootNode.addChild(chosenNode);
+			if(bi.getPovType().equals(PovType.CPU))
+			{
+				rootNode.addChild(sopcNode);
+				rootNode.addChild(chosenNode);
+			}
 		}
 		return rootNode;
 	}
