@@ -22,7 +22,7 @@ package sopc2dts.generators;
 import sopc2dts.lib.AvalonSystem;
 
 public class GeneratorFactory {
-	public enum GeneratorType { DTS, DTB, DTB_IHEX8, U_BOOT, KERNEL_HEADERS, DTS_OLD, DTB_OLD, DTB_CHAR_ARR };
+	public enum GeneratorType { DTS, DTB, DTB_IHEX8, DTB_IHEX32, U_BOOT, KERNEL_HEADERS, DTS_OLD, DTB_OLD, DTB_CHAR_ARR };
 
 	public static String getGeneratorNameByType(GeneratorType genType)
 	{
@@ -42,6 +42,9 @@ public class GeneratorFactory {
 		}
 		case DTB_IHEX8: {
 			return "dtb-hex8";
+		}
+		case DTB_IHEX32: {
+			return "dtb-hex32";
 		}
 		case DTB_CHAR_ARR: {
 			return "dtb-char-arr";
@@ -71,6 +74,9 @@ public class GeneratorFactory {
 		case DTB_IHEX8: {
 			return "<HTML>Intel hex8 containing the dtb</HTML>";
 		}
+		case DTB_IHEX32: {
+			return "<HTML>Intel hex32 containing the dtb (compatible with Altera 32bits onchip rom)</HTML>";
+		}
 		case U_BOOT: {
 			return "<HTML>U-Boot headers</HTML>";
 		}
@@ -97,6 +103,9 @@ public class GeneratorFactory {
 		} else if(type.equalsIgnoreCase("dtb-hex8"))
 		{
 			return GeneratorType.DTB_IHEX8;
+		} else if(type.equalsIgnoreCase("dtb-hex32"))
+		{
+			return GeneratorType.DTB_IHEX32;
 		} else if(type.equalsIgnoreCase("dtb-char-arr"))
 		{
 			return GeneratorType.DTB_CHAR_ARR;
@@ -132,6 +141,9 @@ public class GeneratorFactory {
 			}
 			case DTB_IHEX8: {
 				return new DTBHex8Generator(sys);
+			}
+			case DTB_IHEX32: {
+				return new DTBHex32Generator(sys);
 			}
 			case DTB_CHAR_ARR: {
 				return new DTBCCharArray(sys);
