@@ -22,7 +22,7 @@ package sopc2dts.generators;
 import sopc2dts.lib.AvalonSystem;
 
 public class GeneratorFactory {
-	public enum GeneratorType { DTS, DTB, DTB_IHEX8, U_BOOT, KERNEL_HEADERS, DTS_OLD, DTB_OLD };
+	public enum GeneratorType { DTS, DTB, DTB_IHEX8, U_BOOT, KERNEL_HEADERS, DTS_OLD, DTB_OLD, DTB_CHAR_ARR };
 
 	public static String getGeneratorNameByType(GeneratorType genType)
 	{
@@ -43,6 +43,9 @@ public class GeneratorFactory {
 		case DTB_IHEX8: {
 			return "dtb-hex8";
 		}
+		case DTB_CHAR_ARR: {
+			return "dtb-char-arr";
+		}
 		case U_BOOT: {
 			return "u-boot";
 		}
@@ -60,6 +63,7 @@ public class GeneratorFactory {
 		case DTS_OLD: {
 			return "<HTML>Device Tree Source<BR>A textual representation of the system.</HTML>"; 
 		}
+		case DTB_CHAR_ARR:
 		case DTB:
 		case DTB_OLD: {
 			return "<HTML>Device Tree Blob<BR>A compiled version of the dts</HTML>";
@@ -93,6 +97,9 @@ public class GeneratorFactory {
 		} else if(type.equalsIgnoreCase("dtb-hex8"))
 		{
 			return GeneratorType.DTB_IHEX8;
+		} else if(type.equalsIgnoreCase("dtb-char-arr"))
+		{
+			return GeneratorType.DTB_CHAR_ARR;
 		} else if(type.equalsIgnoreCase("u-boot") || type.equalsIgnoreCase("uboot")) {
 			return GeneratorType.U_BOOT;
 		} else if(type.equalsIgnoreCase("kernel"))
@@ -125,6 +132,9 @@ public class GeneratorFactory {
 			}
 			case DTB_IHEX8: {
 				return new DTBHex8Generator(sys);
+			}
+			case DTB_CHAR_ARR: {
+				return new DTBCCharArray(sys);
 			}
 			case U_BOOT: {
 				return new UBootHeaderGenerator(sys);
