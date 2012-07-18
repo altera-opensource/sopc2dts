@@ -65,14 +65,19 @@ public class Sopc2DTS {
 	 */
 	public static void main(String[] args) {
 		Sopc2DTS s2d = new Sopc2DTS();
+		int res = 1;
 		try {
 			if(s2d.parseCmdLine(args))
 			{
-				s2d.go();
+				res = s2d.go();
 			}
 		} catch(Exception e) {
 			Logger.logException(e);
 			s2d.printUsage();
+		}
+		if(res>=0)
+		{
+			System.exit(res);			
 		}
 	}
 	
@@ -91,9 +96,11 @@ public class Sopc2DTS {
 		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
 		vOptions.add(new CommandLineOption("sopc-parameters", 	null,sopcParameters, true, false,"What sopc-parameters to include in DTS", "{node,cmacro,all}"));
 	}
-	protected void go()
+	protected int go()
 	{
+		int res = 0;
 		BoardInfo bInfo = null;
+		Sopc2DTSGui s2dgui = null;
 		File f;
 		if(boardFileName.value.length()>0)
 		{
@@ -130,19 +137,21 @@ public class Sopc2DTS {
 		{
 			if(!Boolean.parseBoolean(mimicAlteraTools.value))
 			{
-				Sopc2DTSGui s2dgui = new Sopc2DTSGui(inputFileName.value, bInfo);
+				s2dgui = new Sopc2DTSGui(inputFileName.value, bInfo);
 				s2dgui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				s2dgui.setVisible(true);
+				res = -1;
 			} else {
 				Logger.logln("GUI-Mode is not supported when mimic-sopc-create-header-files is set", 
 						LogLevel.ERROR);
+				res = 1;
 			}
 		} else {
 			if(inputFileName.value.length()==0)
 			{
 				System.out.println("No input file specified!");
 				printUsage();
-				return;
+				return 1;
 			}
 			f = new File(inputFileName.value);
 			if(f.exists())
@@ -196,9 +205,10 @@ public class Sopc2DTS {
 								System.out.println(generatedText);
 							} else if(generatedBinary!=null)
 							{
-								System.out.println("Generated data is binary. Unable to display. Please supply an outputfilename.");
+								Logger.logln("Generated data is binary. Unable to display. Please supply an outputfilename.", LogLevel.WARNING);
 							} else {
-								System.out.println("Nothing was generated.");
+								Logger.logln("Nothing was generated.", LogLevel.ERROR);
+								res = 1;
 							}
 						} else {
 							if(generatedText != null)
@@ -212,20 +222,25 @@ public class Sopc2DTS {
 								out.write(generatedBinary);
 								out.close();
 							} else {
-								System.out.println("Nothing was generated.");
+								Logger.logln("Nothing was generated.", LogLevel.ERROR);
+								res = 1;
 							}
 						}
 					}
 				} catch (FileNotFoundException e) {
 					Logger.logException(e);
+					res = 1;
 				} catch (IOException e) {
 					Logger.logException(e);
+					res = 1;
 				}
 			} else {
 				Logger.logln("Inputfile " + inputFileName.value + " not found", 
-						LogLevel.WARNING);
+						LogLevel.ERROR);
+				res = 1;
 			}
 		}
+		return res;
 	}
 	protected String[] intelliSplit(String inp, int splitChar)
 	{
