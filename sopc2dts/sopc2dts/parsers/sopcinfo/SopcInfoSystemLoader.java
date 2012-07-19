@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,7 @@ import sopc2dts.lib.components.Interface;
 
 public class SopcInfoSystemLoader implements ContentHandler {
 	public static final float MIN_SUPPORTED_VERSION	= 8.1f;
-	public static final float MAX_SUPPORTED_VERSION	= 10.0f;
+	public static final float MAX_SUPPORTED_VERSION	= 12.0f;
 	float version = MIN_SUPPORTED_VERSION;
 	AvalonSystem currSystem;
 	BasicComponent currComp;
@@ -54,7 +54,6 @@ public class SopcInfoSystemLoader implements ContentHandler {
 	SopcComponentLib lib = SopcComponentLib.getInstance();
 	String uniqueID = "";
 	String currTag = "";
-	String versionStr = "";
 	
 	public synchronized AvalonSystem loadSystem(File source)
 	{
@@ -162,7 +161,7 @@ public class SopcInfoSystemLoader implements ContentHandler {
 				uniqueID = String.copyValueOf(ch, start, length);
 			} else if(currTag.equalsIgnoreCase("reportVersion"))
 			{
-				versionStr = String.copyValueOf(ch, start, length);
+				currSystem.setVersion(String.copyValueOf(ch, start, length));
 			}
 		}
 	}
