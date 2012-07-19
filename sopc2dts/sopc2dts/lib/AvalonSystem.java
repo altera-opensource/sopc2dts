@@ -34,14 +34,16 @@ public class AvalonSystem extends BasicElement {
 	public enum SystemDataType { MEMORY_MAPPED, STREAMING, INTERRUPT, CLOCK, 
 		CUSTOM_INSTRUCTION, RESET, CONDUIT };
 	protected String versionStr = "";
+	protected int versionMajor = 0;
+	protected int versionMinor = 0;
 	protected File sourceFile;
 	private String systemName;
 	protected Vector<BasicComponent> vSystemComponents = new Vector<BasicComponent>();
 
 	public AvalonSystem(String name, String version, File f) {
-		versionStr = version;
 		sourceFile = f;
 		systemName = name;
+		setVersion(version);
 	}
 	public boolean addSystemComponent(BasicComponent comp) {
 		return vSystemComponents.add(comp);
@@ -79,8 +81,17 @@ public class AvalonSystem extends BasicElement {
 	public String getSystemName() {
 		return systemName;
 	}
-	public void setVersion(String string) {
-		versionStr = string;		
+	public void setVersion(String ver) {
+		String[] vers = ver.split("\\.");
+		versionStr = ver;
+		try {
+			versionMajor = Integer.decode(vers[0]);
+			if(vers.length>1) {
+				versionMinor = Integer.decode(vers[1]);
+			}
+		} catch (NumberFormatException e) {
+			versionMinor = 0;
+		}
 	}
 	public void recheckComponents()
 	{
@@ -159,36 +170,38 @@ public class AvalonSystem extends BasicElement {
 	private boolean removeHierarchicalWrapperComponent(BasicComponent comp)
 	{
 		Logger.logln("Found possible QSys subsytem " + comp.getInstanceName() + " of type " + comp.getClassName(), LogLevel.DEBUG);
-		Logger.logln("Trying to find matching QSys file", LogLevel.DEBUG);
-		File qsysFile = new File(sourceFile.getAbsoluteFile().getParent()+ File.separator + comp.getClassName() + ".qsys");
-		if(qsysFile.exists())
-		{
-			Logger.logln("Using " + qsysFile.getAbsolutePath(), LogLevel.DEBUG);
-			QSysSystemLoader qsl = new QSysSystemLoader();
-			qsl.reloadSubSystem(qsysFile, this, comp);
-			while(comp.getInterfaces().size()>0)
+		if((versionMajor==10) || (versionMajor == 11)) {
+			Logger.logln("Trying to find matching QSys file", LogLevel.DEBUG);
+			File qsysFile = new File(sourceFile.getAbsoluteFile().getParent()+ File.separator + comp.getClassName() + ".qsys");
+			if(qsysFile.exists())
 			{
-				Interface intf = comp.getInterfaces().firstElement();
-				String internalName = intf.getParamValByName("internal");
-				BasicComponent internalComponent = getComponentByName(comp.getInstanceName() + '_' + internalName.split("\\.")[0]);
-				Interface internalIntf = internalComponent.getInterfaceByName(internalName.split("\\.")[1]);
-				if(internalIntf == null)
+				Logger.logln("Using " + qsysFile.getAbsolutePath(), LogLevel.DEBUG);
+				QSysSystemLoader qsl = new QSysSystemLoader();
+				qsl.reloadSubSystem(qsysFile, this, comp);
+				while(comp.getInterfaces().size()>0)
 				{
-					//Just move the interface inwards :)
-					internalComponent.getInterfaces().add(intf);
-					intf.setOwner(internalComponent);
-				} else {
-					while(intf.getConnections().size()>0)
+					Interface intf = comp.getInterfaces().firstElement();
+					String internalName = intf.getParamValByName("internal");
+					BasicComponent internalComponent = getComponentByName(comp.getInstanceName() + '_' + internalName.split("\\.")[0]);
+					Interface internalIntf = internalComponent.getInterfaceByName(internalName.split("\\.")[1]);
+					if(internalIntf == null)
 					{
-						intf.getConnections().firstElement().connect(internalIntf);
+						//Just move the interface inwards :)
+						internalComponent.getInterfaces().add(intf);
+						intf.setOwner(internalComponent);
+					} else {
+						while(intf.getConnections().size()>0)
+						{
+							intf.getConnections().firstElement().connect(internalIntf);
+						}
 					}
+					comp.getInterfaces().remove(0);
 				}
-				comp.getInterfaces().remove(0);
+				vSystemComponents.remove(comp); 
+				return true;
+			} else {
+				Logger.logln(qsysFile.getAbsolutePath() + " does not exist");
 			}
-			vSystemComponents.remove(comp); 
-			return true;
-		} else {
-			Logger.logln(qsysFile.getAbsolutePath() + " does not exist");
 		}
 		return false;
 	}
