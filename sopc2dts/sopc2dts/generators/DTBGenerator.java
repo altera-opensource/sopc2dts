@@ -26,8 +26,24 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 
+/** @brief Old Generator for DTB files.
+ * 
+ * This generator runs an external dtc (devicetree compiler). But since this 
+ * requires an external program in your PATH which might not be trivial on 
+ * certain operating systems, this class is deprecated in favor of DTBGenerator2
+ * which directly generates a DTB internally.
+ * 
+ * @see DTBGenerator2
+ * @author Walter Goossens
+ *
+ */
+@Deprecated
 public class DTBGenerator extends DTSGenerator {
 
+	/** @brief Constructor for the DTBGenerator
+	 * 
+	 * @param s The AvalonSystem to generate for
+	 */
 	public DTBGenerator(AvalonSystem s) {
 		super(s);
 		generateTextOutput = false;

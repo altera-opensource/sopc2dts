@@ -24,8 +24,25 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.devicetree.DTBlob;
 import sopc2dts.lib.devicetree.DTNode;
 
+/** @brief Generator for DTB files
+ * 
+ * This generator extends DTGenerator and uses the tree of DTElement's generated
+ * by DTGenerator to create a dtb file directly without the need of an external
+ * dtc.
+ * 
+ * @note This generator uses it's own dtb creation process, not the "official"
+ * dtc. When in doubt, generate a DTS using DTSGenerator2 or even DTSGenerator,
+ * pass that to dtc and compare the results.
+ * 
+ * @author Walter Goossens
+ *
+ */
 public class DTBGenerator2 extends DTGenerator {
 
+	/** @brief Constructor for the DTBGenerator2
+	 * 
+	 * @param s The AvalonSystem to generate for
+	 */
 	public DTBGenerator2(AvalonSystem s) {
 		super(s, false);
 	}

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -25,13 +25,42 @@ import sopc2dts.lib.BasicElement;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.components.base.SICBridge;
 
-
+/** @brief An interface of a BasicComponent
+ * 
+ * This class represents an interface (port) of a module in an AvalonSystem. 
+ * Interfaces are the points where a Connection is made to another 
+ * BasicComponent. The connections are the basic types (defined in 
+ * SystemDataType) used in SOPCBuilder and QSys.  
+ * 
+ * @see Connection
+ * @see BasicComponent
+ * @author Walter Goossens
+ *
+ */
 public class Interface extends BasicElement {
+	/** @brief The name of the Interface */
 	private String name;
+	/** @brief List of connections to/from this Interface
+	 * 
+	 * This is a list of connections made to/from this Interface. For most types
+	 * of interfaces (RESET, CLOCK, IRQ, STREAMING) only one connection will
+	 * exist but for the MEMORY_MAPPED type there can be many different 
+	 * connections made to/from the same Interface
+	 * 
+	 * @note Only one type of Connection can be made to each Interface  and 
+	 * it's type has to match the type of the Interface.
+	 */
 	private Vector<Connection> vConnections = new Vector<Connection>();
+	/** @brief The BasicComponent this Interface belongs to */
 	private BasicComponent owner;
+	/** @brief The SystemDataType of this Interface */
 	protected SystemDataType type = SystemDataType.CONDUIT;
+	/** @brief Whether or not this is a master Interface */
 	protected boolean isMaster;
+	/** @brief The type specific value for this Interface
+	 * 
+	 * 
+	 */
 	long interfaceValue;
 	
 	public Interface(String iName, SystemDataType dt, boolean master, BasicComponent owner) {

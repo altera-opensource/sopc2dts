@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -419,7 +419,10 @@ public class BasicComponent extends BasicElement {
 		}
 		return rate;
 	}
-	
+	/** @brief Whether or not this BasicComponent has a Memory master interface.
+	 * 
+	 * @return true when a memory-mapped master interface exists
+	 */
 	public boolean hasMemoryMaster()
 	{
 		for(Interface intf : vInterfaces)
@@ -428,10 +431,12 @@ public class BasicComponent extends BasicElement {
 		}
 		return false;
 	}
-	/*
+	/** @brief Removes the BasicComponent from a given AvalonSystem if possible.
+	 * 
 	 * Subclasses can implement this to optimize systems and/or flatten 
-	 * otherwise needless complex systems
-	 * returns true when the system is modified
+	 * otherwise needless complex systems.
+	 * 
+	 * @return True when the system is modified
 	 */
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{

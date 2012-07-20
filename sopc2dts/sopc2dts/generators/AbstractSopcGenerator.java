@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,13 @@ import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.components.BasicComponent;
 
+/** @brief Base class for all generators
+ * 
+ * @author Walter Goossens
+ *
+ */
 public abstract class AbstractSopcGenerator {
+	/** @brief LGPL Copyright notice for generated sources */
 	protected static String copyRightNotice = "/*\n" +
 	" * Copyright (C) 2010-2012 Walter Goossens <waltergoossens@home.nl>.\n" +
 	" *\n" +
@@ -48,15 +54,34 @@ public abstract class AbstractSopcGenerator {
 	" *\n" +
 	" */\n";
 
+	/** @brief AvalonSystem to generate output from */
 	protected AvalonSystem sys;
+	/** @brief Generate Text or Binary output
+	 * 
+	 * @see isTextOutput
+	 */
 	protected boolean generateTextOutput;
 
+	/** @brief Constructor meant for subclasses
+	 * 
+	 * @param s The AvalonSystem to generate for
+	 * @param isText Whether to generate text or binary output
+	 */
 	protected AbstractSopcGenerator(AvalonSystem s, boolean isText)
 	{
 		sys = s;
 		generateTextOutput = isText;
 	}
 	
+	/** @brief Helper function to do indentation
+	 * 
+	 * This is a helper function for generating formatted text. It generates a 
+	 * string that can be prepended to a source string consisting of level
+	 * indentation characters.
+	 * 
+	 * @param level The indentation depth
+	 * @return A String containing indentation characters
+	 */
 	public static String indent(int level)
 	{
 		String res = "";
@@ -66,12 +91,28 @@ public abstract class AbstractSopcGenerator {
 		}
 		return res;
 	}
-	
+
+	/** @brief Make a string suitable for use as a define in C
+	 * 
+	 * In order to automagically generate C defines, this function creates a
+	 * version of in that could be used in a define statement.
+	 * 
+	 * @param in The String to process
+	 * @return preprocessor compatible version of in
+	 */
 	public static String definenify(String in)
 	{
-		return in.toUpperCase().replace("-", "_");
+		return in.toUpperCase().replace("-", "_").replace(" ", "_");
 	}
 	
+	/** @brief Get a small personalized copyright message
+	 * 
+	 * Use this to include in output that does not need to be covered / tainted
+	 * by LGPL but just add a notice claiming the origin.
+	 * 
+	 * @param componentName to use in the message
+	 * @return a small personalized copyright message
+	 */
 	protected static String getSmallCopyRightNotice(String componentName)
 	{
 		return "/*\n"
@@ -81,13 +122,32 @@ public abstract class AbstractSopcGenerator {
 			+ " */\n";
 	}
 	
+	/** @brief returns true for text-generators
+	 * 
+	 * @return true if the output is text-based
+	 */
 	public boolean isTextOutput() {
 		return generateTextOutput;
 	}
 
+	/** @brief Get textual generation result
+	 * 
+	 * Subclasses must implement this function to return their textual 
+	 * generation result (if any).
+	 * For binary generators, those who return false when calling isTextOutput,
+	 * this function might return null indicating there is no human-readable 
+	 * version of the output.
+	 * 
+	 * @param bi The BoardInfo to use when generating the output
+	 * @return Textual result or null if isTextOutput returns false
+	 */
 	public abstract String getTextOutput(BoardInfo bi);
-	/*
-	 * This function can be overridden by classes that only support binary
+	/** @brief Get generation result in binary form
+	 * 
+	 * This function can be overridden by classes that only support binary. 
+	 * 
+	 * @param bi The BoardInfo to use when generating the output
+	 * @return Binary result data or null on error
 	 */
 	public byte[] getBinaryOutput(BoardInfo bi)
 	{
@@ -99,6 +159,23 @@ public abstract class AbstractSopcGenerator {
 			return null;
 		}
 	}
+	/** @brief Get the Point Of View component
+	 * 
+	 * This function tries to find and return the Point Of View component in sys
+	 * as specified in the BoardInfo bi. The pov-component is usually a NiosII 
+	 * processor but any avalon-master can be the pov-component. A PCI(e) core 
+	 * is a nice example.
+	 * The pov-component will be automagically searched for if not specified.
+	 * First the system is searched for likely pov-components (processors, pci
+	 * controllers) but if not found, we'll settle for the first master we can
+	 * find. 
+	 * Therefore this function should always return a result for any semi-sane 
+	 * AvalonSystem.
+	 * 
+	 * @param bi The BoardInfo to use
+	 * @return BasicComponent that should be used as pov or null if no masters 
+	 * are found.
+	 */
 	protected BasicComponent getPovComponent(BoardInfo bi)
 	{
 		BasicComponent povComp = sys.getComponentByName(bi.getPov());
