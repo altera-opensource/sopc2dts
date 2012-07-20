@@ -233,7 +233,7 @@ public class QSysSystemLoader implements ContentHandler {
 					intf = new Interface(atts.getValue("name"),
 							getSystemDataTypeByName(atts.getValue("type")),
 							(atts.getValue("dir").equalsIgnoreCase("start")), currModule);
-					currModule.getInterfaces().add(intf);
+					currModule.addInterface(intf);
 				}
 				String internal = atts.getValue("internal");
 				if(internal != null)
@@ -298,7 +298,7 @@ public class QSysSystemLoader implements ContentHandler {
 				{
 					mIntf = new Interface(start.split("\\.")[1], dt, true, master);
 					System.err.println("Invented master interface: " + mIntf.getName());
-					master.getInterfaces().add(mIntf);
+					master.addInterface(mIntf);
 				}
 				if(sIntf==null)
 				{

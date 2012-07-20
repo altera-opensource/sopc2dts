@@ -124,7 +124,7 @@ class PtfHandler {
 			{
 				if(vChildren.get(i) instanceof Interface)
 				{
-					clock.getInterfaces().add((Interface)vChildren.get(i));
+					clock.addInterface((Interface)vChildren.get(i));
 					vChildren.remove(i);
 				} else {
 					i++;
@@ -141,7 +141,7 @@ class PtfHandler {
 				{
 					Interface intf = (Interface)(vChildren.get(0));
 					intf.setOwner(comp);
-					comp.getInterfaces().add(intf);
+					comp.addInterface(intf);
 				} else {
 					Logger.logln("Unhandled child object of type: " + 
 							vChildren.get(0).getClass().getCanonicalName(),

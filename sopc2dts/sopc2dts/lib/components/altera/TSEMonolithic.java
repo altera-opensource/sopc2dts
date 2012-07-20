@@ -85,13 +85,13 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	{
 		//CSR MM interface
 		Interface intf = dma.getInterfaceByName("csr");
-		dma.getInterfaces().remove(intf);
+		dma.removeInterface(intf);
 		intf.setName(name + "_csr");
 		vInterfaces.add(intf);
 		intf.setOwner(this);
 		//IRQ
 		intf = dma.getInterfaceByName("csr_irq");
-		dma.getInterfaces().remove(intf);
+		dma.removeInterface(intf);
 		intf.setName(name + "_irq");
 		vInterfaces.add(intf);
 		intf.setOwner(this);
@@ -170,7 +170,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 					sys.removeSystemComponent(desc_mem);
 					bChanged = true;
 					Interface s1 = desc_mem.getInterfaceByName("s1");
-					desc_mem.getInterfaces().remove(s1);
+					desc_mem.removeInterface(s1);
 					s1.setOwner(this);
 					vInterfaces.add(s1);
 				} else {

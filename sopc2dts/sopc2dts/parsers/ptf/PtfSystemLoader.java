@@ -120,13 +120,13 @@ public class PtfSystemLoader {
 			if(irqMI==null)
 			{
 				irqMI = new Interface("PtfIrqMaster", SystemDataType.INTERRUPT, true, irqMaster);
-				irqMaster.getInterfaces().add(irqMI);
+				irqMaster.addInterface(irqMI);
 			}
 			Interface irqSI = comp.getInterfaceByName("PtfIrqSlave");
 			if(irqSI==null)
 			{
 				irqSI = new Interface("PtfIrqSlave", SystemDataType.INTERRUPT, false, irqMaster);
-				comp.getInterfaces().add(irqSI);
+				comp.addInterface(irqSI);
 			}
 			Connection conn = new Connection(irqMI, irqSI, SystemDataType.INTERRUPT, true);
 			conn.setConnValue(conVal);

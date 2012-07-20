@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components;
 
+import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import sopc2dts.Logger;
@@ -340,6 +341,10 @@ public class BasicComponent extends BasicElement {
 	public String getInstanceName() {
 		return instanceName;
 	}
+	public void addInterface(Interface intf) {
+		intf.setOwner(this);
+		vInterfaces.add(intf);
+	}
 	public Vector<Interface> getInterfaces() {
 		return vInterfaces;
 	}
@@ -355,6 +360,9 @@ public class BasicComponent extends BasicElement {
 			}
 		}
 		return vRes;
+	}
+	public void removeInterface(Interface intf) {
+		vInterfaces.remove(intf);
 	}
 	public void setAddr(int addr) {
 		this.addr = addr;
@@ -403,6 +411,8 @@ public class BasicComponent extends BasicElement {
 				try {
 					rate = intf.getConnections().firstElement().getConnValue();
 				} catch(ArrayIndexOutOfBoundsException e) {
+					e.printStackTrace();
+				} catch(NoSuchElementException e) {
 					e.printStackTrace();
 				}
 			}
