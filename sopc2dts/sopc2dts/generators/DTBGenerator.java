@@ -30,7 +30,7 @@ public class DTBGenerator extends DTSGenerator {
 
 	public DTBGenerator(AvalonSystem s) {
 		super(s);
-		textOutput = false;
+		generateTextOutput = false;
 	}
 
 	@Override

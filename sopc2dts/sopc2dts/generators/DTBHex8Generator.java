@@ -24,16 +24,20 @@ import sopc2dts.lib.Bin2IHex;
 import sopc2dts.lib.Bin2IHex.HexTypes;
 import sopc2dts.lib.BoardInfo;
 
-public class DTBHex8Generator extends AbstractSopcGenerator {
-	private DTBGenerator2 dtbGen;
+/** @brief Generate an intel-Hex8 file for a dtb
+ * 
+ * @author Walter Goossens
+ *
+ */
+public class DTBHex8Generator extends DTBGenerator2 {
 	public DTBHex8Generator(AvalonSystem s) {
-		super(s, true);
-		dtbGen = new DTBGenerator2(s);
+		super(s);
+		generateTextOutput = true;
 	}
 
 	@Override
 	public String getTextOutput(BoardInfo bi) {
-		return Bin2IHex.toHex(dtbGen.getBinaryOutput(bi), HexTypes.I8Hex);
+		return Bin2IHex.toHex(getBinaryOutput(bi), HexTypes.I8Hex);
 	}
 
 }

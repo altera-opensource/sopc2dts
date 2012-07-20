@@ -29,7 +29,7 @@ import sopc2dts.lib.components.BasicComponent;
 
 public abstract class AbstractSopcGenerator {
 	protected static String copyRightNotice = "/*\n" +
-	" * Copyright (C) 2010-2011 Walter Goossens <waltergoossens@home.nl>.\n" +
+	" * Copyright (C) 2010-2012 Walter Goossens <waltergoossens@home.nl>.\n" +
 	" *\n" +
 	" * This program is free software; you can redistribute it and/or modify\n" +
 	" * it under the terms of the GNU General Public License as published by\n" +
@@ -48,13 +48,13 @@ public abstract class AbstractSopcGenerator {
 	" *\n" +
 	" */\n";
 
-	AvalonSystem sys;
-	boolean textOutput;
+	protected AvalonSystem sys;
+	protected boolean generateTextOutput;
 
-	public AbstractSopcGenerator(AvalonSystem s, boolean isText)
+	protected AbstractSopcGenerator(AvalonSystem s, boolean isText)
 	{
 		sys = s;
-		textOutput = isText;
+		generateTextOutput = isText;
 	}
 	
 	public static String indent(int level)
@@ -82,7 +82,7 @@ public abstract class AbstractSopcGenerator {
 	}
 	
 	public boolean isTextOutput() {
-		return textOutput;
+		return generateTextOutput;
 	}
 
 	public abstract String getTextOutput(BoardInfo bi);
@@ -91,7 +91,13 @@ public abstract class AbstractSopcGenerator {
 	 */
 	public byte[] getBinaryOutput(BoardInfo bi)
 	{
-		return getTextOutput(bi).getBytes();
+		String to = getTextOutput(bi);
+		if(to!=null)
+		{
+			return to.getBytes();
+		} else {
+			return null;
+		}
 	}
 	protected BasicComponent getPovComponent(BoardInfo bi)
 	{
