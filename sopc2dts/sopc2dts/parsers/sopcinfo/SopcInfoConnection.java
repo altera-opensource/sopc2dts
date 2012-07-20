@@ -113,14 +113,14 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 			} else if(currTag.equalsIgnoreCase("startConnectionPoint"))
 			{
 				String startInterfaceName = String.copyValueOf(ch, start, length);
-				masterInterface = sys.currSystem.getComponentByName(startModuleName).getInterfaceByName(startInterfaceName);
+				masterInterface = sys.getCurrSystem().getComponentByName(startModuleName).getInterfaceByName(startInterfaceName);
 			} else if(currTag.equalsIgnoreCase("endModule"))
 			{
 				endModuleName = String.copyValueOf(ch, start, length);
 			} else if(currTag.equalsIgnoreCase("endConnectionPoint"))
 			{
 				String endInterfaceName = String.copyValueOf(ch, start, length);
-				slaveInterface = sys.currSystem.getComponentByName(endModuleName).getInterfaceByName(endInterfaceName);
+				slaveInterface = sys.getCurrSystem().getComponentByName(endModuleName).getInterfaceByName(endInterfaceName);
 			}
 		}
 	}

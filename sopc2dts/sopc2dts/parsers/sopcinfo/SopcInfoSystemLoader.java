@@ -46,8 +46,8 @@ public class SopcInfoSystemLoader implements ContentHandler {
 	public static final float MIN_SUPPORTED_VERSION	= 8.1f;
 	public static final float MAX_SUPPORTED_VERSION	= 12.0f;
 	float version = MIN_SUPPORTED_VERSION;
-	AvalonSystem currSystem;
-	BasicComponent currComp;
+	private AvalonSystem currSystem;
+	private BasicComponent currComp;
 	private File sourceFile;
 	private XMLReader xmlReader;
 	protected Vector<Connection> vConnections = new Vector<Connection>();
@@ -183,5 +183,11 @@ public class SopcInfoSystemLoader implements ContentHandler {
 	}
 	public void startPrefixMapping(String arg0, String arg1)
 			throws SAXException {
+	}
+	public AvalonSystem getCurrSystem() {
+		return currSystem;
+	}
+	public void setUniqueID(String uniqueID) {
+		this.uniqueID = uniqueID;
 	}
 }
