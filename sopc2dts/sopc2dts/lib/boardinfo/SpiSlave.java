@@ -21,7 +21,6 @@ package sopc2dts.lib.boardinfo;
 
 import org.xml.sax.Attributes;
 
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
@@ -88,35 +87,7 @@ public class SpiSlave {
 		node.addProperty(new DTPropHexNumber("reg", Long.valueOf(reg)));
 		return node;
 	}
-	public String toDts(int indentLevel)
-	{
-		String res = AbstractSopcGenerator.indent(indentLevel++) + name + '@' + reg + " {\n" +
-					AbstractSopcGenerator.indent(indentLevel) + "compatible = \"" + compatible + "\";\n" +
-					AbstractSopcGenerator.indent(indentLevel) + "spi-max-frequency = <" + spiMaxFrequency + ">;\n" +
-					AbstractSopcGenerator.indent(indentLevel) + "reg = <" + reg + ">;\n";
-		if(cpol)
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "spi-cpol;\n";
-			
-		}
-		if(cpha)
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "spi-cpha;\n";
-			
-		}
-		if(csHigh)
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "spi-cs-high;\n";
-			
-		}
-		res += toDtsExtras(indentLevel);
-		res += AbstractSopcGenerator.indent(--indentLevel) + "};\n";
-		return res;
-	}
-	public String toDtsExtras(int indentLevel)
-	{
-		return "";
-	}
+
 	public int getSpiMaxFrequency() {
 		return spiMaxFrequency;
 	}

@@ -22,7 +22,7 @@ package sopc2dts.generators;
 import sopc2dts.lib.AvalonSystem;
 
 public class GeneratorFactory {
-	public enum GeneratorType { DTS, DTB, DTB_IHEX8, DTB_IHEX32, U_BOOT, KERNEL_HEADERS, DTS_OLD, DTB_OLD, DTB_CHAR_ARR };
+	public enum GeneratorType { DTS, DTB, DTB_IHEX8, DTB_IHEX32, U_BOOT, KERNEL_HEADERS, DTB_CHAR_ARR };
 
 	public static String getGeneratorNameByType(GeneratorType genType)
 	{
@@ -31,14 +31,8 @@ public class GeneratorFactory {
 		case DTS: {
 			return "dts"; 
 		}
-		case DTS_OLD: {
-			return "dts-old";
-		}
 		case DTB: {
 			return "dtb";
-		}
-		case DTB_OLD: {
-			return "dtb-old";
 		}
 		case DTB_IHEX8: {
 			return "dtb-hex8";
@@ -62,20 +56,18 @@ public class GeneratorFactory {
 	{
 		switch(genType)
 		{
-		case DTS:
-		case DTS_OLD: {
+		case DTS: {
 			return "<HTML>Device Tree Source<BR>A textual representation of the system.</HTML>"; 
 		}
 		case DTB_CHAR_ARR:
-		case DTB:
-		case DTB_OLD: {
+		case DTB: {
 			return "<HTML>Device Tree Blob<BR>A compiled version of the dts</HTML>";
 		}
 		case DTB_IHEX8: {
 			return "<HTML>Intel hex8 containing the dtb</HTML>";
 		}
 		case DTB_IHEX32: {
-			return "<HTML>Intel hex32 containing the dtb (compatible with Altera 32bits onchip rom)</HTML>";
+			return "<HTML>Intel hex32 containing the dtb<BR>compatible with Altera 32bits onchip rom</HTML>";
 		}
 		case U_BOOT: {
 			return "<HTML>U-Boot headers</HTML>";
@@ -91,15 +83,9 @@ public class GeneratorFactory {
 		if(type.equalsIgnoreCase("dts"))
 		{
 			return GeneratorType.DTS;
-		} else if(type.equalsIgnoreCase("dts-old"))
-		{
-			return GeneratorType.DTS_OLD;
 		} else if(type.equalsIgnoreCase("dtb"))
 		{
 			return GeneratorType.DTB;
-		} else if(type.equalsIgnoreCase("dtb-old"))
-		{
-			return GeneratorType.DTB_OLD;
 		} else if(type.equalsIgnoreCase("dtb-hex8"))
 		{
 			return GeneratorType.DTB_IHEX8;
@@ -130,14 +116,8 @@ public class GeneratorFactory {
 			case DTS: {
 				return new DTSGenerator2(sys);
 			}
-			case DTS_OLD: {
-				return new DTSGenerator(sys);			
-			}
 			case DTB: {
 				return new DTBGenerator2(sys);
-			}
-			case DTB_OLD: {
-				return new DTBGenerator(sys);
 			}
 			case DTB_IHEX8: {
 				return new DTBHex8Generator(sys);

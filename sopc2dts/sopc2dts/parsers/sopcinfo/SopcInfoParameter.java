@@ -43,10 +43,6 @@ public class SopcInfoParameter extends SopcInfoAssignment {
 	public String getElementName() {
 		return "parameter";
 	}
-	public boolean isForDts()
-	{
-		return (valid && enabled && ((dataType != DataType.BOOLEAN)||(value.equalsIgnoreCase("true"))));
-	}
 	protected String parseValue(String val)
 	{
 		if(this.type==null)

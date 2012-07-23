@@ -24,10 +24,10 @@ import sopc2dts.lib.BoardInfo;
 
 public class DTBCCharArray extends AbstractSopcGenerator {
 	static final int ENTRIES_PER_LINE	= 12;
-	private DTBGenerator dtbGen;
+	private DTBGenerator2 dtbGen;
 	public DTBCCharArray(AvalonSystem s) {
 		super(s, true);
-		dtbGen = new DTBGenerator(s);
+		dtbGen = new DTBGenerator2(s);
 	}
 
 	@Override

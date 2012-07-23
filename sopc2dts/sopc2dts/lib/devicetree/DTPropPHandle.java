@@ -19,8 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.devicetree;
 
-import sopc2dts.generators.AbstractSopcGenerator;
-
 public class DTPropPHandle extends DTProperty {
 	String value;
 	long pHandle;
@@ -37,7 +35,7 @@ public class DTPropPHandle extends DTProperty {
 
 	@Override
 	public String toString(int indent) {
-		return AbstractSopcGenerator.indent(indent) + (label != null ? label + ": " : "" ) 
+		return indent(indent) + (label != null ? label + ": " : "" ) 
 		+ name + " = < &" + value + " >" + (comment != null ? ";\t/* " + comment + "*/\n": ";\n");
 	}
 	@Override

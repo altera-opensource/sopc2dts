@@ -23,7 +23,6 @@ import java.util.Vector;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
@@ -42,25 +41,6 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	
 	public TSEMonolithic(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
-	}
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		String res =  super.toDtsExtras(bi, indentLevel, conn, endComponent);
-		BICEthernet be = bi.getEthernetForChip(getInstanceName());
-		res += AbstractSopcGenerator.indent(indentLevel) + "phy-mode = \"" + getPhyModeString() + "\";\n";
-		if(be.getMiiID()==null)
-		{
-			//Always needed for this driver! (atm)
-			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,mii-id = <0>;\n";
-		} else {
-			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,mii-id = <" + be.getMiiID() + ">;\n";
-		}
-		if(be.getPhyID()!=null)
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "ALTR,phy-addr = <" + be.getPhyID() + ">;\n";
-		}
-		return res;
 	}
 	@Override 
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
@@ -110,7 +90,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 			intf = getInterfaces(SystemDataType.STREAMING, receiver).firstElement();
 			Logger.logln("TSEMonolithic: TSE named " + getInstanceName() + 
 					" does not have a port named '" + (receiver ? "receive" : "transmit") +"'." +
-					" Randomly trying first streaming " + sRxTx + " port (" + intf.getName() + ")", LogLevel.WARNING);
+					" Randomly trying first streaming " + sRxTx + " port (" + intf.getName() + ')', LogLevel.WARNING);
 		}
 		BasicComponent comp = getDMAEngineForIntf(intf);
 		if((comp == null))
@@ -130,7 +110,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		boolean bChanged = false;
-		BasicComponent comp;
+
 		if(rx_dma == null)
 		{
 			rx_dma = findSGDMA(true);

@@ -73,24 +73,6 @@ public abstract class AbstractSopcGenerator {
 		generateTextOutput = isText;
 	}
 	
-	/** @brief Helper function to do indentation
-	 * 
-	 * This is a helper function for generating formatted text. It generates a 
-	 * string that can be prepended to a source string consisting of level
-	 * indentation characters.
-	 * 
-	 * @param level The indentation depth
-	 * @return A String containing indentation characters
-	 */
-	public static String indent(int level)
-	{
-		String res = "";
-		while(level-->0)
-		{
-			res += "\t";
-		}
-		return res;
-	}
 
 	/** @brief Make a string suitable for use as a define in C
 	 * 

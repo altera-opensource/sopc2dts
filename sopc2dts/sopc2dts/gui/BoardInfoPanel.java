@@ -111,8 +111,8 @@ public class BoardInfoPanel extends ThreadedLoadPanel {
 					out.write(bi.getXml());
 					out.close();
 				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(this, "Error '" + e1.getLocalizedMessage() + "'" +
-							" while trying to save to '" + txtFileName.getText() + "'", 
+					JOptionPane.showMessageDialog(this, "Error '" + e1.getLocalizedMessage() + '\'' +
+							" while trying to save to '" + txtFileName.getText() + '\'', 
 							"Boardinfo save failed", JOptionPane.ERROR_MESSAGE);
 				}
 			}

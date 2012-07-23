@@ -24,7 +24,6 @@ import java.util.Vector;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BasicElement;
 import sopc2dts.lib.Parameter;
@@ -94,21 +93,6 @@ public class BasicComponent extends BasicElement {
 		return vRegs;
 	}
 
-	protected String getRegForDTS(int indentLevel, BasicComponent master)
-	{
-		String res = "";
-		Vector<Long> vRegs = getReg(master);
-		if(vRegs.size()>0)
-		{
-			res = AbstractSopcGenerator.indent(indentLevel) + "reg = <";
-			for(Long regV : vRegs)
-			{
-				res += " 0x" + Long.toHexString(regV);
-			}
-			res += ">;\n";
-		}
-		return res;
-	}
 	protected BasicComponent getInterrupts(Vector<Long> vIrqs)
 	{
 		BasicComponent irqParent = null;
@@ -133,91 +117,6 @@ public class BasicComponent extends BasicElement {
 		}
 		return irqParent;
 	}
-	protected String getInterruptsForDTS(int indentLevel)
-	{
-		String interrupts = "";
-		Vector<Long> vIrqs = new Vector<Long>();
-		BasicComponent irqParent = getInterrupts(vIrqs);
-		if(irqParent!=null)
-		{
-			interrupts = AbstractSopcGenerator.indent(indentLevel) + "interrupt-parent = < &" + irqParent.getInstanceName() + " >;\n" +
-					AbstractSopcGenerator.indent(indentLevel) + "interrupts = <";
-			for(Long irq : vIrqs)
-			{
-				interrupts += " " + irq;
-			}
-			interrupts += " >;\n";
-		}
-		return interrupts;
-	}
-	public String toDts(BoardInfo bi, int indentLevel)
-	{
-		return toDts(bi, indentLevel, null, true);
-	}
-	public String toDts(BoardInfo bi, int indentLevel, 
-						Connection conn, Boolean endComponent)
-	{
-		long tmpAddr = getAddrFromConnection(conn);
-		String res = AbstractSopcGenerator.indent(indentLevel++) + getInstanceName() + ": " + getScd().getGroup() + "@0x" + Long.toHexString(tmpAddr) + " {\n";
-		res += toDtsExtrasFirst(bi, indentLevel, conn, endComponent);
-		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "device_type = \"" + getScd().getGroup() +"\";\n";
-		}
-		res += AbstractSopcGenerator.indent(indentLevel) + "compatible = " + getScd().getCompatible(version);
-		res += ";\n";
-		if (getScd().getGroup().equalsIgnoreCase("cpu"))
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "reg = <" + getAddr() + ">;\n";
-		} else if(conn!=null)
-		{
-			res += getRegForDTS(indentLevel, conn.getMasterModule());
-		}
-		if(isInterruptMaster())
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "interrupt-controller;\n" +
-					AbstractSopcGenerator.indent(indentLevel) + "#interrupt-cells = <1>;\n";
-		}
-		res += getInterruptsForDTS(indentLevel);
-		for(SopcComponentDescription.SICAutoParam ap : getScd().getAutoParams())
-		{
-			Parameter bp = getParamByName(ap.getSopcInfoName());
-			if(bp!=null)
-			{
-				res += bp.toDts(indentLevel, ap.getDtsName(), 
-						Parameter.getDataTypeByName(ap.getForceType()));
-			} else if(ap.getDtsName().equalsIgnoreCase("clock-frequency"))
-			{
-				res += AbstractSopcGenerator.indent(indentLevel) + ap.getDtsName() + " = <" + getClockRate() + ">;\n";
-			} else if(ap.getDtsName().equalsIgnoreCase("regstep"))
-			{
-				res += AbstractSopcGenerator.indent(indentLevel) + ap.getDtsName() + " = <4>;\n";
-			}
-		}		
-		if((bi.getDumpParameters() != parameter_action.NONE)&&(vParameters.size()>0))
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "//Dumping SOPC parameters...\n";
-			for(Parameter bp : vParameters)
-			{
-				String assName = new String(bp.getName());
-				if(assName.startsWith("embeddedsw.CMacro.")) {
-					assName = assName.substring(18);
-				} else if(bi.getDumpParameters() == parameter_action.CMACRCO) {
-					assName = null;
-				}
-				if(assName!=null)
-				{
-					assName = assName.replace('_', '-');
-					res += bp.toDts(indentLevel, 
-							scd.getVendor() + ',' + assName, null);
-				}
-			}
-		}
-		res += toDtsExtras(bi, indentLevel, conn, endComponent);
-		if(endComponent) res += AbstractSopcGenerator.indent(--indentLevel) + "};\n";
-		return res;
-	}
-
 	public DTNode toDTNode(BoardInfo bi,Connection conn)
 	{
 		DTNode node = new DTNode(getScd().getGroup() + "@0x" + Long.toHexString(getAddrFromConnection(conn)), instanceName);
@@ -290,14 +189,6 @@ public class BasicComponent extends BasicElement {
 		}
 		return node;
 	}
-	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		return "";
-	}
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		return "";
-	}
 	public Interface getInterfaceByName(String ifName)
 	{
 		for(Interface intf : getInterfaces())
@@ -320,10 +211,7 @@ public class BasicComponent extends BasicElement {
 		}
 		return false;
 	}
-	public Boolean isUsefullForDTS()
-	{
-		return true;
-	}
+
 	public void setScd(SopcComponentDescription scd) {
 		if(scd!=null)
 		{
@@ -397,10 +285,7 @@ public class BasicComponent extends BasicElement {
 	{
 		return (conn==null ? getAddr() : conn.getConnValue());
 	}
-	protected long getSizeFromInterface(Interface intf)
-	{
-		return (intf==null ? 0 : intf.getInterfaceValue());
-	}
+
 	public long getClockRate()
 	{
 		long rate = 0;
@@ -411,9 +296,9 @@ public class BasicComponent extends BasicElement {
 				try {
 					rate = intf.getConnections().firstElement().getConnValue();
 				} catch(ArrayIndexOutOfBoundsException e) {
-					e.printStackTrace();
+					Logger.logException(e);
 				} catch(NoSuchElementException e) {
-					e.printStackTrace();
+					Logger.logException(e);
 				}
 			}
 		}

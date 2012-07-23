@@ -107,7 +107,7 @@ public class PtfSystemLoader {
 				try {
 					conVal = Long.decode(sconVal);
 				} catch(NumberFormatException e) { 
-					Logger.logln("Failed to parse IRQ-nr: '" + sconVal + "'" +
+					Logger.logln("Failed to parse IRQ-nr: '" + sconVal + '\'' +
 							" for " + comp.getInstanceName(), LogLevel.ERROR);
 				}
 			}

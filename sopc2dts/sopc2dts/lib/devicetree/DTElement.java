@@ -61,4 +61,22 @@ public abstract class DTElement {
 	public String toString() {
 		return toString(0);
 	}
+	/** @brief Helper function to do indentation
+	 * 
+	 * This is a helper function for generating formatted text. It generates a 
+	 * string that can be prepended to a source string consisting of level
+	 * indentation characters.
+	 * 
+	 * @param level The indentation depth
+	 * @return A String containing indentation characters
+	 */
+	protected static String indent(int level)
+	{
+		String res = "";
+		while(level-->0)
+		{
+			res += "\t";
+		}
+		return res;
+	}
 }

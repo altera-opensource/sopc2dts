@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib;
 
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
@@ -47,19 +46,6 @@ public class Parameter {
 		default: {
 			this.value = value;
 		}
-		}
-	}
-	public boolean isForDts()
-	{
-		return isForDts(dataType);
-	}
-	public boolean isForDts(DataType dt)
-	{
-		if(dt==DataType.BOOLEAN)
-		{
-			return getValueAsBoolean();
-		} else {
-			return true;
 		}
 	}
 	public static DataType getDataTypeByName(String dtName)
@@ -105,45 +91,6 @@ public class Parameter {
 		//Treat all other strings and numbers as true
 		 return true;
 	 }
-	public String toDts(int indentLevel, String dtsName, DataType dt)
-	{
-		String res;
-		if(dt==null)
-		{
-			dt = dataType;
-		}
-		if(isForDts(dt))
-		{
-			res = AbstractSopcGenerator.indent(indentLevel) + dtsName;
-			switch(dt)
-			{
-			case UNSIGNED:
-				if(value.charAt(0) == '-')
-				{
-					value = String.format("0x%08X", Integer.decode(value));
-				}
-			/* Fallthrough */
-			case NUMBER: {
-				res += " = <" + value + '>';
-			} break;
-			case BOOLEAN: { 
-				//Nothing
-			} break;
-			case STRING: {
-				String tmpVal = value.trim();
-				if (!tmpVal.startsWith("\"") || !tmpVal.endsWith("\""))
-				{
-					tmpVal = "\"" + tmpVal + "\"";
-				}
-				res += " = " + tmpVal;
-			} break;
-			}
-			res += ";\t//" + name + " type " + dataType + "\n";
-		} else {
-			res = "";
-		}
-		return res;
-	}
 	public DTProperty toDTProperty()
 	{
 		return toDTProperty(name, dataType);

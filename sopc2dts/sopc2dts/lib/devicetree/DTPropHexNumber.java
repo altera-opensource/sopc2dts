@@ -21,8 +21,6 @@ package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
 
-import sopc2dts.generators.AbstractSopcGenerator;
-
 public class DTPropHexNumber extends DTPropNumber {
 
 	public DTPropHexNumber(String name) {
@@ -56,13 +54,13 @@ public class DTPropHexNumber extends DTPropNumber {
 				if(i%2==0)	//addr+size cells
 				{
 					if(name.equals("reg")) {
-						res += "\n" + AbstractSopcGenerator.indent(indent) + "\t";
+						res += "\n" + indent(indent) + "\t";
 					}
 				}
 				if(i%3==0)	//paddr+addr+size cells
 				{
 					if(name.equals("ranges")) {
-						res += "\n" + AbstractSopcGenerator.indent(indent) + "\t";
+						res += "\n" + indent(indent) + "\t";
 					}
 				}
 			}

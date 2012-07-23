@@ -2,11 +2,9 @@
 SOURCES=Sopc2DTS.java \
 	sopc2dts/LogListener.java sopc2dts/Logger.java \
 	sopc2dts/generators/AbstractSopcGenerator.java \
-	sopc2dts/generators/DTBGenerator.java \
 	sopc2dts/generators/DTBGenerator2.java \
 	sopc2dts/generators/DTBHex8Generator.java \
 	sopc2dts/generators/DTGenerator.java \
-	sopc2dts/generators/DTSGenerator.java \
 	sopc2dts/generators/DTSGenerator2.java \
 	sopc2dts/generators/GeneratorFactory.java \
 	sopc2dts/generators/KernelHeadersGenerator.java \
@@ -46,7 +44,6 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/SICLan91c111.java \
 	sopc2dts/lib/components/altera/SICSgdma.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
-	sopc2dts/lib/components/altera/TSEModular.java \
 	sopc2dts/lib/components/altera/TSEMonolithic.java \
 	sopc2dts/lib/components/base/FlashPartition.java \
 	sopc2dts/lib/components/base/SCDSelfDescribing.java \

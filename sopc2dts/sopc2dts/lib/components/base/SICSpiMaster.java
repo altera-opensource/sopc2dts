@@ -57,23 +57,4 @@ public class SICSpiMaster extends BasicComponent {
 		}
 		return node;
 	}
-
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		String res = "";
-		BoardInfoComponent bs = bi.getBicForChip(getInstanceName()); 
-		if(bs!=null)
-		{
-			if(bs instanceof BICSpi)
-			{
-				BICSpi bSpi = (BICSpi)bs;
-				for(SpiSlave slave : bSpi.getSlaves())
-				{
-					res += slave.toDts(indentLevel);
-				}
-			}
-		}
-		return res;
-	}
 }

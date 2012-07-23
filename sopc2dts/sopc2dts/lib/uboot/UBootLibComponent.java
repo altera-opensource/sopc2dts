@@ -234,7 +234,7 @@ public class UBootLibComponent {
 			if(vConns.size() != 1)
 			{
 				name = AbstractSopcGenerator.definenify(slave.getInstanceName())
-					+ "_" + AbstractSopcGenerator.definenify(conn.getSlaveInterface().getName());
+					+ '_' + AbstractSopcGenerator.definenify(conn.getSlaveInterface().getName());
 			}
 			res += String.format("#define %s\t%s\n", name,val);
 		}

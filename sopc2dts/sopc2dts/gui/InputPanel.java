@@ -21,7 +21,6 @@ package sopc2dts.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -32,10 +31,11 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import sopc2dts.Logger;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.parsers.BasicSystemLoader;
 
-public class InputPanel extends ThreadedLoadPanel implements ActionListener {
+public class InputPanel extends ThreadedLoadPanel {
 	private static final long serialVersionUID = -2627231677508843875L;
 	JTextArea txtSource = new JTextArea();
 	JList componentList = new JList();
@@ -78,7 +78,7 @@ public class InputPanel extends ThreadedLoadPanel implements ActionListener {
 	      }
 	    }
 	    catch (IOException ex){
-	      ex.printStackTrace();
+	      Logger.logException(ex);
 	    }
 	    txtSource.setText(contents.toString());
 		setSys(BasicSystemLoader.loadSystem(f));

@@ -23,7 +23,6 @@ import java.util.Vector;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
@@ -62,35 +61,6 @@ public class SICBridge extends BasicComponent {
 			}
 		}
 		return vRanges;
-	}
-
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		String res = AbstractSopcGenerator.indent(indentLevel) + "#address-cells = <1>;\n" +
-				AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <1>;\n";
-		Vector<Long> vRanges = getDtRanges(conn);
-		if(vRanges.size()>0)
-		{
-			res += AbstractSopcGenerator.indent(indentLevel) + "ranges = <";
-			for(int i=0; i<vRanges.size(); i++)
-			{
-				if(i>0)
-				{
-					if(i%3==0)
-					{
-						res += "\n" + AbstractSopcGenerator.indent(indentLevel) + "\t";
-					} else {
-						res += ' ';
-					}
-				}
-				res += String.format("0x%08X", vRanges.get(i));
-			}
-			res += ">;\n";
-		} else {
-			res += AbstractSopcGenerator.indent(indentLevel) + "ranges;\n";
-		}
-		return res;
 	}
 
 	@Override

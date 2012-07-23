@@ -106,15 +106,15 @@ public class QSysSystemLoader implements ContentHandler {
 			flattenDesign();
 			Logger.logln("Loaded " + source.getCanonicalPath(), LogLevel.DEBUG);
 		} catch (SAXException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 			currSystem = null;
 			currSubSystem = null;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 			currSystem = null;
 			currSubSystem = null;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 			currSystem = null;
 			currSubSystem = null;
 		}
@@ -261,7 +261,7 @@ public class QSysSystemLoader implements ContentHandler {
 										" and " + f.getCanonicalPath() + " Does not exist", LogLevel.WARNING);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
+								Logger.logException(e);
 							}
 						}
 					}

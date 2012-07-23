@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.base;
 
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
@@ -39,20 +38,6 @@ public class SICEthernet extends BasicComponent {
 		super(cName, iName, version, scd);
 	}
 
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		String res =  AbstractSopcGenerator.indent(indentLevel) + "address-bits = <" + getAddressBits() + ">;\n"
-					+ AbstractSopcGenerator.indent(indentLevel) + "max-frame-size = <" + getMaxFrameSize() + ">;\n"
-					+ AbstractSopcGenerator.indent(indentLevel) + "local-mac-address = [ ";
-		int[] mac_address = getMacAddress(bi);
-		for(int i=0; i<mac_address.length; i++)
-		{
-			res += String.format("%02X ", mac_address[i]);
-		}
-		res += "];\n";
-		return res;
-	}
 	@Override
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{

@@ -78,9 +78,9 @@ public class SopcComponentLib implements ContentHandler {
 			xr.setContentHandler(this);
 			xr.parse(in);
 		} catch (SAXException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 		return (vLibComponents.size() - oldSize);
 	}
@@ -108,7 +108,7 @@ public class SopcComponentLib implements ContentHandler {
 							jf.getInputStream(jf.getEntry(entryName))))
 							 + " components from " + entryName, LogLevel.DEBUG);
 				} catch (IOException e) {
-					e.printStackTrace();
+					Logger.logException(e);
 				}
 			}
 		}
@@ -130,7 +130,7 @@ public class SopcComponentLib implements ContentHandler {
 								new BufferedReader(new FileReader(dirContents[i]))))
 								 + " components from " + dirContents[i], LogLevel.DEBUG);
 					} catch (FileNotFoundException e) {
-						e.printStackTrace();
+						Logger.logException(e);
 					}
 				}
 			}

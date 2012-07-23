@@ -19,11 +19,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.SopcComponentLib;
-import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropNumber;
@@ -50,28 +48,6 @@ public class SICEpcs extends SICFlash {
 		return node;
 	}
 	@Override
-	public String toDtsExtrasFirst(BoardInfo bi, int indentLevel, 
-			Connection conn, Boolean endComponent)
-	{
-		return AbstractSopcGenerator.indent(indentLevel) + "#address-cells = <1>;\n"
-				+ AbstractSopcGenerator.indent(indentLevel) + "#size-cells = <0>;\n";
-	}
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, 
-			Connection conn, Boolean endComponent)
-	{
-		String res = "\n" + AbstractSopcGenerator.indent(indentLevel++) + "m25p80@0 {\n"
-					+ super.toDtsExtrasFirst(bi, indentLevel, conn, endComponent)
-					+ AbstractSopcGenerator.indent(indentLevel) + "compatible = \"m25p80\";\n"
-					+ AbstractSopcGenerator.indent(indentLevel) + "spi-max-frequency = <25000000>;\n"
-					+ AbstractSopcGenerator.indent(indentLevel) + "reg = <0>;\n"
-					+ partitionsForDts(bi, indentLevel);
-		
-		res += AbstractSopcGenerator.indent(--indentLevel) + "};\n";
-		return res;
-	}
-
-	@Override
 	protected long getAddrFromConnection(Connection conn)
 	{
 		//Yes this is REALLY ugly. But it just might work :)
@@ -84,10 +60,4 @@ public class SICEpcs extends SICFlash {
 		}
 		return (conn==null ? getAddr() : conn.getConnValue()) + regOffset;
 	}
-	@Override
-	protected long getSizeFromInterface(Interface intf)
-	{
-		return 8;
-	}
-
 }

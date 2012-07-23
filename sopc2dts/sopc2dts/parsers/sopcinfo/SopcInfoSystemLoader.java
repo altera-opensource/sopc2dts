@@ -102,13 +102,13 @@ public class SopcInfoSystemLoader implements ContentHandler {
 				currSystem.recheckComponents();
 			}
 		} catch (SAXException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 			currSystem = null;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 			currSystem = null;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 			currSystem = null;
 		}
 		return currSystem;

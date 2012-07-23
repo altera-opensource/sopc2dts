@@ -21,8 +21,6 @@ package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
 
-import sopc2dts.generators.AbstractSopcGenerator;
-
 public class DTPropByte extends DTProperty{
 	Vector<Integer> vValues = new Vector<Integer>();
 	
@@ -51,7 +49,7 @@ public class DTPropByte extends DTProperty{
 
 	@Override
 	public String toString(int indent) {
-		String res = AbstractSopcGenerator.indent(indent) + (label != null ? label + ": " : "" ) 
+		String res = indent(indent) + (label != null ? label + ": " : "" ) 
 						+ name + " = [";
 		for(Integer val : vValues)
 		{

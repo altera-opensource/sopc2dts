@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
@@ -56,22 +55,5 @@ public class SICSgdma extends BasicComponent {
 		}
 		node.addProperty(new DTPropNumber("type",Long.valueOf(iType),null,TYPE_NAMES[iType]));
 		return node;
-	}
-	
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		String res = "";
-		int iType = 0;
-		while(iType<(TYPE_NAMES.length-1))
-		{
-			if(TYPE_NAMES[iType].equals(getParamValByName("transferMode")))
-			{
-				break;
-			}
-			iType++;
-		}
-		res += AbstractSopcGenerator.indent(indentLevel) + "type = < " + iType + " >; //" + TYPE_NAMES[iType] + "\n";
-		return res;
 	}
 }

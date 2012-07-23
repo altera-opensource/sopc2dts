@@ -21,11 +21,7 @@ package sopc2dts.lib.components.altera;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
-import sopc2dts.generators.AbstractSopcGenerator;
 import sopc2dts.lib.AvalonSystem;
-import sopc2dts.lib.BoardInfo;
-import sopc2dts.lib.Connection;
-import sopc2dts.lib.Parameter;
 import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SICFlash;
@@ -37,25 +33,6 @@ public class GenericTristateController extends BasicComponent {
 		super(cName, iName, ver, new SICUnknown(cName));
 	}
 	
-	@Override
-	public String toDtsExtras(BoardInfo bi, int indentLevel, Connection conn, Boolean endComponent)
-	{
-		String res = AbstractSopcGenerator.indent(indentLevel) + "//Dumping SOPC parameters...\n";
-		for(Parameter bp : vParameters)
-		{
-			String assName = bp.getName();
-			if(assName.startsWith("embeddedsw.CMacro.")) {
-				assName = assName.substring(18);
-			}
-			if(assName!=null)
-			{
-				assName = assName.replace('_', '-');
-				res += bp.toDts(indentLevel, 
-						scd.getVendor() + ',' + assName, null);
-			}
-		}
-		return res;
-	}
 	/**
 	 * This is kinda abusing the function, because we _will_ try to remove ourselve
 	 * but also add ourselves in a new form....

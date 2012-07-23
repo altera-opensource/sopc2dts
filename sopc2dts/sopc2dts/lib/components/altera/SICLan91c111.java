@@ -43,9 +43,4 @@ public class SICLan91c111 extends SICEthernet {
 		}
 		return (conn==null ? getAddr() : conn.getConnValue()) + regOffset;
 	}
-	@Override
-	protected long getSizeFromInterface(Interface intf)
-	{
-		return 0x100;
-	}
 }

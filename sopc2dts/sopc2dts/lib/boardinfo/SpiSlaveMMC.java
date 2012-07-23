@@ -19,9 +19,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.boardinfo;
 
+import java.util.Vector;
+
 import org.xml.sax.Attributes;
 
-import sopc2dts.generators.AbstractSopcGenerator;
+import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropHexNumber;
 
 public class SpiSlaveMMC extends SpiSlave {
 	
@@ -37,9 +41,14 @@ public class SpiSlaveMMC extends SpiSlave {
 	protected SpiSlaveMMC(String name, int reg) {
 		super(name, reg, "mmc-spi-slot", 30000000); 
 	}
-	
-	public String toDtsExtras(int indentLevel)
+	@Override
+	public DTNode toDTNode(BoardInfo bi)
 	{
-		return AbstractSopcGenerator.indent(indentLevel) + "voltage-ranges =<3200 3400>;\n";
+		DTNode node = super.toDTNode(bi);
+		Vector<Long> vals = new Vector<Long>();
+		vals.add(3200L);
+		vals.add(3400L);
+		node.addProperty(new DTPropHexNumber("voltage-ranges", vals));
+		return node;
 	}
 }

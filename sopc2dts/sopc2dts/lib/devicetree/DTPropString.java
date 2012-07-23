@@ -21,8 +21,6 @@ package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
 
-import sopc2dts.generators.AbstractSopcGenerator;
-
 public class DTPropString extends DTProperty {
 	Vector<String> vValues = new Vector<String>();
 	
@@ -61,7 +59,7 @@ public class DTPropString extends DTProperty {
 			}
 			value += "\"" + v + "\"";
 		}
-		return AbstractSopcGenerator.indent(indent) + (label != null ? label + ": " : "" ) 
+		return indent(indent) + (label != null ? label + ": " : "" ) 
 				+ name + " = " + value + (comment != null ? ";\t/* " + comment + "*/\n": ";\n");
 	}
 	@Override

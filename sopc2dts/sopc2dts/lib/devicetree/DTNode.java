@@ -21,8 +21,6 @@ package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
 
-import sopc2dts.generators.AbstractSopcGenerator;
-
 public class DTNode extends DTElement {
 	public static final int OF_DT_BEGIN_NODE = 0x01;
 	public static final int OF_DT_END_NODE = 0x02;
@@ -73,8 +71,8 @@ public class DTNode extends DTElement {
 	}
 	@Override
 	public String toString(int indent) {
-		String res = "\n" + (comment !=null ? AbstractSopcGenerator.indent(indent) + "/*" + comment + "*/\n" : "") +
-			AbstractSopcGenerator.indent(indent) + (label != null ? label + ": " : "") + name + " {\n";
+		String res = "\n" + (comment !=null ? indent(indent) + "/*" + comment + "*/\n" : "") +
+			indent(indent) + (label != null ? label + ": " : "") + name + " {\n";
 		indent++;
 		for(DTProperty prop : vProps)
 		{
@@ -85,7 +83,7 @@ public class DTNode extends DTElement {
 			res += child.toString(indent);
 		}
 		indent--;
-		res += AbstractSopcGenerator.indent(indent) + "}; //end " + name + (label != null ? " (" + label + ")\n" : "\n");
+		res += indent(indent) + "}; //end " + name + (label != null ? " (" + label + ")\n" : "\n");
 		return res;
 	}
 	@Override
