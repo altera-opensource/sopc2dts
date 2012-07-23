@@ -24,6 +24,7 @@ import java.util.Vector;
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
@@ -48,7 +49,13 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 		vHandled = new Vector<BasicComponent>();
 		if(pov!=null)
 		{
-			res += getInfoForSlavesOf(pov.getInterfaceByName("data_master"), 0, pov);
+			//Try the interfacename for the Nios2
+			Interface intf = pov.getInterfaceByName("data_master");
+			if(intf==null) {
+				//Just use the first one...
+				intf = pov.getInterfaces(SystemDataType.MEMORY_MAPPED, true).firstElement();
+			}
+			res += getInfoForSlavesOf(intf, 0, pov);
 		} else {
 			Logger.logln("Unable to find a CPU. U-Boot works best when run on a cpu.", LogLevel.ERROR);
 		}
@@ -63,7 +70,7 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 			BasicComponent comp = conn.getSlaveInterface().getOwner();
 			if(res.length() == 0)
 			{
-				res = "/* Dumping slaves of " + master.getOwner().getInstanceName() + "." + master.getName() + "*/\n";
+				res = "/* Dumping slaves of " + master.getOwner().getInstanceName() + '.' + master.getName() + "*/\n";
 			}
 			if(!vHandled.contains(comp))
 			{
