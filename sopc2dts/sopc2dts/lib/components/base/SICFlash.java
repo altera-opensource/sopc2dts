@@ -82,6 +82,11 @@ public class SICFlash extends BasicComponent {
 		int bankw = 2;
 		try {
 			String sdw = getParamValByName("dataWidth");
+			//Try other param name if dataWidth did not exist
+			if(sdw==null)
+			{
+				sdw = getParamValByName("TCM_DATA_W");
+			}
 			if(sdw!=null)
 			{
 				bankw = Integer.decode(sdw)/8;
