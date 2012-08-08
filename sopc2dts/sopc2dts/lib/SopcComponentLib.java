@@ -46,6 +46,7 @@ import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.TSEMonolithic;
+import sopc2dts.lib.components.base.GpioController;
 import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICFlash;
@@ -179,6 +180,8 @@ public class SopcComponentLib implements ContentHandler {
 					return new SICSpiMaster(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("ethernet")) {
 					return new SICEthernet(className, instanceName, version, getScdByClassName(className));
+				} else if (scd.getGroup().equalsIgnoreCase("gpio")) {
+					return new GpioController(className, instanceName, version, getScdByClassName(className));
 				} else {
 					return new BasicComponent(className,instanceName, version,scd);
 				}
