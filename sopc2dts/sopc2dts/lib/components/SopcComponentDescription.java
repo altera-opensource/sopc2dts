@@ -48,13 +48,20 @@ public class SopcComponentDescription {
 	public class SICAutoParam {
 		private String dtsName;
 		private String sopcInfoName;
+		private String fixedValue;
 		private String forceType;
 		
-		public SICAutoParam(String dts, String sopcInfo, String type)
+		public SICAutoParam(String dts, String sopcInfo, String type, String fixedValue)
 		{
 			setDtsName(dts);
 			setSopcInfoName(sopcInfo);
+			setFixedValue(fixedValue);
 			setForceType(type);
+		}
+
+		public SICAutoParam(String dts, String sopcInfo, String type)
+		{
+			this(dts, sopcInfo, type, null);
 		}
 
 		public void setSopcInfoName(String sopcInfoName) {
@@ -63,6 +70,13 @@ public class SopcComponentDescription {
 
 		public String getSopcInfoName() {
 			return sopcInfoName;
+		}
+
+		public void setFixedValue(String value) {
+			this.fixedValue = value;
+		}
+		public String getFixedValue() {
+			return fixedValue;
 		}
 
 		public void setDtsName(String dtsName) {
@@ -112,6 +126,10 @@ public class SopcComponentDescription {
 	}
 	public void addAutoParam(String dtsName, String sopcName, String type) {
 		vAutoParams.add(new SICAutoParam(dtsName, sopcName, type));
+	}
+
+	public void addAutoParam(String dtsName, String sopcName, String type, String value) {
+		vAutoParams.add(new SICAutoParam(dtsName, sopcName, type, value));
 	}
 
 	public void addRequiredParam(String dtsName, String sopcName) {

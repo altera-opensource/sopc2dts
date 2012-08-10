@@ -32,6 +32,7 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTProperty;
 import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
@@ -168,7 +169,14 @@ public class BasicComponent extends BasicElement {
 			} else if(ap.getDtsName().equalsIgnoreCase("regstep"))
 			{
 				node.addProperty(new DTPropNumber(ap.getDtsName(), 4L));
-			}
+			} else if(ap.getFixedValue() != null)
+			{
+				DTProperty prop = createFixedProp(ap);
+				if (prop != null)
+				{
+					node.addProperty(prop);
+				}
+            }
 		}		
 		if((bi.getDumpParameters() != parameter_action.NONE)&&(vParamTodo.size()>0))
 		{
@@ -188,6 +196,26 @@ public class BasicComponent extends BasicElement {
 			}
 		}
 		return node;
+	}
+	private DTProperty createFixedProp(SopcComponentDescription.SICAutoParam ap)
+	{
+		DTProperty prop = null;
+		String fixedValue = ap.getFixedValue();
+		String dtsName = ap.getDtsName();
+		String forceType = ap.getForceType();
+		try {
+			if (forceType.equalsIgnoreCase("unsigned"))
+			{
+				prop = new DTPropNumber(dtsName, Long.parseLong(fixedValue));
+			} else if (forceType.equalsIgnoreCase("string"))
+			{
+				prop = new DTPropString(dtsName, fixedValue);
+			}
+		} catch (IllegalArgumentException e) 
+		{
+			prop = null; 
+		}
+		return prop;
 	}
 	public Interface getInterfaceByName(String ifName)
 	{
