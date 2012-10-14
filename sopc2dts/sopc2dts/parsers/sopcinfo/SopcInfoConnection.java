@@ -87,6 +87,10 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 				{
 					bc = new Connection(masterInterface, slaveInterface, 
 							SystemDataType.STREAMING);
+				} else if(kind.equalsIgnoreCase("conduit"))
+				{
+					bc = new Connection(masterInterface, slaveInterface, 
+							SystemDataType.CONDUIT);
 				} else if(kind.equalsIgnoreCase("reset")) {
 					//Explicitly ignore resets.
 					bc = null;
