@@ -29,6 +29,7 @@ import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICFlash extends BasicComponent {
 	
@@ -53,10 +54,13 @@ public class SICFlash extends BasicComponent {
 			for(FlashPartition part : vPartitions)
 			{
 				DTNode dtPart = new DTNode(part.getName() + '@' + Integer.toHexString(part.getAddress()));
+				DTProperty p;
 				Vector<Long> vReg = new Vector<Long>();
 				vReg.add(Long.valueOf(part.getAddress()));
 				vReg.add(Long.valueOf(part.getSize()));
-				dtPart.addProperty(new DTPropHexNumber("reg", vReg));
+				p = new DTPropHexNumber("reg", vReg);
+				p.setNumValuesPerRow(2); //Addr + size
+				dtPart.addProperty(p);
 				if(part.isReadonly())
 				{
 					dtPart.addProperty(new DTPropBool("read-only"));
