@@ -51,17 +51,9 @@ public class DTPropHexNumber extends DTPropNumber {
 			/* Magically format some nodes */
 			if(i>0)
 			{
-				if(i%2==0)	//addr+size cells
+				if((numValsPerRow>0) && (i%numValsPerRow==0))
 				{
-					if(name.equals("reg")) {
-						res += "\n" + indent(indent) + "\t";
-					}
-				}
-				if(i%3==0)	//paddr+addr+size cells
-				{
-					if(name.equals("ranges")) {
-						res += "\n" + indent(indent) + "\t";
-					}
+					res += "\n" + indent(indent) + "\t";
 				}
 			}
 			if(!res.endsWith("\t"))

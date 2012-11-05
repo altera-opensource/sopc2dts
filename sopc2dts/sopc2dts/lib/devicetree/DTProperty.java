@@ -23,7 +23,8 @@ public abstract class DTProperty extends DTElement {
 	public static final int OF_DT_PROP = 0x03;
 	enum DTPropType { STRING, NUMBER, BYTE, BOOL };
 	DTPropType type;
-	
+	int numValsPerRow = 0;
+
 	protected DTProperty(String name, String label, String comment, DTPropType type)
 	{
 		super(name,label,comment);
@@ -49,5 +50,9 @@ public abstract class DTProperty extends DTElement {
 	public String toString()
 	{
 		return toString(0);
+	}
+	public void setNumValuesPerRow(int n) 
+	{
+		numValsPerRow = n;
 	}
 }

@@ -51,13 +51,18 @@ public class DTPropString extends DTProperty {
 	@Override
 	public String toString(int indent) {
 		String value = "";
+		int idx = 0;
 		for(String v : vValues)
 		{
 			if(!value.isEmpty())
 			{
 				value += ", ";
+				if((numValsPerRow>0) && (idx % numValsPerRow == 0)) {
+					value += "\n" + indent(indent +1);
+				}
 			}
 			value += "\"" + v + "\"";
+			idx++;
 		}
 		return indent(indent) + (label != null ? label + ": " : "" ) 
 				+ name + " = " + value + (comment != null ? ";\t/* " + comment + "*/\n": ";\n");
