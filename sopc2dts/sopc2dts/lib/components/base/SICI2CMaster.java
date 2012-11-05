@@ -36,6 +36,9 @@ public class SICI2CMaster extends BasicComponent {
 	public SICI2CMaster(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
+	public SICI2CMaster(BasicComponent comp) {
+		super(comp);
+	}
 	@Override
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{

@@ -39,10 +39,12 @@ import sopc2dts.lib.devicetree.DTPropNumber;
 
 public class SICBridge extends BasicComponent {
 
+	public SICBridge(BasicComponent comp) {
+		super(comp);
+	}
 	public SICBridge(String cName, String iName, String version, SopcComponentDescription scd) {
 		super(cName, iName, version,scd);
 	}
-	
 	protected Vector<Long> getDtRanges(Connection conn)
 	{
 		Vector<Long> vRanges = new Vector<Long>();

@@ -171,34 +171,44 @@ public class SopcComponentLib implements ContentHandler {
 		} else if (className.equalsIgnoreCase("altera_generic_tristate_controller")) {
 			return new GenericTristateController(className, instanceName, version);
 		} else {
-			SopcComponentDescription scd = getScdByClassName(className);
-			if(scd!=null)
-			{
-				if (scd.getGroup().equalsIgnoreCase("bridge")) {
-					return new SICBridge(className, instanceName, version, getScdByClassName(className));
-				} else if (scd.getGroup().equalsIgnoreCase("cpu")) {
-					return new CpuComponent(className, instanceName, version, getScdByClassName(className));
-				} else if (scd.getGroup().equalsIgnoreCase("flash")) {
-					return new SICFlash(className, instanceName, version, getScdByClassName(className));
-				} else if (scd.getGroup().equalsIgnoreCase("i2c")) {
-					return new SICI2CMaster(className, instanceName, version, getScdByClassName(className));
-				} else if (scd.getGroup().equalsIgnoreCase("spi")) {
-					return new SICSpiMaster(className, instanceName, version, getScdByClassName(className));
-				} else if (scd.getGroup().equalsIgnoreCase("ethernet")) {
-					return new SICEthernet(className, instanceName, version, getScdByClassName(className));
-				} else if (scd.getGroup().equalsIgnoreCase("gpio")) {
-					return new GpioController(className, instanceName, version, getScdByClassName(className));
-				} else {
-					return new BasicComponent(className,instanceName, version,scd);
-				}
-			} else {
-				return new BasicComponent(className, instanceName, version, null);
+			return castToGroupSpecificObject(
+					new BasicComponent(className, instanceName, version, 
+							getScdByClassName(className)));
+		}
+	}
+	private BasicComponent castToGroupSpecificObject(BasicComponent comp) {
+		SopcComponentDescription scd = comp.getScd();
+		if(scd!=null)
+		{
+			if (scd.getGroup().equalsIgnoreCase("bridge") &&
+					!(comp instanceof SICBridge)) {
+				return new SICBridge(comp);
+			} else if (scd.getGroup().equalsIgnoreCase("cpu") &&
+					!(comp instanceof CpuComponent)) {
+				return new CpuComponent(comp);
+			} else if (scd.getGroup().equalsIgnoreCase("flash") &&
+					!(comp instanceof SICFlash)) {
+				return new SICFlash(comp);
+			} else if (scd.getGroup().equalsIgnoreCase("i2c") &&
+					!(comp instanceof SICI2CMaster)) {
+				return new SICI2CMaster(comp);
+			} else if (scd.getGroup().equalsIgnoreCase("spi") &&
+					!(comp instanceof SICSpiMaster)) {
+				return new SICSpiMaster(comp);
+			} else if (scd.getGroup().equalsIgnoreCase("ethernet") &&
+					!(comp instanceof SICEthernet)) {
+				return new SICEthernet(comp);
+			} else if (scd.getGroup().equalsIgnoreCase("gpio") &&
+					!(comp instanceof GpioController)) {
+				return new GpioController(comp);
 			}
 		}
+		return comp;
 	}
 	public BasicComponent finalCheckOnComponent(BasicComponent comp)
 	{
-		if(SCDSelfDescribing.isSelfDescribing(comp))
+		if(SCDSelfDescribing.isSelfDescribing(comp) && 
+				!(comp.getScd() instanceof SCDSelfDescribing))
 		{
 			if(!(comp.getScd() instanceof SICUnknown))
 			{
@@ -208,6 +218,7 @@ public class SopcComponentLib implements ContentHandler {
 						LogLevel.INFO);
 			}
 			comp.setScd(new SCDSelfDescribing(comp));
+			comp = castToGroupSpecificObject(comp);
 		} else {
 			if(comp.getScd() instanceof SICUnknown)
 			{

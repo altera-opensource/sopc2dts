@@ -38,6 +38,10 @@ public class SICEthernet extends BasicComponent {
 		super(cName, iName, version, scd);
 	}
 
+	public SICEthernet(BasicComponent comp) {
+		super(comp);
+	}
+
 	@Override
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{

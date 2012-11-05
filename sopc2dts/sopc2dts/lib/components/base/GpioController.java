@@ -33,8 +33,8 @@ public class GpioController extends BasicComponent {
 			SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
-	public GpioController(GpioController gpc) {
-		super(gpc);
+	public GpioController(BasicComponent comp) {
+		super(comp);
 	}
 	@Override
 	public DTNode toDTNode(BoardInfo bi,Connection conn)

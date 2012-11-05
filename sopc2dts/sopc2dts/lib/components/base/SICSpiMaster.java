@@ -34,6 +34,9 @@ public class SICSpiMaster extends BasicComponent {
 	public SICSpiMaster(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
+	public SICSpiMaster(BasicComponent comp) {
+		super(comp);
+	}
 	@Override
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{

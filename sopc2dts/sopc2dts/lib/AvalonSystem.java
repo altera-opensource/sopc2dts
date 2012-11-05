@@ -168,9 +168,14 @@ public class AvalonSystem extends BasicElement {
 				i=0;
 			}
 		}
-		for(BasicComponent comp : vSystemComponents)
-		{
-			SopcComponentLib.getInstance().finalCheckOnComponent(comp);
+		for(int i=0; i<vSystemComponents.size(); i++) {
+			BasicComponent comp = vSystemComponents.get(i);
+			BasicComponent checkedComp = SopcComponentLib.getInstance().finalCheckOnComponent(comp);
+			if(comp != checkedComp) {
+				vSystemComponents.remove(comp);
+				vSystemComponents.add(checkedComp);
+				i=0;
+			}
 		}
 	}
 	private boolean removeHierarchicalWrapperComponent(BasicComponent comp)
