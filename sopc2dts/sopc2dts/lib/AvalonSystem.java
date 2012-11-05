@@ -124,8 +124,14 @@ public class AvalonSystem extends BasicElement {
 						switch(masterIntf.getType())
 						{
 						case STREAMING: {
-							Connection connToMaster = slaveIntf.getConnections().firstElement();
-							Connection connToSlave = masterIntf.getConnections().firstElement();
+							Connection connToSlave = null;
+							Connection connToMaster = null;
+							if(!slaveIntf.getConnections().isEmpty()) {
+								connToMaster = slaveIntf.getConnections().firstElement();
+							}
+							if(!masterIntf.getConnections().isEmpty()) {
+								connToSlave = masterIntf.getConnections().firstElement();								
+							}
 							if((connToMaster!=null)&&(connToSlave!=null))
 							{
 								@SuppressWarnings("unused")
