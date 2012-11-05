@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -17,30 +17,45 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-package sopc2dts.lib.components.altera;
+package sopc2dts.lib.components.base;
+
+import java.util.Vector;
 
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.components.base.SICEthernet;
-import sopc2dts.lib.devicetree.DTHelper;
 
-public class SICLan91c111 extends SICEthernet {
-
-	public SICLan91c111(String cName, String iName, String ver, SopcComponentDescription scd) {
+public class CpuComponent extends BasicComponent {
+	long cpuIndex = 0;
+	public CpuComponent(BasicComponent comp) {
+		super(comp);
+	}
+	public CpuComponent(String cName, String iName, String ver,
+			SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
-
-	@Override
+	public void setCpuIndex(long idx) {
+		cpuIndex = idx;
+	}
+	public long getCpuIndex() {
+		return cpuIndex;
+	}
+	protected Vector<Long> getReg(BasicComponent master)
+	{
+		if(master == null) {
+			Vector<Long> vRegs = new Vector<Long>();
+			vRegs.add(cpuIndex);
+			return vRegs;			
+		} else {
+			return super.getReg(master);
+		}
+	}
 	protected long[] getAddrFromConnection(Connection conn)
 	{
-		//Yes this is REALLY ugly. But it just might work :)
-		long regOffset;
-		try {
-			regOffset = Long.decode(getParamValByName("registerOffset"));
-		} catch(Exception e)
-		{
-			regOffset = 0;
+		if(conn == null) {
+			return new long[]{ cpuIndex };			
+		} else {
+			return super.getAddrFromConnection(conn);
 		}
-		return DTHelper.longArrAdd(conn.getConnValue(), regOffset);
 	}
 }

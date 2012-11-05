@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -129,7 +129,7 @@ public class PtfSystemLoader {
 				comp.addInterface(irqSI);
 			}
 			Connection conn = new Connection(irqMI, irqSI, SystemDataType.INTERRUPT, true);
-			conn.setConnValue(conVal);
+			conn.setConnValue(new long[] { conVal });
 		}		
 	}
 	protected void connectMemoryMapped(Interface intf, String connName)
@@ -154,7 +154,7 @@ public class PtfSystemLoader {
 					if(conVal!=null)
 					{
 						try {
-							conn.setConnValue(Long.decode(conVal));
+							conn.setConnValue(new long[] { Long.decode(conVal) });
 						} catch(NumberFormatException e) { 
 							Logger.logln("Failed to parse baseAddress: '" + conVal + '\'' +
 									" for link between " + master.getInstanceName() +

@@ -28,6 +28,7 @@ import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
+import sopc2dts.lib.devicetree.DTHelper;
 
 public class UBootLibComponent {
 	public static final long KERNEL_REGION_BASE_NOMMU	= 0x00000000l;
@@ -155,10 +156,10 @@ public class UBootLibComponent {
 							Vector<Interface> vIntf = comp.getInterfaces(SystemDataType.MEMORY_MAPPED, false);
 							if(vIntf.size()>(valType[1].charAt(4)-0x30))
 							{
-								val = String.format("0x%08X", vIntf.get(valType[1].charAt(4)-0x30).getInterfaceValue());
+								val = DTHelper.longArrToHexString(vIntf.get(valType[1].charAt(4)-0x30).getInterfaceValue());
 							}
 						} else {
-							val = String.format("0x%08X", comp.getInterfaces().get(ifNum).getInterfaceValue());
+							val = DTHelper.longArrToHexString(comp.getInterfaces().get(ifNum).getInterfaceValue());
 						}
 					} else {
 						val = "Don't know how to generate " + valType[1];
@@ -228,9 +229,11 @@ public class UBootLibComponent {
 		}
 		for(Connection conn : vConns)
 		{
+			long[] addr = DTHelper.longArrAdd(conn.getConnValue(), offset);
+			
 			String val = (type == SystemDataType.MEMORY_MAPPED ? 
-					String.format("0x%08X",(conn.getConnValue() + offset)) :
-						"" + (conn.getConnValue() + offset));
+					DTHelper.longArrToHexString(addr) :
+					DTHelper.longArrToString(addr));
 			if(vConns.size() != 1)
 			{
 				name = AbstractSopcGenerator.definenify(slave.getInstanceName())

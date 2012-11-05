@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,7 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.devicetree.DTHelper;
 
 public class USBHostControllerISP1xxx extends BasicComponent {
 
@@ -52,11 +53,14 @@ public class USBHostControllerISP1xxx extends BasicComponent {
 				}
 				if((conn!=null) && (intf!=null))
 				{
-					long addr = getAddrFromConnection(conn);
-					vRegs.add(addr);
-					vRegs.add(4L);
-					vRegs.add(addr+4);
-					vRegs.add(4L);
+					long[] addr = getAddrFromConnection(conn);
+					long[] size = new long[intf.getSecondaryWidth()];
+					size = DTHelper.long2longArr(4L, size);
+					DTHelper.addAllLongs(vRegs, addr);
+					DTHelper.addAllLongs(vRegs, size);
+					addr = DTHelper.longArrAdd(addr, 4L);
+					DTHelper.addAllLongs(vRegs, addr);
+					DTHelper.addAllLongs(vRegs, size);
 				}
 			}
 		}

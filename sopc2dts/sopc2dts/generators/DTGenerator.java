@@ -31,6 +31,7 @@ import sopc2dts.lib.BoardInfo.PovType;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.MemoryBlock;
+import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
@@ -52,10 +53,12 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		DTNode chosenNode;
 		if(povComponent!=null)
 		{
+			int addrCells = povComponent.getInterfaces(SystemDataType.MEMORY_MAPPED, true).firstElement().getPrimaryWidth();
+			int sizeCells = povComponent.getInterfaces(SystemDataType.MEMORY_MAPPED, true).firstElement().getSecondaryWidth();
 			if(bi.getPovType().equals(PovType.CPU))
 			{
 				DTNode cpuNode = getCpuNodes(bi);
-				DTNode memNode = getMemoryNode(bi, povComponent);
+				DTNode memNode = getMemoryNode(bi, povComponent, addrCells, sizeCells);
 				sopcNode = new DTNode("sopc@0");
 				chosenNode = getChosenNode(bi);
 				DTPropString dtps = new DTPropString("model","ALTR," + sys.getSystemName());
@@ -69,15 +72,15 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				sopcNode = rootNode;
 				chosenNode = null;
 			}
-			DTPropNumber dtpn = new DTPropNumber("#address-cells",1L);
+			DTPropNumber dtpn = new DTPropNumber("#address-cells", (long)addrCells);
 			rootNode.addProperty(dtpn);
-			dtpn = new DTPropNumber("#size-cells",1L);
+			dtpn = new DTPropNumber("#size-cells",(long)sizeCells);
 			rootNode.addProperty(dtpn);
 
 			sopcNode = getSlavesFor(bi, povComponent, sopcNode);
 			sopcNode.addProperty(new DTPropBool("ranges"));
-			sopcNode.addProperty(new DTPropNumber("#address-cells",1L));
-			sopcNode.addProperty(new DTPropNumber("#size-cells",1L));
+			sopcNode.addProperty(new DTPropNumber("#address-cells",(long)addrCells));
+			sopcNode.addProperty(new DTPropNumber("#size-cells",(long)sizeCells));
 			Vector<String> vCompat = new Vector<String>();
 			vCompat.add("ALTR,avalon");
 			vCompat.add("simple-bus");
@@ -114,12 +117,13 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			cpuNode.addProperty(new DTPropNumber("#size-cells",0L));
 			for(BasicComponent comp : sys.getSystemComponents())
 			{
-				if(comp.getScd().getGroup().equalsIgnoreCase("cpu"))
+				if(comp instanceof CpuComponent)
 				{
+					CpuComponent cpu = (CpuComponent)comp;
 					if(bi.getPov()==null) {
 						bi.setPov(comp.getInstanceName());
 					}
-					comp.setAddr(numCPUs);
+					cpu.setCpuIndex(numCPUs);
 					cpuNode.addChild(comp.toDTNode(bi, null));
 					vHandled.add(comp);
 					numCPUs++;
@@ -132,11 +136,12 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		}
 		return cpuNode;
 	}
-	DTNode getMemoryNode(BoardInfo bi, BasicComponent master)
+	DTNode getMemoryNode(BoardInfo bi, BasicComponent master, int addrCells, int sizeCells)
 	{
 		DTNode memNode = new DTNode("memory@0");
 		DTPropHexNumber dtpReg = new DTPropHexNumber("reg");
 		dtpReg.getValues().clear();
+		dtpReg.setNumValuesPerRow(addrCells + sizeCells);
 		memNode.addProperty(new DTPropString("device_type", "memory"));
 		memNode.addProperty(dtpReg);
 		if(master!=null)
@@ -155,8 +160,8 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 								BasicComponent comp = mem.getModule();
 								if((comp!=null)&&(!vHandled.contains(comp)))
 								{
-									dtpReg.addValue(mem.getBase());
-									dtpReg.addValue(mem.getSize());
+									dtpReg.addValues(mem.getBase());
+									dtpReg.addValues(mem.getSize());
 									vHandled.add(comp);
 								}		
 							}
@@ -187,8 +192,8 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 								{
 									if(comp.getScd().getGroup().equalsIgnoreCase("memory"))
 									{
-										dtpReg.addValue(mem.getBase());
-										dtpReg.addValue(mem.getSize());
+										dtpReg.addValues(mem.getBase());
+										dtpReg.addValues(mem.getSize());
 										vMemoryMapped.add(mem.getModuleName());
 										vHandled.add(comp);
 									}

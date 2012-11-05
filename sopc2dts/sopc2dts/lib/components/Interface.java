@@ -20,10 +20,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.components;
 import java.util.Vector;
 
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.BasicElement;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.components.base.SICBridge;
+import sopc2dts.lib.devicetree.DTHelper;
 
 /** @brief An interface of a BasicComponent
  * 
@@ -61,22 +64,60 @@ public class Interface extends BasicElement {
 	 * 
 	 * 
 	 */
-	long interfaceValue;
+	long interfaceValue[];
+
+	protected int primaryWidth = 1;
+	protected int secondaryWidth = 1;
 	
 	public Interface(String iName, SystemDataType dt, boolean master, BasicComponent owner) {
+		this(iName,dt,master,owner,null,null);
+	}
+	public Interface(String iName, SystemDataType dt, boolean master, BasicComponent owner, Integer priWidth, Integer secWidth) {
 		this.setName(iName);
 		this.type = dt;
 		this.owner = owner;
 		this.isMaster = master;
+		//Set some "sane" defaults.
+		if(priWidth!=null) { /* Primary width == 1 by default for all types... */
+			primaryWidth = priWidth;
+		}
+		if(secWidth!=null) {
+			secondaryWidth = secWidth;
+		} else {
+			switch(type) {
+			case CLOCK: {
+				if(isMaster) {
+					secondaryWidth = 1;
+				} else {
+					secondaryWidth = 0;
+				}
+			} break;
+			case CONDUIT: 	/* fallthrough */
+			case CUSTOM_INSTRUCTION: 	/* fallthrough */
+			case INTERRUPT: /* fallthrough */
+			case RESET: 	/* fallthrough */
+			case STREAMING: /* fallthrough */
+			{
+				secondaryWidth = 0;
+			} break;
+			case MEMORY_MAPPED: {
+				secondaryWidth = 1;
+			}
+			}
+		}
 	}
 
-	public long getInterfaceValue()
+	public long[] getInterfaceValue()
 	{
 		return interfaceValue;
 	}
-	public void setInterfaceValue(long size)
+	public void setInterfaceValue(long[] val)
 	{
-		interfaceValue = size;
+		if(getSecondaryWidth()==val.length) {
+			interfaceValue = val;			
+		} else {
+			Logger.logln("Passed incorrect connValue parameter!!! Width was " + val.length + " expexted: " + getSecondaryWidth(), LogLevel.ERROR);
+		}
 	}
 	public boolean isMemory()
 	{
@@ -141,7 +182,7 @@ public class Interface extends BasicElement {
 					for(MemoryBlock mb : vBridgedMap)
 					{
 						//Offset with bridges base.
-						mb.base += conn.getConnValue();
+						mb.base = DTHelper.longArrAdd(mb.base, conn.getConnValue());
 					}
 					vMemoryMap.addAll(vBridgedMap);
 				} else {
@@ -175,5 +216,21 @@ public class Interface extends BasicElement {
 	public boolean isMaster()
 	{
 		return isMaster;
+	}
+	public int getPrimaryWidth() {
+		if((!isMaster) && (vConnections.size()>0)) {
+			if(vConnections.firstElement()!=null) {
+				return vConnections.firstElement().getMasterInterface().primaryWidth;
+			}
+		}
+		return primaryWidth;
+	}
+	public int getSecondaryWidth() {
+		if((!isMaster) && (vConnections.size()>0)) {
+			if(vConnections.firstElement()!=null) {
+				return vConnections.firstElement().getMasterInterface().secondaryWidth;
+			}
+		}
+		return secondaryWidth;
 	}
 }

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.devicetree.DTHelper;
 
 
 public class SopcInfoInterface extends SopcInfoElementWithParams {
@@ -113,8 +114,9 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 		return valid;
 	}
 
-	public long getAddressableSize()
+	public long[] getAddressableSize()
 	{
+		long[] res;
 		long span = 1;
 		int stepSize = 1;
 		String assVal = getParamValue("addressSpan");
@@ -136,7 +138,21 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 				}
 			}			
 		}
-		return span * stepSize;
+		switch(bi.getSecondaryWidth()) {
+		case 1: {
+			res = new long[1];
+			res[0] = span*stepSize;
+		} break;
+		case 2: {
+			res = new long[2];
+			DTHelper.long2longArr(span * stepSize, res);
+		} break;
+		default: {
+			Logger.logln("Unsupported cell-count: " + bi.getSecondaryWidth(), LogLevel.ERROR);
+			res = new long[0];
+		}
+		}
+		return res;
 	}
 	@Override
 	public void endElement(String uri, String localName, String qName)
@@ -148,7 +164,7 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 				bi.setInterfaceValue(getAddressableSize());
 			} else if(bi.isClockMaster())
 			{
-				bi.setInterfaceValue(Integer.decode(getParamValue("clockRate")));
+				bi.setInterfaceValue(DTHelper.parseSize4Intf(getParamValue("clockRate"), bi));
 			}
 		}
 		super.endElement(uri, localName, qName);

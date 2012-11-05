@@ -30,6 +30,7 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
+import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
@@ -51,12 +52,11 @@ public class SICBridge extends BasicComponent {
 			{
 				for(Connection childConn : master.getConnections())
 				{
-					long size = 0;
 					Interface childIf=childConn.getSlaveInterface();
-					if(childIf!=null) size = childIf.getInterfaceValue();
-					vRanges.add(childConn.getConnValue());
-					vRanges.add(childConn.getConnValue() + conn.getConnValue());
-					vRanges.add(size);
+					long[] addr = DTHelper.longArrAdd(childConn.getConnValue(), conn.getConnValue());
+					DTHelper.addAllLongs(vRanges, childConn.getConnValue());
+					DTHelper.addAllLongs(vRanges, addr);
+					DTHelper.addAllLongs(vRanges, childIf.getInterfaceValue());
 				}
 			}
 		}
@@ -68,13 +68,15 @@ public class SICBridge extends BasicComponent {
 	{
 		DTNode dtn = super.toDTNode(bi, conn);
 		Vector<Long> vRanges = getDtRanges(conn);
-		dtn.addProperty(new DTPropNumber("#address-cells", 1L));
-		dtn.addProperty(new DTPropNumber("#size-cells", 1L));
+		dtn.addProperty(new DTPropNumber("#address-cells", (long) getAddressCellCount(true)));
+		dtn.addProperty(new DTPropNumber("#size-cells", (long) getSizeCellCount(true)));
 		if(vRanges.isEmpty())
 		{
 			dtn.addProperty(new DTPropBool("ranges"));
 		} else {
-			dtn.addProperty(new DTPropHexNumber("ranges",vRanges));			
+			DTPropHexNumber p = new DTPropHexNumber("ranges",vRanges);
+			p.setNumValuesPerRow(getAddressCellCount(true) + getAddressCellCount(false) + getSizeCellCount(true));
+			dtn.addProperty(p);			
 		}
 		return dtn;
 	}
@@ -176,6 +178,23 @@ public class SICBridge extends BasicComponent {
 		}
 		return false;
 	}
+
+	private int getAddressCellCount(boolean masterSide) {
+		for(Interface intf : vInterfaces) {
+			if(intf.isMemory() && intf.isMaster() == masterSide) {
+				return intf.getPrimaryWidth();
+			}
+		}
+		return 1;
+	}
+	private int getSizeCellCount(boolean masterSide) {
+		for(Interface intf : vInterfaces) {
+			if(intf.isMemory() && intf.isMaster() == masterSide) {
+				return intf.getSecondaryWidth();
+			}
+		}
+		return 1;
+	}
 	@Override
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
@@ -233,7 +252,7 @@ public class SICBridge extends BasicComponent {
 			{
 				for(Connection conn : slave.getConnections())
 				{
-					if(conn.getConnValue()!=0)
+					if(!DTHelper.longArrCompare(conn.getConnValue(), 0L))
 					{
 						return true;
 					}

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -20,25 +20,25 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.components;
 
 public class MemoryBlock {
-	long base;
-	long size;
+	long base[];
+	long size[];
 	BasicComponent owner;
-	public MemoryBlock(BasicComponent owner, long base, long size)
+	public MemoryBlock(BasicComponent owner, long base[], long size[])
 	{
 		this.base = base;
 		this.size = size;
 		this.owner = owner;
 	}
-	public long getBase() {
+	public long[] getBase() {
 		return base;
 	}
-	public void setStart(int base) {
+	public void setStart(long[] base) {
 		this.base = base;
 	}
-	public long getSize() {
+	public long[] getSize() {
 		return size;
 	}
-	public void setSize(int size) {
+	public void setSize(long[] size) {
 		this.size = size;
 	}
 	public BasicComponent getModule() {

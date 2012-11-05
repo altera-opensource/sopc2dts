@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -69,15 +69,16 @@ public class PHInterface extends PtfHandler {
 		}
 		return parent;
 	}
-	protected Long getAdressSpan()
+	protected long[] getAdressSpan()
 	{
+		long[] res = new long[] { 0L };
 		//For some reason this assignment is mostly not present :S
 		String as = mapAssignments.get("Address_Span");
 		if(as!=null)
 		{
 			try {
-				long span = Long.decode(as);
-				return span;
+				res[0] = Long.decode(as);
+				return res;
 			} catch(NumberFormatException e) {
 				Logger.logln("Failed to parse " + as,LogLevel.ERROR);
 			}
@@ -91,7 +92,8 @@ public class PHInterface extends PtfHandler {
 				if(dw!=null)
 				{
 					long idw = Long.decode(dw);
-					return (1l<<iaw)*(idw/8l);
+					res[0] = (1l<<iaw)*(idw/8l);
+					return res;
 				}
 			}
 		} catch(Exception e)
@@ -99,6 +101,6 @@ public class PHInterface extends PtfHandler {
 			//Exceptions are OK. just fail.
 			Logger.logln("Failed to get adress spane for " + name, LogLevel.WARNING);
 		}
-		return 0l;
+		return res;
 	}
 }

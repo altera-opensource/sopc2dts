@@ -31,6 +31,7 @@ import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.base.SICUnknown;
+import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTProperty;
 import sopc2dts.lib.devicetree.DTPropBool;
@@ -44,7 +45,6 @@ public class BasicComponent extends BasicElement {
 	private String instanceName;
 	private String className;
 	protected String version;
-	private int addr = 0;
 	protected Vector<Interface> vInterfaces = new Vector<Interface>();
 	protected SopcComponentDescription scd;
 	
@@ -86,8 +86,8 @@ public class BasicComponent extends BasicElement {
 				}
 				if((conn!=null) && (intf!=null))
 				{
-					vRegs.add(getAddrFromConnection(conn));
-					vRegs.add(intf.getInterfaceValue());
+					DTHelper.addAllLongs(vRegs, getAddrFromConnection(conn));
+					DTHelper.addAllLongs(vRegs, intf.getInterfaceValue());
 				}
 			}
 		}
@@ -111,7 +111,7 @@ public class BasicComponent extends BasicElement {
 					}
 					if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
 					{
-						vIrqs.add(intf.getConnections().get(0).getConnValue());
+						DTHelper.addAllLongs(vIrqs, intf.getConnections().get(0).getConnValue());
 					}
 				}
 			}
@@ -120,7 +120,7 @@ public class BasicComponent extends BasicElement {
 	}
 	public DTNode toDTNode(BoardInfo bi,Connection conn)
 	{
-		DTNode node = new DTNode(getScd().getGroup() + "@0x" + Long.toHexString(getAddrFromConnection(conn)), instanceName);
+		DTNode node = new DTNode(getScd().getGroup() + "@0x" + getAddrFromConnectionStr(conn), instanceName);
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
 			node.addProperty(new DTPropString("device_type",getScd().getGroup()));
@@ -128,16 +128,16 @@ public class BasicComponent extends BasicElement {
 		node.addProperty(new DTPropString("compatible", getScd().getCompatibles(version)));
 		
 		//Registers
-		if (getScd().getGroup().equalsIgnoreCase("cpu"))
+		Vector<Long> vRegs = getReg((conn != null ? conn.getMasterModule() : null));
+		if(vRegs.size()>0)
 		{
-			node.addProperty(new DTPropHexNumber("reg",new Long(getAddr())));
-		} else if(conn!=null)
-		{
-			Vector<Long> vRegs = getReg(conn.getMasterModule());
-			if(vRegs.size()>0)
-			{
-				node.addProperty(new DTPropHexNumber("reg",vRegs));
+			DTPropHexNumber p = new DTPropHexNumber("reg",vRegs);
+			int width = 2;
+			if(conn!=null) {
+				width = conn.getSlaveInterface().getPrimaryWidth() + conn.getSlaveInterface().getSecondaryWidth();
 			}
+			p.setNumValuesPerRow(width);
+			node.addProperty(p);
 		}
 
 		//Interrupts
@@ -280,13 +280,6 @@ public class BasicComponent extends BasicElement {
 	public void removeInterface(Interface intf) {
 		vInterfaces.remove(intf);
 	}
-	public void setAddr(int addr) {
-		this.addr = addr;
-	}
-	public int getAddr() {
-		return addr;
-	}
-
 	public Vector<Connection> getConnections(SystemDataType ofType, Boolean isMaster)
 	{
 		return getConnections(ofType, isMaster, null);
@@ -309,9 +302,22 @@ public class BasicComponent extends BasicElement {
 		}
 		return conns;
 	}
-	protected long getAddrFromConnection(Connection conn)
+	protected String getAddrFromConnectionStr(Connection conn)
 	{
-		return (conn==null ? getAddr() : conn.getConnValue());
+		long[] tmp = getAddrFromConnection(conn);
+		String res = "";
+		for(int i=0; i<tmp.length; i++) {
+			if(i==0) {
+				res = Long.toHexString(tmp[0]);
+			} else {
+				res += String.format("%08X", tmp[i]);
+			}
+		}
+		return res;
+	}
+	protected long[] getAddrFromConnection(Connection conn)
+	{
+		return conn.getConnValue();
 	}
 
 	public long getClockRate()
@@ -322,7 +328,7 @@ public class BasicComponent extends BasicElement {
 			if(intf.isClockSlave())
 			{
 				try {
-					rate = intf.getConnections().firstElement().getConnValue();
+					rate = DTHelper.longArrToLong(intf.getConnections().firstElement().getConnValue());
 				} catch(ArrayIndexOutOfBoundsException e) {
 					Logger.logException(e);
 				} catch(NoSuchElementException e) {

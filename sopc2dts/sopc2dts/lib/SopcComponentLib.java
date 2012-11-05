@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,7 @@ import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.TSEMonolithic;
+import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.components.base.GpioController;
 import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICBridge;
@@ -67,10 +68,12 @@ public class SopcComponentLib implements ContentHandler {
 	{
 		loadComponentLibs();
 	}
+	
 	public static SopcComponentLib getInstance()
 	{
 		return me;
 	}
+	
 	int loadComponentLib(InputSource in)
 	{
 		int oldSize = vLibComponents.size();
@@ -85,6 +88,7 @@ public class SopcComponentLib implements ContentHandler {
 		}
 		return (vLibComponents.size() - oldSize);
 	}
+	
 	public void loadComponentLibs()
 	{
 		try {
@@ -172,6 +176,8 @@ public class SopcComponentLib implements ContentHandler {
 			{
 				if (scd.getGroup().equalsIgnoreCase("bridge")) {
 					return new SICBridge(className, instanceName, version, getScdByClassName(className));
+				} else if (scd.getGroup().equalsIgnoreCase("cpu")) {
+					return new CpuComponent(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("flash")) {
 					return new SICFlash(className, instanceName, version, getScdByClassName(className));
 				} else if (scd.getGroup().equalsIgnoreCase("i2c")) {

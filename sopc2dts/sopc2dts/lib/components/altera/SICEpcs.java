@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,7 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.base.SICFlash;
+import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropString;
@@ -47,17 +48,18 @@ public class SICEpcs extends SICFlash {
 		node.addChild(m25p80);
 		return node;
 	}
+	
 	@Override
-	protected long getAddrFromConnection(Connection conn)
+	protected long[] getAddrFromConnection(Connection conn)
 	{
 		//Yes this is REALLY ugly. But it just might work :)
-		int regOffset;
+		long regOffset;
 		try {
-			regOffset = Integer.decode(getParamValByName("embeddedsw.CMacro.REGISTER_OFFSET"));
+			regOffset = Long.decode(getParamValByName("embeddedsw.CMacro.REGISTER_OFFSET"));
 		} catch(Exception e)
 		{
 			regOffset = 0;
 		}
-		return (conn==null ? getAddr() : conn.getConnValue()) + regOffset;
+		return DTHelper.longArrAdd(conn.getConnValue(), regOffset);
 	}
 }

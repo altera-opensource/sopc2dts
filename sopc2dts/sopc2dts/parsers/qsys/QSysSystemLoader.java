@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -45,6 +45,7 @@ import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICUnknown;
+import sopc2dts.lib.devicetree.DTHelper;
 
 public class QSysSystemLoader implements ContentHandler {
 	private enum LoadType { SYSTEM, SUBSYSTEM, SUBSYSTEM_RELOAD };
@@ -310,12 +311,12 @@ public class QSysSystemLoader implements ContentHandler {
 				currElement = conn;
 				if(dt == SystemDataType.CLOCK)
 				{
-					if(mIntf.getInterfaceValue()==0)
+					if(DTHelper.longArrCompare(mIntf.getInterfaceValue(), 0L))
 					{
 						String clockRate = master.getParamValByName("clockFrequency");
 						if(clockRate!=null)
 						{
-							mIntf.setInterfaceValue(Integer.decode(clockRate));
+							mIntf.setInterfaceValue(DTHelper.parseAddress4Intf(clockRate, mIntf));
 						}
 					}
 					conn.setConnValue(mIntf.getInterfaceValue());
@@ -346,7 +347,7 @@ public class QSysSystemLoader implements ContentHandler {
 			Connection bc = (Connection)currElement;
 			if(bc.getType() == SystemDataType.MEMORY_MAPPED)
 			{
-				bc.setConnValue(Integer.decode(bc.getParamValByName("baseAddress")));
+				bc.setConnValue(DTHelper.parseAddress4Conn(bc.getParamValByName("baseAddress"),bc));
 			}
 		} else if(localName.equalsIgnoreCase("module"))
 		{

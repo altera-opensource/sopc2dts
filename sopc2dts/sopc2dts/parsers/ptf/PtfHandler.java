@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.devicetree.DTHelper;
 
 class PtfHandler {
 	HashMap<String, String> mapAssignments = new HashMap<String, String>();
@@ -109,7 +110,7 @@ class PtfHandler {
 			{
 				try {
 					Interface intf = new Interface(tagName, SystemDataType.CLOCK, true, null);
-					intf.setInterfaceValue(Long.decode(sFreq));
+					intf.setInterfaceValue(DTHelper.parseSize4Intf(sFreq, intf));
 					parent.addChildObject(intf);
 				} catch(NumberFormatException e) {
 					Logger.logln("Failed to get frequency \"" + sFreq + "\"" +

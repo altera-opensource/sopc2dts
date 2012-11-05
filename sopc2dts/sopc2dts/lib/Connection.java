@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib;
 
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
@@ -28,7 +30,7 @@ public class Connection extends BasicElement {
 	protected Interface masterInterface;
 	protected Interface slaveInterface;	
 	protected SystemDataType type = SystemDataType.CONDUIT;
-	protected long connValue;
+	protected long connValue[];
 	
 	public Connection(Interface master, Interface slave, SystemDataType t)
 	{
@@ -81,13 +83,17 @@ public class Connection extends BasicElement {
 		slaveInterface = intf;
 		slaveInterface.getConnections().add(this);
 	}
-	public long getConnValue()
+	public long[] getConnValue()
 	{
 		return connValue;
 	}
-	public void setConnValue(long val)
+	public void setConnValue(long[] val)
 	{
-		connValue = val;
+		if(getMasterInterface().getPrimaryWidth()==val.length) {
+			connValue = val;			
+		} else {
+			Logger.logln("Passed incorrect connValue parameter!!! Width was " + val.length + " expexted: " + masterInterface.getPrimaryWidth(), LogLevel.ERROR);
+		}
 	}
 
 	public Interface getMasterInterface() {

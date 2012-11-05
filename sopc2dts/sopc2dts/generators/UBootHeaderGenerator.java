@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,7 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICBridge;
+import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.uboot.UBootComponentLib;
 
 public class UBootHeaderGenerator extends AbstractSopcGenerator {
@@ -82,7 +83,7 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 				{
 					if(intf.isMemoryMaster())
 					{
-						res += getInfoForSlavesOf(intf, offset + conn.getConnValue(), irqMaster);
+						res += getInfoForSlavesOf(intf, offset + DTHelper.longArrToLong(conn.getConnValue()), irqMaster);
 					}
 				}
 			}

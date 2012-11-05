@@ -50,6 +50,9 @@ public class DTPropNumber extends DTProperty{
 	public void addValue(Long val) {
 		vValues.add(val);
 	}
+	public void addValues(long[] val) {
+		DTHelper.addAllLongs(vValues, val);
+	}
 	public Vector<Long> getValues() {
 		return vValues;
 	}
