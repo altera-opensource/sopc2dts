@@ -24,7 +24,7 @@ import sopc2dts.Logger.LogLevel;
 
 public class Bin2IHex {
 	public enum ByteOrder { LE, BE16, BE32, BE64 };
-	public enum HexTypes { I8Hex, I16Hex, I32Hex };
+	public enum HexTypes { I8Hex, I16Hex, I32Hex, I64Hex };
 	public enum AddressingMode { AddrMode8, AddrMode16, AddrMode32, AddrMode64 };
 	public static String toHex(byte[] in)
 	{
@@ -47,25 +47,25 @@ public class Bin2IHex {
 		String res = "";
 		int pos = 0;
 		//EOF record
-		switch(order)
+		switch(type)
 		{
-		case LE: {
+		case I8Hex: {
 			//perfect
 		} break;
-		case BE16: {
+		case I16Hex: {
 			if((in.length%2) !=0 )
 			{
-				Logger.logln("Chosen BE16 ordering but length is not 16bit aligned. Padding with zeros", LogLevel.WARNING);
+				Logger.logln("Chosen IHex16 but length is not 16bit aligned. Padding with zeros", LogLevel.WARNING);
 				byte tmp[] = new byte[in.length+1];
 				System.arraycopy(in, 0, tmp, 0, in.length);
 				tmp[in.length] = 0;
 				in = tmp;
 			}
 		} break;
-		case BE32: {
+		case I32Hex: {
 			if((in.length%4) !=0 )
 			{
-				Logger.logln("Chosen BE32 ordering but length is not 32bit aligned. Padding with zeros", LogLevel.WARNING);
+				Logger.logln("Chosen IHex32 but length is not 32bit aligned. Padding with zeros", LogLevel.WARNING);
 				byte tmp[] = new byte[(in.length+3)&0xFFFFFFFC];
 				System.arraycopy(in, 0, tmp, 0, in.length);
 				for(int i=in.length; i<tmp.length; i++)
@@ -75,10 +75,10 @@ public class Bin2IHex {
 				in = tmp;
 			}
 		} break;
-		case BE64: {
+		case I64Hex: {
 			if((in.length%8) !=0 )
 			{
-				Logger.logln("Chosen BE64 ordering but length is not 64bit aligned. Padding with zeros", LogLevel.WARNING);
+				Logger.logln("Chosen I64Hex but length is not 64bit aligned. Padding with zeros", LogLevel.WARNING);
 				byte tmp[] = new byte[(in.length+7)&0xFFFFFFF8];
 				System.arraycopy(in, 0, tmp, 0, in.length);
 				for(int i=in.length; i<tmp.length; i++)
