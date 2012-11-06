@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -59,6 +60,7 @@ public class OutputPanel extends JPanel implements ActionListener {
 		genType = outputType;
 		txtDts.setEditable(false);
 		txtDts.setTabSize(4);
+		txtDts.setFont(Font.decode("Monospaced"));
 		JPanel pnlTop = new JPanel();
 		JPanel pnlLeft = new JPanel();
 		pnlLeft.setLayout(new BoxLayout(pnlLeft, BoxLayout.Y_AXIS));
@@ -94,7 +96,7 @@ public class OutputPanel extends JPanel implements ActionListener {
 				{
 					txtDts.setText(gen.getTextOutput((bi == null ? new BoardInfo() : bi)));
 				} else {
-					txtDts.setText("TBD");
+					txtDts.setText(bin2HexString(gen.getBinaryOutput((bi == null ? new BoardInfo() : bi))));
 				}
 			} else {
 				txtDts.setText("");
@@ -135,5 +137,36 @@ public class OutputPanel extends JPanel implements ActionListener {
 			genType = GeneratorFactory.getGeneratorTypeByName(jrb.getText());
 			updateDts();
 		}
+	}
+	public static String bin2HexString(byte[] data) {
+		return bin2HexString(data, 16);
+	}
+	public static String bin2HexString(byte[] data, int bytesPerRow) {
+		String res = "";
+		String asciiRes = "";
+		int remainder;
+		for(int i=0; i<data.length; i++) {
+			if((i%bytesPerRow) == 0) {
+				res += String.format("%04X |", i);
+				asciiRes = "";
+			}
+			res += String.format(" %02X",data[i]);
+			if(Character.isLetterOrDigit((char)(data[i]))) {
+				asciiRes += (char)(data[i]);
+			} else {
+				asciiRes += '.';
+			}
+			if((i%bytesPerRow) == (bytesPerRow-1)) {
+				res += " | " + asciiRes + "\n";
+			}
+		}
+		remainder = bytesPerRow - (data.length%bytesPerRow);
+		if(remainder > 0) {
+			for (int i=0; i<remainder; i++) {
+				res += "   ";
+			}
+			res += " | " + asciiRes + "\n";
+		}
+		return res;
 	}
 }
