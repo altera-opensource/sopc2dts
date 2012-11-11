@@ -39,9 +39,10 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 
 	public SopcInfoInterface(ContentHandler p, XMLReader xr, String iName,
 			BasicComponent owner, Attributes atts) {
-		super(p, xr, owner);
+		super(p, xr, null);
 		setKind(atts.getValue("kind"));
 		bi = new Interface(iName, type, isMaster, owner);
+		basicElement = bi;
 		owner.getInterfaces().add(bi);
 	}
 	boolean setKind(String k)
