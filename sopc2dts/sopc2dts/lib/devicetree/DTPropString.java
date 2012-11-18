@@ -47,7 +47,14 @@ public class DTPropString extends DTProperty {
 		super(name, label, comment, DTPropType.STRING);
 		vValues = values;
 	}
-
+	public void addStrings(Vector<String> vals) {
+		vValues.addAll(vals);
+	}
+	public void addStrings(String[] vals) {
+		for (String val : vals) {
+			vValues.add(val);
+		}
+	}
 	@Override
 	public String toString(int indent) {
 		String value = "";

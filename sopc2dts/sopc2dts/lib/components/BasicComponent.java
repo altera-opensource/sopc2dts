@@ -21,7 +21,6 @@ package sopc2dts.lib.components;
 
 import java.util.NoSuchElementException;
 import java.util.Vector;
-
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
@@ -41,6 +40,10 @@ import sopc2dts.lib.devicetree.DTPropPHandle;
 import sopc2dts.lib.devicetree.DTPropString;
 
 public class BasicComponent extends BasicElement {
+	private static final String EMBSW_DTS_PARAMS = "embeddedsw.dts.params.";
+	private static final String EMBSW_DTS_COMPAT = "embeddedsw.dts.compatible";
+	private static final String EMBSW_CMACRO = "embeddedsw.CMacro";
+	
 	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;
 	private String className;
@@ -125,8 +128,8 @@ public class BasicComponent extends BasicElement {
 		{
 			node.addProperty(new DTPropString("device_type",getScd().getGroup()));
 		}
-		node.addProperty(new DTPropString("compatible", getScd().getCompatibles(version)));
-		
+		DTPropString compPropString = new DTPropString("compatible", getScd().getCompatibles(version));
+		node.addProperty(compPropString);
 		//Registers
 		Vector<Long> vRegs = getReg((conn != null ? conn.getMasterModule() : null));
 		if(vRegs.size()>0)
@@ -178,14 +181,24 @@ public class BasicComponent extends BasicElement {
 				}
             }
 		}		
-		if((bi.getDumpParameters() != parameter_action.NONE)&&(vParamTodo.size()>0))
+		if(vParamTodo.size()>0)
 		{
 			for(Parameter bp : vParamTodo)
 			{
 				String assName = bp.getName();
-				if(assName.startsWith("embeddedsw.CMacro.")) {
-					assName = assName.substring(18);
+				if (assName.equalsIgnoreCase(EMBSW_DTS_COMPAT)) {
+					String[] vals = bp.getValue().split("\\s+");
+					compPropString.addStrings(vals);
+					assName = null;
+				} else if (assName.startsWith(EMBSW_DTS_PARAMS)) {
+					assName = assName.substring(EMBSW_DTS_PARAMS.length());
+					node.addProperty(bp.toDTProperty(assName));
+					assName = null;
+				} else if(assName.startsWith(EMBSW_CMACRO) && (bi.getDumpParameters() != parameter_action.NONE)) {
+					assName = assName.substring(EMBSW_CMACRO.length());
 				} else if(bi.getDumpParameters() == parameter_action.CMACRCO) {
+					assName = null;
+				} else {
 					assName = null;
 				}
 				if(assName!=null)
