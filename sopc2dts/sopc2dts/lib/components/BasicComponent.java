@@ -154,7 +154,8 @@ public class BasicComponent extends BasicElement {
 		if(isInterruptMaster())
 		{
 			node.addProperty(new DTPropBool("interrupt-controller"));
-			node.addProperty(new DTPropNumber("#interrupt-cells", 1L));
+			node.addProperty(new DTPropNumber("#interrupt-cells", 
+					new Long(getInterfaces(SystemDataType.INTERRUPT, true).firstElement().getPrimaryWidth())));
 		}
 
 		Vector<Parameter> vParamTodo = new Vector<Parameter>(vParameters);
@@ -350,6 +351,12 @@ public class BasicComponent extends BasicElement {
 			}
 		}
 		return rate;
+	}
+	public Integer getPreferredPriWidthForIf(String iName, SystemDataType dt, boolean master) {
+		return null;
+	}
+	public Integer getPreferredSecWidthForIf(String iName, SystemDataType dt, boolean master) {
+		return null;
 	}
 	/** @brief Whether or not this BasicComponent has a Memory master interface.
 	 * 

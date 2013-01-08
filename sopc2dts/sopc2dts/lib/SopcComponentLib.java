@@ -46,6 +46,7 @@ import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.TSEMonolithic;
+import sopc2dts.lib.components.arm.CortexA9GIC;
 import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.components.base.GpioController;
 import sopc2dts.lib.components.base.SCDSelfDescribing;
@@ -170,6 +171,8 @@ public class SopcComponentLib implements ContentHandler {
 			return new USBHostControllerISP1xxx(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_generic_tristate_controller")) {
 			return new GenericTristateController(className, instanceName, version);
+		} else if (className.equalsIgnoreCase("arm_gic")) {
+			return new CortexA9GIC(instanceName, version);
 		} else {
 			return castToGroupSpecificObject(
 					new BasicComponent(className, instanceName, version, 
@@ -214,11 +217,12 @@ public class SopcComponentLib implements ContentHandler {
 			{
 				Logger.logln("Component " + comp.getInstanceName() + " of class "
 						+ comp.getClassName() + " is self-describing "
-						+ "but has a lib-version as well. Using self-described version",
+						+ "but has a lib-version as well. Not using self-described version",
 						LogLevel.INFO);
+			} else {
+				comp.setScd(new SCDSelfDescribing(comp));
+				comp = castToGroupSpecificObject(comp);
 			}
-			comp.setScd(new SCDSelfDescribing(comp));
-			comp = castToGroupSpecificObject(comp);
 		} else {
 			if(comp.getScd() instanceof SICUnknown)
 			{

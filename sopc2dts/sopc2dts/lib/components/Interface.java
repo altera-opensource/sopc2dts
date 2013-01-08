@@ -70,7 +70,8 @@ public class Interface extends BasicElement {
 	protected int secondaryWidth = 1;
 	
 	public Interface(String iName, SystemDataType dt, boolean master, BasicComponent owner) {
-		this(iName,dt,master,owner,null,null);
+		this(iName,dt,master,owner,owner.getPreferredPriWidthForIf(iName,dt,master),
+				owner.getPreferredSecWidthForIf(iName,dt,master));
 	}
 	public Interface(String iName, SystemDataType dt, boolean master, BasicComponent owner, Integer priWidth, Integer secWidth) {
 		this.setName(iName);

@@ -52,7 +52,14 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 		currTag = localName;
 		super.startElement(uri, localName, qName, atts);
 	}
-
+	private long getIrqNumber() {
+		long nr = Long.decode(getParamValue("irqNumber"));
+		String offset = masterInterface.getParamValByName("embeddedsw.dts.irq.rx_offset");
+		if (offset != null) {
+			nr += Long.decode(offset);
+		} 
+		return nr;
+	}
 	public void endElement(String uri, String localName, String qName)
 		throws SAXException {
 		// TODO Auto-generated method stub
@@ -83,7 +90,9 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 				{
 					bc = new Connection(masterInterface, slaveInterface, 
 							SystemDataType.INTERRUPT);
-					bc.setConnValue(new long[] { Long.decode(getParamValue("irqNumber")) } );
+					int width = masterInterface.getPrimaryWidth();
+					long[] connVal = DTHelper.long2longArr(getIrqNumber(), new long[width]);
+					bc.setConnValue(connVal);
 				} else if(kind.equalsIgnoreCase("avalon_streaming"))
 				{
 					bc = new Connection(masterInterface, slaveInterface, 
