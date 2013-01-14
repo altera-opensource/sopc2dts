@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -65,21 +65,23 @@ public class DTHelper {
 		}
 		return res;
 	}
-	public static boolean longArrCompare(long[] la1, long val) {
+	public static int longArrCompare(long[] la1, long val) {
 		long[] la2 = new long[la1.length];
 		la2 = long2longArr(val, la2);
 		return longArrCompare(la1, la2);
 	}
-	public static boolean longArrCompare(long[] la1, long[] la2) {
+	public static int longArrCompare(long[] la1, long[] la2) {
 		if(la1.length != la2.length) {
-			return false;
+			return la1.length - la2.length;
 		}
 		for(int i=0; i<la1.length; i++) {
-			if(la1[i] != la2[i]) {
-				return false;
+			if(la1[i] < la2[i]) {
+				return -1;
+			} else if(la1[i] > la2[i]) {
+				return 1;
 			}
 		}
-		return true;
+		return 0;
 	}
 	public static String longArrToHexString(long[] val) {
 		String res = "0x";

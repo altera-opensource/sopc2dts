@@ -311,7 +311,7 @@ public class QSysSystemLoader implements ContentHandler {
 				currElement = conn;
 				if(dt == SystemDataType.CLOCK)
 				{
-					if(DTHelper.longArrCompare(mIntf.getInterfaceValue(), 0L))
+					if(DTHelper.longArrCompare(mIntf.getInterfaceValue(), 0L)==0)
 					{
 						String clockRate = master.getParamValByName("clockFrequency");
 						if(clockRate!=null)

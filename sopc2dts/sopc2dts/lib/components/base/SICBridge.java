@@ -254,7 +254,7 @@ public class SICBridge extends BasicComponent {
 			{
 				for(Connection conn : slave.getConnections())
 				{
-					if(!DTHelper.longArrCompare(conn.getConnValue(), 0L))
+					if(DTHelper.longArrCompare(conn.getConnValue(), 0L)!=0)
 					{
 						return true;
 					}
