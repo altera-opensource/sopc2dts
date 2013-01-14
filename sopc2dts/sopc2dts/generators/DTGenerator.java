@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.generators;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 import sopc2dts.Logger;
@@ -26,12 +28,14 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.BoardInfo.SortType;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.BoardInfo.PovType;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.MemoryBlock;
 import sopc2dts.lib.components.base.CpuComponent;
+import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
@@ -216,6 +220,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		if(masterComp!=null)
 		{
 			Vector<Connection> vSlaveConn = masterComp.getConnections(SystemDataType.MEMORY_MAPPED, true);
+			sortSlaves(vSlaveConn, bi.getSortType());
 			for(Connection conn : vSlaveConn)
 			{
 				BasicComponent slave = conn.getSlaveModule();						
@@ -237,5 +242,27 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			}
 		}
 		return masterNode;
+	}
+	protected static void sortSlaves(Vector<Connection> vConn, final SortType sort) {
+		if(!sort.equals(SortType.NONE)) {
+			Collections.sort(vConn, new Comparator<Connection>() {
+
+				public int compare(Connection c1, Connection c2) {
+					switch(sort) {
+					case ADDRESS:
+						return DTHelper.longArrCompare(c1.getConnValue(), c2.getConnValue());
+					case NAME:
+						int cmp = c1.getSlaveModule().getScd().getGroup().compareToIgnoreCase(c2.getSlaveModule().getScd().getGroup());
+						if(cmp!=0) {
+							return cmp;
+						}
+						/* Fallthrough and decide by label */
+					case LABEL:
+						return c1.getSlaveModule().getInstanceName().compareToIgnoreCase(c2.getSlaveModule().getInstanceName());
+					default: return 0;
+					}
+				}
+			});
+		}
 	}
 }

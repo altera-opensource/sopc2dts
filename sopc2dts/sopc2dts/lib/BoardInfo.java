@@ -44,6 +44,7 @@ import sopc2dts.lib.components.base.FlashPartition;
 
 public class BoardInfo implements ContentHandler {
 	public enum PovType { CPU, PCI };
+	public enum SortType { NONE, ADDRESS, NAME, LABEL };
 	FlashPartition part;
 	private File sourceFile;
 	String currTag;
@@ -55,6 +56,7 @@ public class BoardInfo implements ContentHandler {
 	BoardInfoComponent currBic;
 	private String pov = "";
 	private PovType povType = PovType.CPU;
+	private SortType sortType = SortType.NONE;
 	private BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
 			new HashMap<String, Vector<FlashPartition>>(4);
@@ -269,6 +271,9 @@ public class BoardInfo implements ContentHandler {
 	public PovType getPovType() {
 		return povType;
 	}
+	public SortType getSortType() {
+		return sortType;
+	}
 	public void setEthernetForChip(BICEthernet be)
 	{
 		BoardInfoComponent old = getBicForChip(be.getInstanceName());
@@ -289,6 +294,20 @@ public class BoardInfo implements ContentHandler {
 				povTypeName.equalsIgnoreCase("pcie"))
 		{
 			setPovType(PovType.PCI);
+		}
+	}
+	public void setSortType(SortType sortType) {
+		this.sortType = sortType;
+	}
+	public void setSortType(String sortTypeName) {
+		if(sortTypeName.equalsIgnoreCase("address")) {
+			setSortType(SortType.ADDRESS);
+		} else if(sortTypeName.equalsIgnoreCase("name")) {
+			setSortType(SortType.NAME);
+		} else if(sortTypeName.equalsIgnoreCase("label")) {
+			setSortType(SortType.LABEL);
+		} else {
+			setSortType(SortType.NONE);
 		}
 	}
 	public void setPartitionsForchip(String instanceName, Vector<FlashPartition> vParts) {

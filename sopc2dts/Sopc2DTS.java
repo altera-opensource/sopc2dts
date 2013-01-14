@@ -55,6 +55,7 @@ public class Sopc2DTS {
 	protected CLParameter povType = new CLParameter("cpu");
 	protected CLParameter bootargs = new CLParameter("");
 	protected CLParameter sopcParameters = new CLParameter("none");
+	protected CLParameter sort = new CLParameter("");
 	protected CLParameter gui = new CLParameter("" + false);
 
 	protected static final String programName = "sopc2dts";
@@ -92,6 +93,7 @@ public class Sopc2DTS {
 		vOptions.add(new CommandLineOption("output",	"o", outputFileName,	true, false,"The output filename","filename"));
 		vOptions.add(new CommandLineOption("pov", 		"p", pov,		 		true, false,"The point of view to generate from. Defaults to the first cpu found", "component name"));
 		vOptions.add(new CommandLineOption("pov-type", 	null, povType,			true, false,"The point of view device type", "{cpu,pci}"));
+		vOptions.add(new CommandLineOption("sort", 		"s", sort,		 		true, false,"Sort components by", "{none,address,name,label}"));
 		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dtb,dtb-hex8,dtb-hex32,dtb-char-arr,dts,uboot,kernel}"));
 		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
 		vOptions.add(new CommandLineOption("sopc-parameters", 	null,sopcParameters, true, false,"What sopc-parameters to include in DTS", "{node,cmacro,all}"));
@@ -123,6 +125,9 @@ public class Sopc2DTS {
 			bInfo.setPov(pov.value);
 		}
 		bInfo.setPovType(povType.value);
+		if(sort.value.length()>0) {
+			bInfo.setSortType(sort.value);
+		}
 		if(sopcParameters.value.equalsIgnoreCase("none"))
 		{
 			bInfo.setDumpParameters(BasicComponent.parameter_action.NONE);
