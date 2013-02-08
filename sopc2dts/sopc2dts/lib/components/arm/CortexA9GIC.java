@@ -49,7 +49,7 @@ public class CortexA9GIC extends BasicComponent {
 			if (irqClassStr.contentEquals("arm_gic_ppi")) {
 				irqClass = GIC_IRQ_CLASS_PPI;
 			} else if (irqClassStr.contentEquals("arm_gic_spi")) {
-				irqClass = GIC_IRQ_CLASS_PPI;
+				irqClass = GIC_IRQ_CLASS_SPI;
 			} else {
 				Logger.logln("unknown embeddedsw.dts.irq.rx_type: " + irqClassStr,LogLevel.ERROR);
 			}
@@ -66,9 +66,9 @@ public class CortexA9GIC extends BasicComponent {
 			} else if (irqTypeStr.contentEquals("ACTIVE_LOW")) {
 				irqType = GIC_IRQ_TYPE_LOW;
 			} else if (irqTypeStr.contentEquals("FALLING_EDGE")) {
-				irqType = GIC_IRQ_TYPE_RISING;
-			} else if (irqTypeStr.contentEquals("RAISING_EDGE")) {
 				irqType = GIC_IRQ_TYPE_FALLING;
+			} else if (irqTypeStr.contentEquals("RISING_EDGE")) {
+				irqType = GIC_IRQ_TYPE_RISING;
 			} else {
 				Logger.logln("unknown embedded.dts.irq_tx_type: " + irqTypeStr,LogLevel.ERROR);
 			}		
