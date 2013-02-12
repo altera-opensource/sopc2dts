@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.BoardInfo.SortType;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.BoardInfo.PovType;
+import sopc2dts.lib.boardinfo.BICDTAppend;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.MemoryBlock;
@@ -38,6 +39,7 @@ import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropBool;
+import sopc2dts.lib.devicetree.DTPropByte;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropString;
@@ -96,7 +98,53 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				rootNode.addChild(chosenNode);
 			}
 		}
+		doDTAppend(rootNode,bi);
 		return rootNode;
+	}
+
+	private void doDTAppend(DTNode rootNode, BoardInfo bi) {
+		Vector<BICDTAppend> appends = bi.getDTAppends();
+		for(BICDTAppend dta : appends) {
+			DTNode parent = null;
+			if(dta.getParentLabel()!=null) {
+				parent = DTHelper.getChildByLabel(rootNode, dta.getParentLabel());
+			}
+			if(parent==null) {
+				Logger.logln("DTAppend: Unable to find parent for " + dta.getInstanceName() + ". Adding to root", LogLevel.WARNING);
+				parent = rootNode;
+			}
+			switch(dta.getType()) {
+			case NODE: {
+				parent.addChild(new DTNode(dta.getInstanceName(),dta.getLabel()));
+			} break;
+			case PROP_BOOL: {
+				parent.addProperty(new DTPropBool(dta.getInstanceName(), dta.getLabel(), "appended from boardinfo"));
+			} break;
+			case PROP_NUMBER: {
+				parent.addProperty(new DTPropNumber(dta.getInstanceName(), 
+						Long.decode(dta.getValue()), dta.getLabel(), 
+						"appended from boardinfo"));
+			} break;
+			case PROP_HEX: {
+				parent.addProperty(new DTPropHexNumber(dta.getInstanceName(), 
+						Long.decode(dta.getValue()), dta.getLabel(), 
+						"appended from boardinfo"));
+			} break;
+			case PROP_BYTE: {
+				parent.addProperty(new DTPropByte(dta.getInstanceName(), 
+						Integer.decode(dta.getValue()), dta.getLabel(), 
+						"appended from boardinfo"));
+			} break;
+			case PROP_STRING: {
+				parent.addProperty(new DTPropString(dta.getInstanceName(), 
+						dta.getValue(), dta.getLabel(), 
+						"appended from boardinfo"));
+			} break;
+			default: {
+				Logger.logln("Unimplemented dtappend type", LogLevel.DEBUG);
+			}
+			}
+		}
 	}
 
 	DTNode getChosenNode(BoardInfo bi)

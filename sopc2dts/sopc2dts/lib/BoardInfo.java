@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -37,6 +37,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
+import sopc2dts.lib.boardinfo.BICDTAppend;
 import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.boardinfo.BoardInfoComponent;
 import sopc2dts.lib.components.BasicComponent;
@@ -243,6 +244,15 @@ public class BoardInfo implements ContentHandler {
 			}
 		}
 		return new BICEthernet(instanceName);
+	}
+	public Vector<BICDTAppend> getDTAppends() {
+		Vector<BICDTAppend> vRes = new Vector<BICDTAppend>();
+		for(BoardInfoComponent bic : vBics) {
+			if(bic instanceof BICDTAppend) {
+				vRes.add((BICDTAppend)bic);
+			}
+		}
+		return vRes;
 	}
 	public HashMap<Integer, String> getI2CChipsForMaster(String instanceName) {
 		HashMap<Integer, String> res = mI2CMaps.get(instanceName);

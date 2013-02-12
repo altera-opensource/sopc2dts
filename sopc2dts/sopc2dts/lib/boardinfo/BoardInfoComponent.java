@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -48,6 +48,9 @@ public abstract class BoardInfoComponent implements ContentHandler {
 		} else if(localName.equalsIgnoreCase("SpiMaster"))
 		{
 			bic = new BICSpi(localName, atts);
+		} else if(localName.equalsIgnoreCase(BICDTAppend.TAG_NAME))
+		{
+			bic = new BICDTAppend(localName, atts);
 		}
 		return bic;
 	}

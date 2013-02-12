@@ -27,6 +27,22 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.Interface;
 
 public class DTHelper {
+	public static DTNode getChildByLabel(DTNode base, String lbl) {
+		Vector<DTNode> children = base.getChildren();
+		if(lbl.equalsIgnoreCase(base.getLabel()))
+		{
+			return base;
+		} else {
+			for(DTNode n : children) {
+				DTNode res = getChildByLabel(n, lbl);
+				if(res!=null) {
+					return res;
+				}
+			}
+		}
+		return null;
+	}
+
 	public static long[] parseLongString(String str, int numCells) {
 		long[] res = new long[numCells];
 		long val = Long.decode(str);
