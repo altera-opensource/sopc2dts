@@ -80,7 +80,7 @@ public class BICDTAppend extends BoardInfoComponent {
 	}
 	@Override
 	public String getXml() {
-		String xml = "<DTAppend name=\"" + instanceName + "\" type=\"";
+		String xml = '<' + TAG_NAME + " name=\"" + instanceName + "\" type=\"";
 		if(type==null) {
 			return "";
 		}

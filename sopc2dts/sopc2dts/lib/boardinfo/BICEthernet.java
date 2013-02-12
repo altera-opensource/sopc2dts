@@ -22,6 +22,7 @@ package sopc2dts.lib.boardinfo;
 import org.xml.sax.Attributes;
 
 public class BICEthernet extends BoardInfoComponent {
+	public static final String TAG_NAME = "Ethernet";
 	Integer miiID = null;
 	Integer phyID = null;
 	int[] mac = { 0, 0, 0, 0, 0, 0 };
@@ -45,7 +46,7 @@ public class BICEthernet extends BoardInfoComponent {
 	}
 
 	public String getXml() {
-		String res = "<Ethernet name=\"" + instanceName + "\" mac=\"" + getMacString() + "\"";
+		String res = '<' + TAG_NAME + " name=\"" + instanceName + "\" mac=\"" + getMacString() + "\"";
 		if(miiID!=null)
 		{
 			res += " mii_id=\"" + miiID + "\"";
@@ -54,7 +55,7 @@ public class BICEthernet extends BoardInfoComponent {
 		{
 			res += " phy_id=\"" + phyID + "\"";
 		}
-		res +="></Ethernet>\n";
+		res +="></" + TAG_NAME + ">\n";
 		return res;
 	}
 	public String getMacString()

@@ -42,10 +42,10 @@ public abstract class BoardInfoComponent implements ContentHandler {
 	public static BoardInfoComponent getBicFor(String localName, Attributes atts)
 	{
 		BoardInfoComponent bic = null;
-		if(localName.equalsIgnoreCase("Ethernet"))
+		if(localName.equalsIgnoreCase(BICEthernet.TAG_NAME))
 		{
 			bic = new BICEthernet(localName,atts);
-		} else if(localName.equalsIgnoreCase("SpiMaster"))
+		} else if(localName.equalsIgnoreCase(BICSpi.TAG_NAME))
 		{
 			bic = new BICSpi(localName, atts);
 		} else if(localName.equalsIgnoreCase(BICDTAppend.TAG_NAME))

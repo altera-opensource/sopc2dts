@@ -25,6 +25,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class BICSpi extends BoardInfoComponent {
+	public static final String TAG_NAME = "SpiMaster";
 	Vector<SpiSlave> vSlaves = new Vector<SpiSlave>();
 	public BICSpi(String iName) {
 		super(iName);
@@ -35,12 +36,12 @@ public class BICSpi extends BoardInfoComponent {
 
 	@Override
 	public String getXml() {
-		String res = "\t<SpiMaster name=\"" + instanceName + "\">\n";
+		String res = "\t<" + TAG_NAME + "=\"" + instanceName + "\">\n";
 		for(SpiSlave slave : vSlaves)
 		{
 			res += slave.getXml();
 		}
-		res += "\t</SpiMaster>\n";
+		res += "\t</" + TAG_NAME + ">\n";
 		return res;
 	}
 
