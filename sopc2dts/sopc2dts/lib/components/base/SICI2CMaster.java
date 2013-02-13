@@ -19,17 +19,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.base;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Vector;
 
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.boardinfo.BICI2C;
+import sopc2dts.lib.boardinfo.I2CSlave;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
-import sopc2dts.lib.devicetree.DTPropString;
 
 public class SICI2CMaster extends BasicComponent {
 
@@ -43,26 +43,16 @@ public class SICI2CMaster extends BasicComponent {
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{
 		DTNode node = super.toDTNode(bi, conn);
-		HashMap<Integer, String> mI2C = bi.getI2CChipsForMaster(this.getInstanceName());
-		if(mI2C != null)
-		{
-			if(!mI2C.isEmpty())
-			{
-				node.addProperty(new DTPropNumber("#address-cells", 1L));
-				node.addProperty(new DTPropNumber("#size-cells", 0L));
-				Integer[] keys = new Integer[mI2C.size()];
-				keys = mI2C.keySet().toArray(keys);
-				Arrays.sort(keys);
-				for(Integer key : keys)
-				{
-					DTNode slave = new DTNode(mI2C.get(key) + '@' + Integer.toHexString(key));
-					slave.addProperty(new DTPropString("compatible", mI2C.get(key)));
-					slave.addProperty(new DTPropHexNumber("reg", Long.valueOf(key)));
-					node.addChild(slave);
-				}
+		BICI2C bi2c = bi.getI2CForChip(this.getInstanceName());
+		Vector<I2CSlave> vSlaves = bi2c.getSlaves();
+		if(!vSlaves.isEmpty()) {
+			node.addProperty(new DTPropNumber("#address-cells", 1L));
+			node.addProperty(new DTPropNumber("#size-cells", 0L));
+			Collections.sort(vSlaves);
+			for(I2CSlave s : vSlaves) {
+				node.addChild(s.toDTNode(bi));
 			}
 		}
-
 		return node;
 	}
 }

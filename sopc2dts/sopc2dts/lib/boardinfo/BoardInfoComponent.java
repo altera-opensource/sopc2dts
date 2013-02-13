@@ -51,6 +51,9 @@ public abstract class BoardInfoComponent implements ContentHandler {
 		} else if(localName.equalsIgnoreCase(BICDTAppend.TAG_NAME))
 		{
 			bic = new BICDTAppend(localName, atts);
+		} else if(localName.equalsIgnoreCase(BICI2C.TAG_NAME))
+		{
+			bic = new BICI2C(localName, atts);
 		}
 		return bic;
 	}

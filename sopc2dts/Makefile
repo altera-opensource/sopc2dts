@@ -32,8 +32,10 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/Connection.java sopc2dts/lib/Parameter.java \
 	sopc2dts/lib/boardinfo/BICDTAppend.java\
 	sopc2dts/lib/boardinfo/BICEthernet.java \
+	sopc2dts/lib/boardinfo/BICI2C.java \
 	sopc2dts/lib/boardinfo/BICSpi.java \
 	sopc2dts/lib/boardinfo/BoardInfoComponent.java \
+	sopc2dts/lib/boardinfo/I2CSlave.java \
 	sopc2dts/lib/boardinfo/SpiSlave.java \
 	sopc2dts/lib/boardinfo/SpiSlaveMMC.java \
 	sopc2dts/lib/components/BasicComponent.java \

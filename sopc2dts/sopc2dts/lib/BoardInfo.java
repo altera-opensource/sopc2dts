@@ -40,7 +40,9 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.Parameter;
 import sopc2dts.lib.boardinfo.BICDTAppend;
 import sopc2dts.lib.boardinfo.BICEthernet;
+import sopc2dts.lib.boardinfo.BICI2C;
 import sopc2dts.lib.boardinfo.BoardInfoComponent;
+import sopc2dts.lib.boardinfo.I2CSlave;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.FlashPartition;
 
@@ -64,11 +66,6 @@ public class BoardInfo implements ContentHandler {
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
 			new HashMap<String, Vector<FlashPartition>>(4);
 
-	HashMap<String, HashMap<Integer, String>> mI2CMaps = 
-			new HashMap<String, HashMap<Integer,String>>(4);
-	
-	HashMap<Integer, String> mI2C;
-	
 	public BoardInfo()
 	{
 		vMemoryNodes = new Vector<String>();
@@ -116,14 +113,6 @@ public class BoardInfo implements ContentHandler {
 					//attribute chip can be null for a wildcard/fallback map
 					vPartitions = new Vector<FlashPartition>(); 
 					mFlashPartitions.put(atts.getValue("chip"), vPartitions);
-				} else if(localName.equalsIgnoreCase("I2CBus")) 
-				{
-					//attribute master can be null for a wildcard/fallback map
-					mI2C = new HashMap<Integer, String>(4); 
-					mI2CMaps.put(atts.getValue("master"), mI2C);
-				} else if(localName.equalsIgnoreCase("I2CChip")) 
-				{
-					mI2C.put(Integer.decode(atts.getValue("addr")),atts.getValue("name"));
 				} else if(localName.equalsIgnoreCase("Memory"))
 				{
 					vMemoryNodes = new Vector<String>();
@@ -253,6 +242,24 @@ public class BoardInfo implements ContentHandler {
 		}
 		return new BICEthernet(instanceName);
 	}
+	public BICI2C getI2CForChip(String instanceName) {
+		BoardInfoComponent bic = getBicForChip(instanceName);
+		if(bic!=null)
+		{
+			if(bic instanceof BICI2C)
+			{
+				return (BICI2C) bic;
+			}
+		} else {
+			//Get wildcard
+			for(BoardInfoComponent b : vBics) {
+				if((b.getInstanceName()==null)&&(b instanceof BICI2C)) {
+					return (BICI2C)b;
+				}
+			}
+		}
+		return new BICI2C(instanceName);
+	}
 	public Vector<BICDTAppend> getDTAppends() {
 		Vector<BICDTAppend> vRes = new Vector<BICDTAppend>();
 		for(BoardInfoComponent bic : vBics) {
@@ -261,15 +268,6 @@ public class BoardInfo implements ContentHandler {
 			}
 		}
 		return vRes;
-	}
-	public HashMap<Integer, String> getI2CChipsForMaster(String instanceName) {
-		HashMap<Integer, String> res = mI2CMaps.get(instanceName);
-		if(res==null)
-		{
-			// Try to get a backup map
-			res = mI2CMaps.get(null);
-		}
-		return res;
 	}
 	public Vector<FlashPartition> getPartitionsForChip(String instanceName) {
 		Vector<FlashPartition> res = mFlashPartitions.get(instanceName);
@@ -331,8 +329,19 @@ public class BoardInfo implements ContentHandler {
 	public void setPartitionsForchip(String instanceName, Vector<FlashPartition> vParts) {
 		mFlashPartitions.put(instanceName, vParts);
 	}
-	public void setI2CBusForchip(String instanceName, HashMap<Integer, String> i2cMap) {
-		mI2CMaps.put(instanceName, i2cMap);
+	public void setI2CBusForchip(String instanceName, Vector<I2CSlave> vSlaves) {
+		for(BoardInfoComponent bic : vBics) {
+			if(bic instanceof BICI2C) {
+				BICI2C bi2c = (BICI2C)bic;
+				if(instanceName == null) {
+					if (bi2c.getInstanceName()==null) {
+						bi2c.setSlaves(vSlaves);
+					}
+				} else if(instanceName.equalsIgnoreCase(bi2c.getInstanceName())) {
+					bi2c.setSlaves(vSlaves);
+				}
+			}
+		}
 	}
 	public String getXml()
 	{
@@ -386,26 +395,6 @@ public class BoardInfo implements ContentHandler {
 					xml += "\t\t</Partition>\n";
 				}
 				xml += "\t</FlashPartitions>\n";
-			}			
-		}
-		//I2c
-		for(String chip : mI2CMaps.keySet())
-		{
-			HashMap<Integer, String> mI2CMap = mI2CMaps.get(chip);
-			if((mI2CMap!=null)&&(mI2CMap.size()>0))
-			{
-				xml += "\t<I2CBus";
-				if(chip!=null)
-				{
-					xml += " master=\"" + chip + "\"";
-				}
-				xml += ">\n";
-				for(Integer addr : mI2CMap.keySet())
-				{
-					xml += "\t\t<I2CChip addr=\"0x" + Integer.toHexString(addr) + "\"" +
-							" name=\"" + mI2CMap.get(addr) + "\"/>\n";
-				}
-				xml += "\t</I2CBus>\n";
 			}			
 		}
 		//BICs
