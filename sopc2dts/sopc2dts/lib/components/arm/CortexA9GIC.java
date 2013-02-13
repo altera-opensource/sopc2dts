@@ -71,7 +71,12 @@ public class CortexA9GIC extends BasicComponent {
 				irqType = GIC_IRQ_TYPE_RISING;
 			} else {
 				Logger.logln("unknown embedded.dts.irq_tx_type: " + irqTypeStr,LogLevel.ERROR);
-			}		
+			}
+		}
+		String txMask = intf.getParamValByName("embeddedsw.dts.irq.tx_mask");
+		if (txMask != null) {
+			Logger.logln("got mask "+txMask, LogLevel.DEBUG);
+			irqType |= Integer.decode(txMask);
 		}
 		return irqType;
 	}
