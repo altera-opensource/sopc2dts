@@ -30,6 +30,7 @@ import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.BoardInfo.SortType;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.Parameter;
 import sopc2dts.lib.BoardInfo.PovType;
 import sopc2dts.lib.boardinfo.BICDTAppend;
 import sopc2dts.lib.components.BasicComponent;
@@ -71,6 +72,14 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				rootNode.addProperty(dtps);
 				dtps = new DTPropString("compatible","ALTR," + sys.getSystemName());
 				rootNode.addProperty(dtps);
+				Vector<Parameter> vAliases = bi.getAliases();
+				if (vAliases.size() > 0) {
+					DTNode aliasNode = new DTNode("aliases");
+					for (Parameter p : vAliases) {
+						aliasNode.addProperty(new DTPropString(p.getName(),p.getValue()));
+					}
+				    rootNode.addChild(aliasNode);
+				}
 				rootNode.addChild(cpuNode);
 				rootNode.addChild(memNode);
 				sopcNode.addProperty(new DTPropString("device_type", "soc"));

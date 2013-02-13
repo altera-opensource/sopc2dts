@@ -37,6 +37,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
+import sopc2dts.lib.Parameter;
 import sopc2dts.lib.boardinfo.BICDTAppend;
 import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.boardinfo.BoardInfoComponent;
@@ -53,6 +54,7 @@ public class BoardInfo implements ContentHandler {
 	Vector<FlashPartition> vPartitions;
 	Vector<String> vMemoryNodes;
 	Vector<BoardInfoComponent> vBics = new Vector<BoardInfoComponent>();
+	Vector<Parameter> vAliases = new Vector<Parameter>();
 	String bootArgs;
 	BoardInfoComponent currBic;
 	private String pov = "";
@@ -97,7 +99,13 @@ public class BoardInfo implements ContentHandler {
 			{
 				vBics.add(currBic);
 			} else {
-				if(localName.equalsIgnoreCase("BoardInfo"))
+
+				if (localName.equalsIgnoreCase("alias")) {
+					String name = atts.getValue("name");
+					String value = atts.getValue("value");
+					Logger.logln("alias "+name+ " " + value,LogLevel.INFO);
+					vAliases.add(new Parameter(name, value, Parameter.DataType.STRING));
+				} else if(localName.equalsIgnoreCase("BoardInfo"))
 				{
 					setPov(atts.getValue("pov"));
 				} else if(localName.equalsIgnoreCase("Bootargs"))
@@ -420,4 +428,7 @@ public class BoardInfo implements ContentHandler {
 	public void setDumpParameters(BasicComponent.parameter_action dumpParameters) {
 		this.dumpParameters = dumpParameters;
 	}
+	public Vector<Parameter> getAliases() {
+		return vAliases;
+    }
 }
