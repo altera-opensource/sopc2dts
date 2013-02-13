@@ -49,6 +49,9 @@ public class BICDTAppend extends BoardInfoComponent {
 	}
 	private void setPath(String path) {
 		if(path!=null) {
+			if(path.startsWith("/")) {
+				path = path.substring(1);
+			}
 			parentPath = path.split("/");
 		} else {
 			parentPath = null;

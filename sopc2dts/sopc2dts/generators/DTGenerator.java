@@ -118,6 +118,19 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			if(dta.getParentLabel()!=null) {
 				parent = DTHelper.getChildByLabel(rootNode, dta.getParentLabel());
 			}
+			if((parent==null) && (dta.getParentPath()!=null)) {
+				parent = rootNode;
+				for(String nodeStr : dta.getParentPath()) {
+					DTNode n = parent;
+					parent = null;
+					for(DTNode child : n.getChildren()) {
+						if(child.getName().equalsIgnoreCase(nodeStr))
+						{
+							parent = child;
+						}
+					}
+				}
+			}
 			if(parent==null) {
 				Logger.logln("DTAppend: Unable to find parent for " + dta.getInstanceName() + ". Adding to root", LogLevel.WARNING);
 				parent = rootNode;
