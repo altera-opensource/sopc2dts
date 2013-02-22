@@ -50,7 +50,7 @@ public class I2CSlave implements Comparable<I2CSlave> {
 	}
 	public DTNode toDTNode(BoardInfo bi)
 	{
-		DTNode node = new DTNode(name + '@' + addr,label);
+		DTNode node = new DTNode(name + "@0x" + Integer.toHexString(addr),label);
 		node.addProperty(new DTPropString("compatible", name));
 		node.addProperty(new DTPropHexNumber("reg", Long.valueOf(addr)));
 		return node;

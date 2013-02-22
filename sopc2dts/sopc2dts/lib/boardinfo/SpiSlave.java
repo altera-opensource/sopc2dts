@@ -81,7 +81,7 @@ public class SpiSlave {
 	}
 	public DTNode toDTNode(BoardInfo bi)
 	{
-		DTNode node = new DTNode(name + '@' + reg);
+		DTNode node = new DTNode(name + "@0x" + Integer.toHexString(reg));
 		node.addProperty(new DTPropString("compatible", compatible));
 		node.addProperty(new DTPropNumber("spi-max-frequency", Long.valueOf(spiMaxFrequency)));
 		node.addProperty(new DTPropHexNumber("reg", Long.valueOf(reg)));
