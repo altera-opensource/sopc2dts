@@ -19,23 +19,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.boardinfo;
 
+import java.util.Vector;
+
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 
 public class BICDTAppend extends BoardInfoComponent {
 	public enum DTAppendType { NODE, PROP_BOOL, PROP_NUMBER, PROP_STRING, PROP_HEX, PROP_BYTE };
 	public static final String TAG_NAME = "DTAppend";
+	private static final String VAL_TAG = "val";
 	String[] parentPath;
 	String parentLabel;
-	String value;
+	Vector<String> vValues = new Vector<String>();
 	DTAppendType type;
 	String label;
+	String valBuf;
+	private Boolean valSeen = false;
 	
 	public BICDTAppend(String iName) {
 		super(iName);
 	}
 	public BICDTAppend(String tag, Attributes atts) {
 		super(tag, atts);
-		setValue(atts.getValue("val"));
+		addValue(atts.getValue("val"));
 		setType(atts.getValue("type"));
 		setPath(atts.getValue("parentpath"));
 		setParentLabel(atts.getValue("parentlabel"));
@@ -57,8 +67,10 @@ public class BICDTAppend extends BoardInfoComponent {
 			parentPath = null;
 		}
 	}
-	public void setValue(String val) {
-		value = val;
+	public void addValue(String val) {
+		if (null != val) {
+			vValues.add(val);
+		}
 	}
 	public void setType(String t) {
 		if(t != null) {
@@ -109,10 +121,29 @@ public class BICDTAppend extends BoardInfoComponent {
 		if(label!=null) {
 			xml += " newlabel=\"" + label + "\"";
 		}
-		if(value!=null) {
-			xml += " val=\"" + value + "\"";
+		switch(vValues.size()) {
+		case 1:
+			String value = vValues.get(0);
+			if(value!=null) {
+				xml += " val=\"" + value + "\"";
+			}
+			xml += "/>\n";
+			break;
+			
+		case 0: 
+			xml += "/>\n";
+			break;
+			
+		default:
+			xml += ">\n";
+			for (int i = 0; i < vValues.size(); i++) {
+				xml += "    <val>"+vValues.get(i)+"</val>\n";
+				
+			}
+			xml += "</" + TAG_NAME + ">\n";
+			break;
 		}
-		return xml + "/>\n";
+		return xml;
 	}
 	public String[] getParentPath() {
 		return parentPath;
@@ -120,8 +151,8 @@ public class BICDTAppend extends BoardInfoComponent {
 	public String getParentLabel() {
 		return parentLabel;
 	}
-	public String getValue() {
-		return value;
+	public Vector<String> getValues() {
+		return vValues;
 	}
 	public DTAppendType getType() {
 		return type;
@@ -129,5 +160,28 @@ public class BICDTAppend extends BoardInfoComponent {
 	public String getLabel() {
 		return label;
 	}
-
+	public void startElement(String uri, String localName, String qName,
+			Attributes atts) throws SAXException {
+		if(localName.equals(VAL_TAG)) {
+			valBuf = "";
+			valSeen = true;
+		} else {
+			Logger.logln("unexpected start tag, "+localName+" found by BICDTAppend", LogLevel.ERROR);
+		}
+	}
+	public void characters(char[] ch, int start, int length)
+	throws SAXException {
+		if (valSeen) {
+			valBuf += String.copyValueOf(ch, start, length);
+		}
+	}
+	public void endElement(String uri, String localName, String qName)
+	throws SAXException {
+		if (localName.equals(VAL_TAG)) {
+			addValue(valBuf);
+			valSeen = false;
+		} else if (!localName.equals(TAG_NAME)){
+			Logger.logln("unexpected end tag, "+localName+" found by BICDTAppend", LogLevel.ERROR);
+		}
+	}
 }

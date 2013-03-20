@@ -41,7 +41,7 @@ public class DTPropHexNumber extends DTPropNumber {
 	public DTPropHexNumber(String name, Vector<Long> val, String label) {
 		this(name,val,label, null);
 	}
-	protected DTPropHexNumber(String name, Vector<Long> vals,String label, String comment) {
+	public DTPropHexNumber(String name, Vector<Long> vals,String label, String comment) {
 		super(name, vals, label, comment);
 	}
 	String toStringValuesMemoryStyle(int indent) {

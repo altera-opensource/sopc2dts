@@ -43,7 +43,7 @@ public class DTPropNumber extends DTProperty{
 	public DTPropNumber(String name, Vector<Long> val, String label) {
 		this(name,val,label, null);
 	}
-	protected DTPropNumber(String name, Vector<Long> vals,String label, String comment) {
+	public DTPropNumber(String name, Vector<Long> vals,String label, String comment) {
 		super(name, label, comment, DTPropType.NUMBER);
 		vValues = vals;
 	}

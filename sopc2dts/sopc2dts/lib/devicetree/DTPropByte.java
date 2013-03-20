@@ -25,7 +25,7 @@ public class DTPropByte extends DTProperty{
 	Vector<Integer> vValues = new Vector<Integer>();
 	
 	public DTPropByte(String name) {
-		this(name,null, null,null);
+		this(name,(Integer)null, null,null);
 	}
 	public DTPropByte(String name, Integer value) {
 		this(name,value, null,null);
@@ -38,6 +38,13 @@ public class DTPropByte extends DTProperty{
 		if(value != null)
 		{
 			vValues.add(value);
+		}
+	}
+	public DTPropByte(String name, Vector<Integer> vVals, String label, String comment) {
+		super(name, label, comment, DTPropType.NUMBER);
+		if(vVals != null)
+		{
+			vValues.addAll(vVals);
 		}
 	}
 	public void addValue(Integer val) {

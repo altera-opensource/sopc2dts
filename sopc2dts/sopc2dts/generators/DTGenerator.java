@@ -110,7 +110,22 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		doDTAppend(rootNode,bi);
 		return rootNode;
 	}
+	private static Vector<Long> vStr2vLong(Vector<String> vStrs) {
+		Vector<Long> vLongs = new Vector<Long>(vStrs.size());
+		for (String s : vStrs) {
+			vLongs.add(Long.decode(s));
+		}
 
+		return vLongs;
+	}
+	private static Vector<Integer> vStr2vInteger(Vector<String> vStrs) {
+		Vector<Integer> vInts = new Vector<Integer>(vStrs.size());
+		for (String s : vStrs) {
+			vInts.add(Integer.decode(s));
+		}
+
+		return vInts;
+	}
 	private void doDTAppend(DTNode rootNode, BoardInfo bi) {
 		Vector<BICDTAppend> appends = bi.getDTAppends();
 		for(BICDTAppend dta : appends) {
@@ -144,22 +159,22 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			} break;
 			case PROP_NUMBER: {
 				parent.addProperty(new DTPropNumber(dta.getInstanceName(), 
-						Long.decode(dta.getValue()), dta.getLabel(), 
+						vStr2vLong(dta.getValues()), dta.getLabel(), 
 						"appended from boardinfo"));
 			} break;
 			case PROP_HEX: {
 				parent.addProperty(new DTPropHexNumber(dta.getInstanceName(), 
-						Long.decode(dta.getValue()), dta.getLabel(), 
+						vStr2vLong(dta.getValues()), dta.getLabel(), 
 						"appended from boardinfo"));
 			} break;
 			case PROP_BYTE: {
 				parent.addProperty(new DTPropByte(dta.getInstanceName(), 
-						Integer.decode(dta.getValue()), dta.getLabel(), 
+						vStr2vInteger(dta.getValues()), dta.getLabel(), 
 						"appended from boardinfo"));
 			} break;
 			case PROP_STRING: {
 				parent.addProperty(new DTPropString(dta.getInstanceName(), 
-						dta.getValue(), dta.getLabel(), 
+						dta.getValues(), dta.getLabel(), 
 						"appended from boardinfo"));
 			} break;
 			default: {
