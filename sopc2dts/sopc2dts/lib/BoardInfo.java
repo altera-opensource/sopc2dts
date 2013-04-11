@@ -57,6 +57,8 @@ public class BoardInfo implements ContentHandler {
 	Vector<String> vMemoryNodes;
 	Vector<BoardInfoComponent> vBics = new Vector<BoardInfoComponent>();
 	Vector<Parameter> vAliases = new Vector<Parameter>();
+	Vector<String> vIrqMasterClassIgnore = new Vector<String>();
+	
 	String bootArgs;
 	BoardInfoComponent currBic;
 	private String pov = "";
@@ -113,6 +115,9 @@ public class BoardInfo implements ContentHandler {
 					//attribute chip can be null for a wildcard/fallback map
 					vPartitions = new Vector<FlashPartition>(); 
 					mFlashPartitions.put(atts.getValue("chip"), vPartitions);
+				} else if(localName.equalsIgnoreCase("IRQMasterIgnore"))
+				{
+					vIrqMasterClassIgnore.add(atts.getValue("className"));
 				} else if(localName.equalsIgnoreCase("Memory"))
 				{
 					vMemoryNodes = new Vector<String>();
@@ -343,6 +348,15 @@ public class BoardInfo implements ContentHandler {
 			}
 		}
 	}
+	public boolean isValidIRQMaster(BasicComponent comp) {
+		for(String imi : vIrqMasterClassIgnore) {
+			if(comp.getClassName().equalsIgnoreCase(imi))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 	public String getXml()
 	{
 		String xml = "<BoardInfo";
@@ -396,6 +410,11 @@ public class BoardInfo implements ContentHandler {
 				}
 				xml += "\t</FlashPartitions>\n";
 			}			
+		}
+		//IrqMasterIgnore
+		for(String imi : vIrqMasterClassIgnore)
+		{
+			xml += "\t<IRQMasterIgnore className=\"" + imi + "\"/>\n";
 		}
 		//BICs
 		for(BoardInfoComponent bic : vBics)

@@ -96,25 +96,41 @@ public class BasicComponent extends BasicElement {
 		}
 		return vRegs;
 	}
-
-	protected BasicComponent getInterrupts(Vector<Long> vIrqs)
+	protected BasicComponent getInterruptParent(Interface intf, BoardInfo bi) {
+		BasicComponent irqParent = null;
+		for(Connection c : intf.getConnections()) {
+			BasicComponent master = c.getMasterModule();
+			if(bi.isValidIRQMaster(master))
+			{
+				if(irqParent == null) {
+					irqParent = master;
+				} else {
+					Logger.logln(intf.getOwner().getInstanceName() + '.' + intf.getName() + 
+							": Multiple interrupt parents per irq-port are not supported! We're using " + irqParent.getInstanceName() + " we're not adding " + master.getInstanceName() + " class " + master.getClassName(), LogLevel.WARNING);
+				}
+			}
+		}
+		return irqParent;
+	}
+	protected BasicComponent getInterrupts(Vector<Long> vIrqs, BoardInfo bi)
 	{
 		BasicComponent irqParent = null;
 		for(Interface intf : getInterfaces())
 		{
 			if(intf.isIRQSlave())
 			{
-				if(intf.getConnections().size()>0)
+				BasicComponent irqp = getInterruptParent(intf, bi);
+				if(irqp!=null)
 				{
-					if(irqParent==null)
-					{
-						irqParent = intf.getConnections().get(0).getMasterModule();
-					} else if(!intf.getConnections().get(0).getMasterModule().equals(irqParent)) {
-						Logger.logln(instanceName +": Multiple interrupt parents are (currently) not supported!", LogLevel.WARNING);
+					if(irqParent == null) {
+						irqParent = irqp;
+					} else if (irqParent != irqp) {
+						Logger.logln(instanceName + ": Multiple interrupt parents per component are not supported.", LogLevel.WARNING);
 					}
-					if(intf.getConnections().get(0).getMasterModule().equals(irqParent))
-					{
-						DTHelper.addAllLongs(vIrqs, intf.getConnections().get(0).getConnValue());
+					for(Connection c : intf.getConnections()) {
+						if(c.getMasterModule().equals(irqParent)) {
+							DTHelper.addAllLongs(vIrqs, c.getConnValue());
+						}
 					}
 				}
 			}
@@ -145,7 +161,7 @@ public class BasicComponent extends BasicElement {
 
 		//Interrupts
 		Vector<Long> vIrqs = new Vector<Long>();
-		BasicComponent irqParent = getInterrupts(vIrqs);
+		BasicComponent irqParent = getInterrupts(vIrqs,bi);
 		if(irqParent!=null)
 		{
 			node.addProperty(new DTPropPHandle("interrupt-parent", irqParent.getInstanceName()));
