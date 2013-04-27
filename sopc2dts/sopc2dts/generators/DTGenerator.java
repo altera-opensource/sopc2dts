@@ -155,27 +155,27 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				parent.addChild(new DTNode(dta.getInstanceName(),dta.getLabel()));
 			} break;
 			case PROP_BOOL: {
-				parent.addProperty(new DTPropBool(dta.getInstanceName(), dta.getLabel(), "appended from boardinfo"));
+				parent.addProperty(new DTPropBool(dta.getInstanceName(), dta.getLabel(), "appended from boardinfo"),true);
 			} break;
 			case PROP_NUMBER: {
 				parent.addProperty(new DTPropNumber(dta.getInstanceName(), 
 						vStr2vLong(dta.getValues()), dta.getLabel(), 
-						"appended from boardinfo"));
+						"appended from boardinfo"),true);
 			} break;
 			case PROP_HEX: {
 				parent.addProperty(new DTPropHexNumber(dta.getInstanceName(), 
 						vStr2vLong(dta.getValues()), dta.getLabel(), 
-						"appended from boardinfo"));
+						"appended from boardinfo"),true);
 			} break;
 			case PROP_BYTE: {
 				parent.addProperty(new DTPropByte(dta.getInstanceName(), 
 						vStr2vInteger(dta.getValues()), dta.getLabel(), 
-						"appended from boardinfo"));
+						"appended from boardinfo"),true);
 			} break;
 			case PROP_STRING: {
 				parent.addProperty(new DTPropString(dta.getInstanceName(), 
 						dta.getValues(), dta.getLabel(), 
-						"appended from boardinfo"));
+						"appended from boardinfo"),true);
 			} break;
 			default: {
 				Logger.logln("Unimplemented dtappend type", LogLevel.DEBUG);

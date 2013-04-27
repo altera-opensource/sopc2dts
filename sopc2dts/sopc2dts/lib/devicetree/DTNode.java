@@ -21,6 +21,9 @@ package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
 
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
+
 public class DTNode extends DTElement {
 	public static final int OF_DT_BEGIN_NODE = 0x01;
 	public static final int OF_DT_END_NODE = 0x02;
@@ -43,11 +46,25 @@ public class DTNode extends DTElement {
 			vChildren.add(child);
 		}
 	}
-	public void addProperty(DTProperty prop)
+	public void addProperty(DTProperty prop) {
+		addProperty(prop,false);
+	}
+	public void addProperty(DTProperty prop, boolean replaceExising)
 	{
 		if(prop!=null)
 		{
-			vProps.add(prop);
+			DTProperty propOrg = getPropertyByName(prop.getName());
+			if(propOrg!=null) {
+				if(replaceExising) {
+					vProps.remove(propOrg);
+					vProps.add(prop);
+				} else {
+					Logger.logln("Unable to add duplicate property '" + prop.getName() + '\'' +
+							" to node '" + getName() + "' labeled '" + getLabel() + '\'' , LogLevel.ERROR);
+				}
+			} else {
+				vProps.add(prop);
+			}
 		}
 	}
 	public Vector<DTNode> getChildren()
