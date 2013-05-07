@@ -46,6 +46,8 @@ import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.TSEMonolithic;
+import sopc2dts.lib.components.altera.VIPFrameBuffer;
+import sopc2dts.lib.components.altera.VIPMixer;
 import sopc2dts.lib.components.arm.CortexA9GIC;
 import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.components.base.GpioController;
@@ -166,6 +168,11 @@ public class SopcComponentLib implements ContentHandler {
 			return new SICEpcs(className, instanceName, version);
 		} else if (className.equalsIgnoreCase("altera_avalon_lan91c111")) {
 			return new SICLan91c111(className, instanceName, version, getScdByClassName(className));
+		} else if (className.equalsIgnoreCase("altera_avalon_video_sync_generator")) {
+			return new VIPFrameBuffer(className, instanceName, version, getScdByClassName(className));
+		} else if ((className.equalsIgnoreCase("alt_vip_mix")) ||
+				(className.equalsIgnoreCase("alt_vip_switch"))){
+			return new VIPMixer(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("isp116x") || 
 				className.equalsIgnoreCase("ISP1362_CTRL")) {
 			return new USBHostControllerISP1xxx(className, instanceName, version, getScdByClassName(className));

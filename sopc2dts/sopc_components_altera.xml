@@ -92,18 +92,22 @@
 	</S2DComponent>
 	<S2DComponent classname="clock_source" group="ignore"></S2DComponent>
         <S2DComponent classname="altera_clock_bridge" group="ignore"></S2DComponent>
-	<S2DComponent classname="timing_adapter" group="ignore"></S2DComponent>
+	<S2DComponent classname="timing_adapter" group="ignore">
+	                <TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
+	</S2DComponent>
 	<S2DComponent classname="altera_avalon_fifo" group="fifo"
 		compatDevice="fifo">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
+		<TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
 	</S2DComponent>
 	<S2DComponent classname="altera_tristate_conduit_bridge" group="ignore"></S2DComponent>
 	<S2DComponent classname="data_format_adapter" group="ignore">
 	                <TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
 	</S2DComponent>
-	<S2DComponent classname="altera_avalon_pixel_converter" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_avalon_video_sync_generator"
-		group="ignore">
+		group="video" compatDevice="altfb">
+		<parameter dtsName="width" sopcName="NUM_COLUMNS"></parameter>
+		<parameter dtsName="height" sopcName="NUM_ROWS"></parameter>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_pll" group="clock"
 		compatDevice="pll">
@@ -165,6 +169,19 @@
 	<S2DComponent classname="alt_vip_swi" group="vip-switch"
 		compatDevice="vip-video-switch">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
+	</S2DComponent>
+	<S2DComponent classname="alt_vip_mix" group="vip-mix"
+		compatDevice="vip-video-mixer">
+		<CompatibleVersion value="1.0"></CompatibleVersion>
+	</S2DComponent>
+	<S2DComponent classname="alt_vip_cpr" group="vip">
+		<TransparentInterfaceBridge master="dout0" slave="din0"></TransparentInterfaceBridge>
+	</S2DComponent>
+	<S2DComponent classname="alt_vip_crs" group="vip">
+		<TransparentInterfaceBridge master="dout" slave="din"></TransparentInterfaceBridge>
+	</S2DComponent>
+	<S2DComponent classname="altera_avalon_pixel_converter" group="vip">
+		<TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
 	</S2DComponent>
 	<S2DComponent classname="altera_avalon_sc_fifo" group="fifo"
 		compatDevice="sc-fifo">
