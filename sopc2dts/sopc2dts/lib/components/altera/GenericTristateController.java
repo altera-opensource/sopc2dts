@@ -62,6 +62,16 @@ public class GenericTristateController extends BasicComponent {
 				sys.removeSystemComponent(this);
 				sys.addSystemComponent(flash);
 				bChanged = true;
+			} else if(driverType.equalsIgnoreCase("altera_avalon_lan91c111"))
+			{
+				Logger.logln("GenericTristateController: " + getInstanceName()
+					     + " seems to be a SMSC LAN91c111 chip.", LogLevel.INFO);
+				SICLan91c111 lan = new SICLan91c111(this);
+				
+				lan.setScd(SopcComponentLib.getInstance().getScdByClassName("altera_avalon_lan91c111"));
+				sys.removeSystemComponent(this);
+				sys.addSystemComponent(lan);
+				bChanged = true;
 			} else {
 				Logger.logln("GenericTristateController: " + getInstanceName() 
 						+ " is of unsupported type: " + driverType, LogLevel.WARNING);

@@ -21,11 +21,16 @@ package sopc2dts.lib.components.altera;
 
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SICEthernet;
 import sopc2dts.lib.devicetree.DTHelper;
 
 public class SICLan91c111 extends SICEthernet {
 
+	public SICLan91c111(BasicComponent comp) {
+		super(comp);
+	}
+	
 	public SICLan91c111(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
@@ -36,7 +41,11 @@ public class SICLan91c111 extends SICEthernet {
 		//Yes this is REALLY ugly. But it just might work :)
 		long regOffset;
 		try {
-			regOffset = Long.decode(getParamValByName("registerOffset"));
+			String v = getParamValByName("registerOffset");
+			if (v == null)
+				v = getParamValByName("embeddedsw.CMacro.LAN91C111_REGISTERS_OFFSET");
+			
+			regOffset = Long.decode(v);
 		} catch(Exception e)
 		{
 			regOffset = 0;
