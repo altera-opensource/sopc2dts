@@ -68,6 +68,12 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/devicetree/DTPropPHandle.java \
 	sopc2dts/lib/devicetree/DTPropString.java \
 	sopc2dts/lib/devicetree/DTProperty.java \
+	sopc2dts/lib/devicetree/DTPropByteVal.java \
+	sopc2dts/lib/devicetree/DTPropHexNumVal.java \
+	sopc2dts/lib/devicetree/DTPropNumVal.java \
+	sopc2dts/lib/devicetree/DTPropPHandleVal.java \
+	sopc2dts/lib/devicetree/DTPropStringVal.java \
+	sopc2dts/lib/devicetree/DTPropVal.java \
 	sopc2dts/lib/uboot/UBootComponentLib.java \
 	sopc2dts/lib/uboot/UBootLibComponent.java \
 	sopc2dts/parsers/BasicSystemLoader.java \

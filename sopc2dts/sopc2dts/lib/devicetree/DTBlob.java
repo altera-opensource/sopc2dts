@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
+
+import sopc2dts.lib.devicetree.DTPropVal.DTPropType;
 
 public class DTBlob {
 	public static final int DTB_VERSION = 17;
@@ -151,7 +153,12 @@ public class DTBlob {
 				node.addProperty(dtpn);
 				return ph;
 			} else {
-				return dtpn.getValues().firstElement();
+				DTPropVal v = dtpn.getValues().firstElement();
+				if(v.type == DTPropType.NUMBER) {
+					return ((DTPropNumVal)v).val;
+				} else {
+					return -1;
+				}
 			}
 		} else {
 			for(DTNode child : node.getChildren())
@@ -168,10 +175,12 @@ public class DTBlob {
 	void setPHandles(DTNode node) {
 		for(DTProperty prop : node.getProperties())
 		{
-			if(prop instanceof DTPropPHandle)
-			{
-				DTPropPHandle dtph = (DTPropPHandle)prop;
-				dtph.setpHandle(getPHandle(dtph.getValue()));
+			for(DTPropVal pval : prop.getValues()) {
+				if(pval instanceof DTPropPHandleVal)
+				{
+					DTPropPHandleVal dtph = (DTPropPHandleVal)pval;
+					dtph.setpHandle(getPHandle(dtph.getLabel()));
+				}
 			}
 		}
 		for(DTNode child : node.getChildren())

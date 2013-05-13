@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,17 +19,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.devicetree;
 
-public class DTPropPHandle extends DTProperty {
-	String value;
-	long pHandle;
-	public DTPropPHandle(String name, String value) {
-		this(name,value,null,null);
+public abstract class DTPropVal {
+	enum DTPropType { STRING, NUMBER, BYTE, BOOL, PHANDLE };
+	DTPropType type;
+	String opening;
+	String closing;
+	String seperator;
+	public DTPropVal(DTPropType t, String open, String close, String sep) {
+		type = t;
+		opening = open;
+		closing = close;
+		seperator = sep;
 	}
-	public DTPropPHandle(String name, String value, String label) {
-		this(name,value,label,null);
-	}
-	public DTPropPHandle(String name, String value, String label, String comment) {
-		super(name, label, comment, new DTPropPHandleVal(value, 0));
-		this.value = value;
-	}
+	protected abstract byte[] getValueBytes();
 }

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -33,7 +33,7 @@ public class DTPropHexNumber extends DTPropNumber {
 		super(name, val, label);
 	}
 	public DTPropHexNumber(String name, Long val, String label, String comment) {
-		super(name, val, label, comment);
+		super(name, label, comment, (val == null ? null : new DTPropHexNumVal(val)));
 	}
 	public DTPropHexNumber(String name, Vector<Long> val) {
 		this(name,val,null, null);
@@ -42,7 +42,8 @@ public class DTPropHexNumber extends DTPropNumber {
 		this(name,val,label, null);
 	}
 	public DTPropHexNumber(String name, Vector<Long> vals,String label, String comment) {
-		super(name, vals, label, comment);
+		super(name, (Long)null, label, comment);
+		addValues(vals);
 	}
 	String toStringValuesMemoryStyle(int indent) {
 		String res = "";
@@ -64,29 +65,17 @@ public class DTPropHexNumber extends DTPropNumber {
 		}
 		return res;
 	}
-	protected String toStringValues(int indent) {
-		if(name.equals("reg") || name.equals("ranges"))
-		{
-			return toStringValuesMemoryStyle(indent);
-		} else {
-			return super.toStringValues(indent);
+	public void addValue(Long val) {
+		vValues.add(new DTPropHexNumVal(val));
+	}
+	public void addValues(long[] vals) {
+		for(Long val : vals) {
+			vValues.add(new DTPropHexNumVal(val));
 		}
 	}
-	
-
-	String formattedLong(Long val)
-	{
-		if(val<0)
-		{
-			return String.format("0x%08x", val+0x100000000L);			
-		} else if(val<0x100)
-		{
-			return String.format("0x%02x", val);
-		} else if(val<0x10000)
-		{
-			return String.format("0x%04x", val);
-		} else {
-			return String.format("0x%08x", val);
+	public void addValues(Vector<Long> vals) {
+		for(Long val : vals) {
+			vValues.add(new DTPropHexNumVal(val));
 		}
 	}
 }

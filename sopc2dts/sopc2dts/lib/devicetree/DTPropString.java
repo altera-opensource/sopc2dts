@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -22,8 +22,7 @@ package sopc2dts.lib.devicetree;
 import java.util.Vector;
 
 public class DTPropString extends DTProperty {
-	Vector<String> vValues = new Vector<String>();
-	
+
 	public DTPropString(String name) {
 		this(name,new Vector<String>(),null,null);
 	}
@@ -34,8 +33,7 @@ public class DTPropString extends DTProperty {
 		this(name,value,label,null);
 	}
 	public DTPropString(String name, String value, String label, String comment) {
-		super(name, label, comment, DTPropType.STRING);
-		vValues.add(value);
+		super(name, label, comment, (value == null ? null : new DTPropStringVal(value)));
 	}
 	public DTPropString(String name, Vector<String> values) {
 		this(name,values,null,null);
@@ -44,50 +42,19 @@ public class DTPropString extends DTProperty {
 		this(name,values,label,null);
 	}
 	public DTPropString(String name, Vector<String> values, String label, String comment) {
-		super(name, label, comment, DTPropType.STRING);
-		vValues = values;
+		super(name, label, comment, null);
+		for(String v : values) {
+			vValues.add(new DTPropStringVal(v));
+		}
 	}
 	public void addStrings(Vector<String> vals) {
-		vValues.addAll(vals);
+		for(String v : vals) {
+			vValues.add(new DTPropStringVal(v));
+		}
 	}
 	public void addStrings(String[] vals) {
 		for (String val : vals) {
-			vValues.add(val);
+			vValues.add(new DTPropStringVal(val));
 		}
-	}
-	@Override
-	public String toString(int indent) {
-		String value = "";
-		int idx = 0;
-		for(String v : vValues)
-		{
-			if(!value.isEmpty())
-			{
-				value += ", ";
-				if((numValsPerRow>0) && (idx % numValsPerRow == 0)) {
-					value += "\n" + indent(indent +1);
-				}
-			}
-			value += "\"" + v + "\"";
-			idx++;
-		}
-		return indent(indent) + (label != null ? label + ": " : "" ) 
-				+ name + " = " + value + (comment != null ? ";\t/* " + comment + "*/\n": ";\n");
-	}
-	@Override
-	protected byte[] getValueBytes() {
-		int tmp = 0;
-		for(String str : vValues)
-		{
-			tmp += str.length() + 1;
-		}
-		byte[] buff = new byte[tmp];
-		tmp = 0;
-		for(String str : vValues)
-		{
-			System.arraycopy(str.getBytes(), 0, buff, tmp, str.length());
-			tmp += str.length() + 1;
-		}
-		return buff;
 	}
 }

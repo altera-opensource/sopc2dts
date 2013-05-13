@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,20 +19,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.devicetree;
 
-public abstract class DTProperty extends DTElement {
-	public static final int OF_DT_PROP = 0x03;
-	enum DTPropType { STRING, NUMBER, BYTE, BOOL };
-	DTPropType type;
-	int numValsPerRow = 0;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Vector;
 
-	protected DTProperty(String name, String label, String comment, DTPropType type)
+import sopc2dts.Logger;
+
+public class DTProperty extends DTElement {
+	public static final int OF_DT_PROP = 0x03;
+	int numValsPerRow = 0;
+	Vector<DTPropVal> vValues = new Vector<DTPropVal>();
+	public DTProperty(String name, String label, String comment, DTPropVal val)
 	{
 		super(name,label,comment);
-		this.type = type;
+		if(val!=null) {
+			vValues.add(val);
+		}
+	}
+	public void addValue(DTPropVal val) {
+		vValues.add(val);
 	}
 	public byte[] getBytes(DTBlob dtb)
 	{
-		byte[] valBytes = getValueBytes();
+		byte[] valBytes = getAllValueBytes();
 		byte[] buff = new byte[12+((valBytes.length +3)& ~3)];
 		DTBlob.putU32(OF_DT_PROP, buff, 0);
 		DTBlob.putU32(valBytes.length, buff, 4);
@@ -43,9 +52,49 @@ public abstract class DTProperty extends DTElement {
 		}
 		return buff;
 	}
-	protected abstract byte[] getValueBytes();
-
-	public abstract String toString(int indent);
+	public Vector<DTPropVal> getValues() {
+		return vValues;
+	}
+	
+	byte[] getAllValueBytes() {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		for(DTPropVal val : vValues) {
+			try {
+				baos.write(val.getValueBytes());
+			} catch (IOException e) {
+				Logger.logException(e);
+			}
+		}
+		return baos.toByteArray();
+	}
+	@Override
+	public String toString(int indent) {
+		String res = indent(indent) + (label != null ? label + ": " : "" ) + name;
+		DTPropVal prevVal = null;
+		int valNum = 0;
+		String nlStr = "";
+		for(DTPropVal val : vValues) {
+			if((numValsPerRow>0) && ((valNum%numValsPerRow)==0)) {
+				nlStr = "\n" + indent(indent+1);
+			} else {
+				nlStr = "";
+			}
+			if(prevVal == null) {
+				res += " = " + val.opening;
+			} else if (val.type != prevVal.type) {
+				res += prevVal.closing + "," + nlStr + val.opening;
+			} else {
+				res += val.seperator + nlStr;
+			}
+			res += val.toString();
+			prevVal = val;
+			valNum++;
+		}
+		if(prevVal != null) {
+			res += prevVal.closing;
+		}
+		return res + (comment != null ? ";\t/* " + comment + " */\n": ";\n");
+	}
 
 	public String toString()
 	{
