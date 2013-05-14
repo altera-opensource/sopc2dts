@@ -20,16 +20,30 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.components.altera;
 
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropNumber;
+
 public class VIPMixer extends BasicComponent {
 	boolean connectedOthers = false;
 	public VIPMixer(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
+	
+	@Override
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		DTNode node = super.toDTNode(bi, conn);
+		node.addProperty(new DTPropNumber("num-channels", new Long(getInterfaces(SystemDataType.STREAMING, false).size())));
+		return node;
+	}
+	
+	@Override
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		if(!connectedOthers) {
