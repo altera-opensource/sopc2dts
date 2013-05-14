@@ -42,7 +42,7 @@ public class DTPropString extends DTProperty {
 		this(name,values,label,null);
 	}
 	public DTPropString(String name, Vector<String> values, String label, String comment) {
-		super(name, label, comment, null);
+		super(name, label, comment);
 		for(String v : values) {
 			vValues.add(new DTPropStringVal(v));
 		}

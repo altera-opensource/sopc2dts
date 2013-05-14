@@ -26,7 +26,6 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTProperty;
@@ -63,7 +62,7 @@ public class SICFlash extends BasicComponent {
 				dtPart.addProperty(p);
 				if(part.isReadonly())
 				{
-					dtPart.addProperty(new DTPropBool("read-only"));
+					dtPart.addProperty(new DTProperty("read-only"));
 				}
 				node.addChild(dtPart);
 			}

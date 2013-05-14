@@ -36,7 +36,7 @@ public class DTPropByte extends DTProperty{
 		super(name, label, comment, (value == null ? null : new DTPropByteVal(value)));
 	}
 	public DTPropByte(String name, Vector<Integer> vVals, String label, String comment) {
-		super(name, label, comment, null);
+		super(name, label, comment);
 		if(vVals != null)
 		{
 			for(Integer in : vVals) {

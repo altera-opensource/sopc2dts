@@ -19,12 +19,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.devicetree;
 
+@Deprecated
 public class DTPropBool extends DTProperty {
 
 	public DTPropBool(String name) {
 		this(name, null, null);
 	}
 	public DTPropBool(String name, String label, String comment) {
-		super(name, label, comment, null);
+		super(name, label, comment);
 	}
 }

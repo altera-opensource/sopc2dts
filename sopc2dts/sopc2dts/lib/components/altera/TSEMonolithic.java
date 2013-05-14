@@ -33,7 +33,7 @@ import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropNumber;
-import sopc2dts.lib.devicetree.DTPropString;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	SICSgdma rx_dma, tx_dma;
@@ -47,7 +47,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	{
 		DTNode node = super.toDTNode(bi, conn);
 		BICEthernet be = bi.getEthernetForChip(getInstanceName());
-		node.addProperty(new DTPropString("phy-mode", getPhyModeString()));
+		node.addProperty(new DTProperty("phy-mode", getPhyModeString()));
 		if(be.getMiiID()==null)
 		{
 			//Always needed for this driver! (atm)

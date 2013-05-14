@@ -45,7 +45,7 @@ public class DTPropNumber extends DTProperty{
 		this(name,val,label, null);
 	}
 	public DTPropNumber(String name, Vector<Long> vals,String label, String comment) {
-		super(name, label, comment, null);
+		super(name, label, comment);
 		for(Long val : vals) {
 			vValues.add(new DTPropNumVal(val));
 		}

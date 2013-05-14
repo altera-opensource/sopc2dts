@@ -39,11 +39,15 @@ import sopc2dts.lib.components.MemoryBlock;
 import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropByte;
+import sopc2dts.lib.devicetree.DTPropByteVal;
+import sopc2dts.lib.devicetree.DTPropHexNumVal;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
+import sopc2dts.lib.devicetree.DTPropNumVal;
 import sopc2dts.lib.devicetree.DTPropNumber;
-import sopc2dts.lib.devicetree.DTPropString;
+import sopc2dts.lib.devicetree.DTPropPHandleVal;
+import sopc2dts.lib.devicetree.DTPropStringVal;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public abstract class DTGenerator extends AbstractSopcGenerator {
 	Vector<BasicComponent> vHandled;
@@ -68,21 +72,19 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				DTNode memNode = getMemoryNode(bi, povComponent, addrCells, sizeCells);
 				sopcNode = new DTNode("sopc@0");
 				chosenNode = getChosenNode(bi);
-				DTPropString dtps = new DTPropString("model","ALTR," + sys.getSystemName());
-				rootNode.addProperty(dtps);
-				dtps = new DTPropString("compatible","ALTR," + sys.getSystemName());
-				rootNode.addProperty(dtps);
+				rootNode.addProperty(new DTProperty("model","ALTR," + sys.getSystemName()));
+				rootNode.addProperty(new DTProperty("compatible","ALTR," + sys.getSystemName()));
 				Vector<Parameter> vAliases = bi.getAliases();
 				if (vAliases.size() > 0) {
 					DTNode aliasNode = new DTNode("aliases");
 					for (Parameter p : vAliases) {
-						aliasNode.addProperty(new DTPropString(p.getName(),p.getValue()));
+						aliasNode.addProperty(new DTProperty(p.getName(),p.getValue()));
 					}
 				    rootNode.addChild(aliasNode);
 				}
 				rootNode.addChild(cpuNode);
 				rootNode.addChild(memNode);
-				sopcNode.addProperty(new DTPropString("device_type", "soc"));
+				sopcNode.addProperty(new DTProperty("device_type", "soc"));
 			} else {
 				sopcNode = rootNode;
 				chosenNode = null;
@@ -93,13 +95,13 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			rootNode.addProperty(dtpn);
 
 			sopcNode = getSlavesFor(bi, povComponent, sopcNode);
-			sopcNode.addProperty(new DTPropBool("ranges"));
+			sopcNode.addProperty(new DTProperty("ranges"));
 			sopcNode.addProperty(new DTPropNumber("#address-cells",(long)addrCells));
 			sopcNode.addProperty(new DTPropNumber("#size-cells",(long)sizeCells));
 			Vector<String> vCompat = new Vector<String>();
 			vCompat.add("ALTR,avalon");
 			vCompat.add("simple-bus");
-			sopcNode.addProperty(new DTPropString("compatible", vCompat));
+			sopcNode.addProperty(new DTProperty("compatible", vCompat.toArray(new String[]{})));
 			sopcNode.addProperty(new DTPropNumber("bus-frequency", povComponent.getClockRate()));
 			if(bi.getPovType().equals(PovType.CPU))
 			{
@@ -155,7 +157,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				parent.addChild(new DTNode(dta.getInstanceName(),dta.getLabel()));
 			} break;
 			case PROP_BOOL: {
-				parent.addProperty(new DTPropBool(dta.getInstanceName(), dta.getLabel(), "appended from boardinfo"),true);
+				parent.addProperty(new DTProperty(dta.getInstanceName(), dta.getLabel(), "appended from boardinfo"),true);
 			} break;
 			case PROP_NUMBER: {
 				parent.addProperty(new DTPropNumber(dta.getInstanceName(), 
@@ -173,9 +175,9 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 						"appended from boardinfo"),true);
 			} break;
 			case PROP_STRING: {
-				parent.addProperty(new DTPropString(dta.getInstanceName(), 
-						dta.getValues(), dta.getLabel(), 
-						"appended from boardinfo"),true);
+				parent.addProperty(new DTProperty(dta.getInstanceName(), 
+						 dta.getLabel(), "appended from boardinfo", 
+						 dta.getValues().toArray(new String[]{})),true);
 			} break;
 			default: {
 				Logger.logln("Unimplemented dtappend type", LogLevel.DEBUG);
@@ -193,7 +195,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		} else {
 			bi.setBootArgs(bi.getBootArgs().replaceAll("\"", ""));
 		}
-		chosenNode.addProperty(new DTPropString("bootargs", bi.getBootArgs()));
+		chosenNode.addProperty(new DTProperty("bootargs", bi.getBootArgs()));
 		return chosenNode;
 	}
 	DTNode getCpuNodes(BoardInfo bi)
@@ -231,7 +233,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		DTPropHexNumber dtpReg = new DTPropHexNumber("reg");
 		dtpReg.getValues().clear();
 		dtpReg.setNumValuesPerRow(addrCells + sizeCells);
-		memNode.addProperty(new DTPropString("device_type", "memory"));
+		memNode.addProperty(new DTProperty("device_type", "memory"));
 		memNode.addProperty(dtpReg);
 		if(master!=null)
 		{

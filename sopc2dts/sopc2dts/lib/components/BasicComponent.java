@@ -33,11 +33,9 @@ import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTProperty;
-import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropPHandle;
-import sopc2dts.lib.devicetree.DTPropString;
 
 public class BasicComponent extends BasicElement {
 	private static final String EMBSW_DTS_PARAMS = "embeddedsw.dts.params.";
@@ -142,9 +140,10 @@ public class BasicComponent extends BasicElement {
 		DTNode node = new DTNode(getScd().getGroup() + "@0x" + getAddrFromConnectionStr(conn), instanceName);
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
-			node.addProperty(new DTPropString("device_type",getScd().getGroup()));
+			node.addProperty(new DTProperty("device_type",getScd().getGroup()));
 		}
-		DTPropString compPropString = new DTPropString("compatible", getScd().getCompatibles(version));
+		DTProperty compPropString = new DTProperty("compatible", 
+				getScd().getCompatibles(version).toArray(new String[]{})); 
 		node.addProperty(compPropString);
 		//Registers
 		Vector<Long> vRegs = getReg((conn != null ? conn.getMasterModule() : null));
@@ -169,7 +168,7 @@ public class BasicComponent extends BasicElement {
 		}
 		if(isInterruptMaster())
 		{
-			node.addProperty(new DTPropBool("interrupt-controller"));
+			node.addProperty(new DTProperty("interrupt-controller"));
 			node.addProperty(new DTPropNumber("#interrupt-cells", 
 					new Long(getInterfaces(SystemDataType.INTERRUPT, true).firstElement().getPrimaryWidth())));
 		}
@@ -205,7 +204,7 @@ public class BasicComponent extends BasicElement {
 				String assName = bp.getName();
 				if (assName.equalsIgnoreCase(EMBSW_DTS_COMPAT)) {
 					String[] vals = bp.getValue().split("\\s+");
-					compPropString.addStrings(vals);
+					compPropString.addStringValues(vals);
 					assName = null;
 				} else if (assName.startsWith(EMBSW_DTS_PARAMS)) {
 					assName = assName.substring(EMBSW_DTS_PARAMS.length());
@@ -239,7 +238,7 @@ public class BasicComponent extends BasicElement {
 				prop = new DTPropNumber(dtsName, Long.parseLong(fixedValue));
 			} else if (forceType.equalsIgnoreCase("string"))
 			{
-				prop = new DTPropString(dtsName, fixedValue);
+				prop = new DTProperty(dtsName, fixedValue);
 			}
 		} catch (IllegalArgumentException e) 
 		{

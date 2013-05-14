@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
-import sopc2dts.lib.devicetree.DTPropString;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class I2CSlave implements Comparable<I2CSlave> {
 	public static final String TAG_NAME = "I2CChip";
@@ -51,7 +51,7 @@ public class I2CSlave implements Comparable<I2CSlave> {
 	public DTNode toDTNode(BoardInfo bi)
 	{
 		DTNode node = new DTNode(name + "@0x" + Integer.toHexString(addr),label);
-		node.addProperty(new DTPropString("compatible", name));
+		node.addProperty(new DTProperty("compatible", name));
 		node.addProperty(new DTPropHexNumber("reg", Long.valueOf(addr)));
 		return node;
 	}

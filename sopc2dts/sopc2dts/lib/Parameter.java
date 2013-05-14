@@ -19,10 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib;
 
-import sopc2dts.lib.devicetree.DTPropBool;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
-import sopc2dts.lib.devicetree.DTPropString;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class Parameter {
@@ -117,7 +115,7 @@ public class Parameter {
 		case BOOLEAN: {
 			if(getValueAsBoolean())
 			{
-				prop = new DTPropBool(dtsName, null, name + " type " + dataType);
+				prop = new DTProperty(dtsName, null, name + " type " + dataType);
 			} else {
 				prop = null;
 			}
@@ -132,7 +130,7 @@ public class Parameter {
 			{
 				tmpVal = tmpVal.substring(0, tmpVal.length()-1);
 			}
-			prop = new DTPropString(dtsName, tmpVal, null, name + " type " + dataType);
+			prop = new DTProperty(dtsName, null, name + " type " + dataType, tmpVal);
 		} break;
 		default:{
 			prop = null;

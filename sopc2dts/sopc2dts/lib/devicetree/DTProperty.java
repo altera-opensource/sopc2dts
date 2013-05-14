@@ -29,15 +29,39 @@ public class DTProperty extends DTElement {
 	public static final int OF_DT_PROP = 0x03;
 	int numValsPerRow = 0;
 	Vector<DTPropVal> vValues = new Vector<DTPropVal>();
+	public DTProperty(String name) {
+		this(name,null,null);
+	}
+	public DTProperty(String name,String val) {
+		this(name,null,null,val);
+	}
+	public DTProperty(String name,String[] vals) {
+		this(name,null,null, vals);
+	}
+	public DTProperty(String name, String label, String comment) {
+		super(name,label,comment);
+	}
+	public DTProperty(String name, String label, String comment, String val) {
+		this(name,label,comment,new DTPropStringVal(val));
+	}
+	public DTProperty(String name, String label, String comment, String[] vals) {
+		this(name,label,comment);
+		addStringValues(vals);
+	}
 	public DTProperty(String name, String label, String comment, DTPropVal val)
 	{
-		super(name,label,comment);
+		this(name,label,comment);
 		if(val!=null) {
 			vValues.add(val);
 		}
 	}
 	public void addValue(DTPropVal val) {
 		vValues.add(val);
+	}
+	public void addStringValues(String[] vals) {
+		for(String v : vals) {
+			vValues.add(new DTPropStringVal(v));
+		}
 	}
 	public byte[] getBytes(DTBlob dtb)
 	{
