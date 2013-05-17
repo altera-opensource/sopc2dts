@@ -38,6 +38,9 @@ public class DTProperty extends DTElement {
 	public DTProperty(String name,String[] vals) {
 		this(name,null,null, vals);
 	}
+	public DTProperty(String name, DTPropVal val) {
+		this(name,null,null,val);
+	}
 	public DTProperty(String name, String label, String comment) {
 		super(name,label,comment);
 	}

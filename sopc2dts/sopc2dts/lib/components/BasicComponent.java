@@ -32,10 +32,10 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTProperty;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumber;
-import sopc2dts.lib.devicetree.DTPropPHandle;
 
 public class BasicComponent extends BasicElement {
 	private static final String EMBSW_DTS_PARAMS = "embeddedsw.dts.params.";
@@ -163,7 +163,7 @@ public class BasicComponent extends BasicElement {
 		BasicComponent irqParent = getInterrupts(vIrqs,bi);
 		if(irqParent!=null)
 		{
-			node.addProperty(new DTPropPHandle("interrupt-parent", irqParent.getInstanceName()));
+			node.addProperty(new DTProperty("interrupt-parent", new DTPropPHandleVal(irqParent.getInstanceName())));
 			node.addProperty(new DTPropNumber("interrupts",vIrqs));
 		}
 		if(isInterruptMaster())
