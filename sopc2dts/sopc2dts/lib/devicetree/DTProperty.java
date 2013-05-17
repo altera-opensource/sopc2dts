@@ -58,6 +58,11 @@ public class DTProperty extends DTElement {
 	public void addValue(DTPropVal val) {
 		vValues.add(val);
 	}
+	public void addByteValues(int[] vals) {
+		for(int v : vals) {
+			vValues.add(new DTPropByteVal(v));
+		}
+	}
 	public void addStringValues(String[] vals) {
 		for(String v : vals) {
 			vValues.add(new DTPropStringVal(v));
