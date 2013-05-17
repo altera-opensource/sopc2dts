@@ -21,6 +21,7 @@ package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
 
+@Deprecated
 public class DTPropString extends DTProperty {
 
 	public DTPropString(String name) {
