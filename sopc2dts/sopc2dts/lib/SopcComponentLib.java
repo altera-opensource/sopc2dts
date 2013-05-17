@@ -42,6 +42,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.altera.GenericTristateController;
+import sopc2dts.lib.components.altera.MultiBridge;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
@@ -180,6 +181,8 @@ public class SopcComponentLib implements ContentHandler {
 			return new GenericTristateController(className, instanceName, version);
 		} else if (className.equalsIgnoreCase("arm_gic")) {
 			return new CortexA9GIC(instanceName, version);
+		} else if (className.equalsIgnoreCase("hps_bridge_avalon")) {
+			return new MultiBridge(className, instanceName, version, getScdByClassName(className));
 		} else {
 			return castToGroupSpecificObject(
 					new BasicComponent(className, instanceName, version, 
