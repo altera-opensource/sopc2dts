@@ -188,4 +188,13 @@
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 		<TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
 	</S2DComponent>
+	<S2DComponent classname="alt_vip_vfr" group="vip" compatDevice="vip-frame-reader">
+		<CompatibleVersion value="9.1"></CompatibleVersion>
+		<parameter dtsVName="max-width" sopcName="MAX_IMAGE_WIDTH"></parameter>
+		<parameter dtsVName="max-height" sopcName="MAX_IMAGE_HEIGHT"></parameter>
+		<parameter dtsVName="bits-per-color" sopcName="BITS_PER_PIXEL_PER_COLOR_PLANE"></parameter>
+		<parameter dtsVName="colors-per-beat" sopcName="NUMBER_OF_CHANNELS_IN_PARALLEL"></parameter>
+		<parameter dtsVName="beats-per-pixel" sopcName="NUMBER_OF_CHANNELS_IN_SEQUENCE"></parameter>
+		<parameter dtsVName="mem-word-width" sopcName="MEM_PORT_WIDTH"></parameter>
+	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
