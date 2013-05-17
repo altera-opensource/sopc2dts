@@ -105,7 +105,7 @@ public class DTProperty extends DTElement {
 			}
 			if(prevVal == null) {
 				res += " = " + val.opening;
-			} else if (val.type != prevVal.type) {
+			} else if (!val.isTypeCompatible(prevVal.type)) {
 				res += prevVal.closing + "," + nlStr + val.opening;
 			} else {
 				res += val.seperator + nlStr;

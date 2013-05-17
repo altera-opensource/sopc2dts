@@ -33,6 +33,7 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.Parameter;
 import sopc2dts.lib.BoardInfo.PovType;
 import sopc2dts.lib.boardinfo.BICDTAppend;
+import sopc2dts.lib.boardinfo.BICDTAppend.DTAppendType;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.MemoryBlock;
@@ -48,8 +49,10 @@ import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTPropStringVal;
 import sopc2dts.lib.devicetree.DTProperty;
+import sopc2dts.lib.devicetree.DTPropPHandle;
 
 public abstract class DTGenerator extends AbstractSopcGenerator {
+	static final private String boardInfoComment = "appended from boardinfo";
 	Vector<BasicComponent> vHandled;
 	public DTGenerator(AvalonSystem s, boolean isText) {
 		super(s, isText);
@@ -152,36 +155,38 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				Logger.logln("DTAppend: Unable to find parent for " + dta.getInstanceName() + ". Adding to root", LogLevel.WARNING);
 				parent = rootNode;
 			}
-			switch(dta.getType()) {
-			case NODE: {
+			Vector<DTAppendType> vTypes = dta.getTypes();
+			if ((vTypes.size() > 0) && (vTypes.get(0) == DTAppendType.NODE)) {
 				parent.addChild(new DTNode(dta.getInstanceName(),dta.getLabel()));
-			} break;
-			case PROP_BOOL: {
-				parent.addProperty(new DTProperty(dta.getInstanceName(), dta.getLabel(), "appended from boardinfo"),true);
-			} break;
-			case PROP_NUMBER: {
-				parent.addProperty(new DTPropNumber(dta.getInstanceName(), 
-						vStr2vLong(dta.getValues()), dta.getLabel(), 
-						"appended from boardinfo"),true);
-			} break;
-			case PROP_HEX: {
-				parent.addProperty(new DTPropHexNumber(dta.getInstanceName(), 
-						vStr2vLong(dta.getValues()), dta.getLabel(), 
-						"appended from boardinfo"),true);
-			} break;
-			case PROP_BYTE: {
-				parent.addProperty(new DTPropByte(dta.getInstanceName(), 
-						vStr2vInteger(dta.getValues()), dta.getLabel(), 
-						"appended from boardinfo"),true);
-			} break;
-			case PROP_STRING: {
-				parent.addProperty(new DTProperty(dta.getInstanceName(), 
-						 dta.getLabel(), "appended from boardinfo", 
-						 dta.getValues().toArray(new String[]{})),true);
-			} break;
-			default: {
-				Logger.logln("Unimplemented dtappend type", LogLevel.DEBUG);
-			}
+			} else {
+				Vector<String> vValues = dta.getValues();
+				if (vValues.size() != vTypes.size()){
+					Logger.logln("doDTAppend size of vValues not equal to size of vTypes: " +
+					vValues.size() + " != " + vTypes.size() + " for instance "+
+					dta.getInstanceName(), LogLevel.ERROR);
+					return;
+				}
+				DTProperty prop = new DTProperty(dta.getInstanceName(), dta.getLabel(), boardInfoComment);
+				for (int i = 0; i < vTypes.size(); i++) {
+					switch(vTypes.get(i)) {
+					case PROP_NUMBER: {
+						prop.addValue(new DTPropNumVal(Long.decode(vValues.get(i))));
+					} break;
+					case PROP_HEX: {
+						prop.addValue(new DTPropHexNumVal(Long.decode(vValues.get(i))));
+					} break;
+					case PROP_BYTE: {
+						prop.addValue(new DTPropByteVal(Integer.decode(vValues.get(i))));
+					} break;
+					case PROP_STRING: {
+						prop.addValue(new DTPropStringVal(vValues.get(i)));
+					} break;
+					case PROP_PHANDLE: {
+						prop.addValue(new DTPropPHandleVal(vValues.get(i),0));
+					} break;
+					}
+				}
+				parent.addProperty(prop, true);
 			}
 		}
 	}

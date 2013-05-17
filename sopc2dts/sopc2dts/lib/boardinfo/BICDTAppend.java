@@ -29,13 +29,13 @@ import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 
 public class BICDTAppend extends BoardInfoComponent {
-	public enum DTAppendType { NODE, PROP_BOOL, PROP_NUMBER, PROP_STRING, PROP_HEX, PROP_BYTE };
+	public enum DTAppendType { NODE, PROP_BOOL, PROP_NUMBER, PROP_STRING, PROP_HEX, PROP_BYTE, PROP_PHANDLE };
 	public static final String TAG_NAME = "DTAppend";
 	private static final String VAL_TAG = "val";
 	String[] parentPath;
 	String parentLabel;
 	Vector<String> vValues = new Vector<String>();
-	DTAppendType type;
+	Vector<DTAppendType> vTypes = new Vector<DTAppendType>();
 	String label;
 	String valBuf;
 	private Boolean valSeen = false;
@@ -46,7 +46,7 @@ public class BICDTAppend extends BoardInfoComponent {
 	public BICDTAppend(String tag, Attributes atts) {
 		super(tag, atts);
 		addValue(atts.getValue("val"));
-		setType(atts.getValue("type"));
+		addType(atts.getValue("type"));
 		setPath(atts.getValue("parentpath"));
 		setParentLabel(atts.getValue("parentlabel"));
 		setLabel(atts.getValue("newlabel"));
@@ -72,42 +72,49 @@ public class BICDTAppend extends BoardInfoComponent {
 			vValues.add(val);
 		}
 	}
-	public void setType(String t) {
+	private void addType(String t) {
 		if(t != null) {
 			if(t.equalsIgnoreCase("node")) {
-				type = DTAppendType.NODE;
-			} else if(t.equalsIgnoreCase("bool")) {
-				type = DTAppendType.PROP_BOOL;
+				vTypes.add(DTAppendType.NODE);
+			} else if (t.equalsIgnoreCase("bool")) {
+				// bools have no data; so there is no real type
 			} else if(t.equalsIgnoreCase("number")) {
-				type = DTAppendType.PROP_NUMBER;
+				vTypes.add(DTAppendType.PROP_NUMBER);
 			} else if(t.equalsIgnoreCase("string")) {
-				type = DTAppendType.PROP_STRING;
+				vTypes.add(DTAppendType.PROP_STRING);
 			} else if(t.equalsIgnoreCase("hex")) {
-				type = DTAppendType.PROP_HEX;
+				vTypes.add(DTAppendType.PROP_HEX);
 			} else if(t.equalsIgnoreCase("byte")) {
-				type = DTAppendType.PROP_BYTE;
+				vTypes.add(DTAppendType.PROP_BYTE);
+			} else if (t.equalsIgnoreCase("phandle")) {
+				vTypes.add(DTAppendType.PROP_PHANDLE);
 			} else {
-				type = null;
+				Logger.logln("BICDTAppend.setType unknown type: "+t, LogLevel.ERROR);
 			}
-		} else {
-			type = null;
+		}
+	}
+	private String typeToString(DTAppendType t) {
+		switch(t) {
+		case NODE:              return "node";
+		case PROP_BOOL: return "bool";
+		case PROP_HEX:  return "hex";
+		case PROP_BYTE: return "byte";
+		case PROP_NUMBER:       return "number";
+		case PROP_STRING:       return "string";
+		case PROP_PHANDLE:  return "phandle";
+		default: return "";
 		}
 	}
 	@Override
 	public String getXml() {
-		String xml = '<' + TAG_NAME + " name=\"" + instanceName + "\" type=\"";
-		if(type==null) {
-			return "";
+		String xml = '<' + TAG_NAME + " name=\"" + instanceName + "\" ";
+		if (vTypes.size() == 1) {
+			xml += "type=\"";
+
+			xml += typeToString(vTypes.get(0));
+
+			xml += '\"';
 		}
-		switch(type) {
-		case NODE: 		xml += "node"; 	break;
-		case PROP_BOOL:	xml += "bool"; 	break;
-		case PROP_HEX:	xml += "hex";	break;
-		case PROP_BYTE:	xml += "byte";	break;
-		case PROP_NUMBER:	xml += "number";	break;
-		case PROP_STRING:	xml += "string";	break;
-		}
-		xml += '\"';
 		if(parentLabel!=null) {
 			xml += " parentlabel=\"" + parentLabel + "\"";
 		}
@@ -137,7 +144,11 @@ public class BICDTAppend extends BoardInfoComponent {
 		default:
 			xml += ">\n";
 			for (int i = 0; i < vValues.size(); i++) {
-				xml += "    <val>"+vValues.get(i)+"</val>\n";
+				if (i < vTypes.size()) {
+					xml += "    <val type=\"" + typeToString(vTypes.get(i))+"\">"+vValues.get(i)+"</val>\n";
+				} else {
+					xml += "    <val>"+vValues.get(i)+"</val>\n";
+				}
 				
 			}
 			xml += "</" + TAG_NAME + ">\n";
@@ -154,8 +165,8 @@ public class BICDTAppend extends BoardInfoComponent {
 	public Vector<String> getValues() {
 		return vValues;
 	}
-	public DTAppendType getType() {
-		return type;
+	public Vector<DTAppendType> getTypes() {
+		return vTypes;
 	}
 	public String getLabel() {
 		return label;
@@ -165,6 +176,15 @@ public class BICDTAppend extends BoardInfoComponent {
 		if(localName.equals(VAL_TAG)) {
 			valBuf = "";
 			valSeen = true;
+			String t = atts.getValue("type");
+			if (t != null) {
+				addType(t);
+			} else if (vTypes.size() == 0) {
+				Logger.logln("unspecified type for val tag found by BICDTAppend", LogLevel.ERROR);
+			}
+			else {
+				vTypes.add(vTypes.lastElement());
+			}
 		} else {
 			Logger.logln("unexpected start tag, "+localName+" found by BICDTAppend", LogLevel.ERROR);
 		}
@@ -182,6 +202,8 @@ public class BICDTAppend extends BoardInfoComponent {
 			valSeen = false;
 		} else if (!localName.equals(TAG_NAME)){
 			Logger.logln("unexpected end tag, "+localName+" found by BICDTAppend", LogLevel.ERROR);
+		} else if (vTypes.size() == 0) {
+			vValues.removeAllElements(); // No types implies a boolean which has no data either
 		}
 	}
 }

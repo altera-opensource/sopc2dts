@@ -32,4 +32,16 @@ public abstract class DTPropVal {
 		seperator = sep;
 	}
 	protected abstract byte[] getValueBytes();
+	boolean isTypeCompatible(DTPropType t) {
+		if(type == t) {
+			return true;
+		} else {
+			if(((type == DTPropType.NUMBER) && (t == DTPropType.PHANDLE)) ||
+					((t == DTPropType.NUMBER) && (type == DTPropType.PHANDLE)))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

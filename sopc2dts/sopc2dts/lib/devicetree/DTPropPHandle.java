@@ -18,7 +18,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.devicetree;
-
+import java.util.Vector;
 public class DTPropPHandle extends DTProperty {
 	String value;
 	long pHandle;
@@ -31,5 +31,11 @@ public class DTPropPHandle extends DTProperty {
 	public DTPropPHandle(String name, String value, String label, String comment) {
 		super(name, label, comment, new DTPropPHandleVal(value, 0));
 		this.value = value;
+	}
+	public DTPropPHandle(String name, Vector<String>values, String label, String comment) {
+		super(name, label, comment);
+		for (String val: values) {
+			this.addValue(new DTPropPHandleVal(val, 0));
+		}
 	}
 }
