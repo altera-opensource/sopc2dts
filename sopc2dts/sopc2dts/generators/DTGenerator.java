@@ -40,7 +40,6 @@ import sopc2dts.lib.components.MemoryBlock;
 import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropByte;
 import sopc2dts.lib.devicetree.DTPropByteVal;
 import sopc2dts.lib.devicetree.DTPropHexNumVal;
 import sopc2dts.lib.devicetree.DTPropHexNumber;
@@ -49,7 +48,6 @@ import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTPropStringVal;
 import sopc2dts.lib.devicetree.DTProperty;
-import sopc2dts.lib.devicetree.DTPropPHandle;
 
 public abstract class DTGenerator extends AbstractSopcGenerator {
 	static final private String boardInfoComment = "appended from boardinfo";
@@ -115,22 +113,6 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		doDTAppend(rootNode,bi);
 		return rootNode;
 	}
-	private static Vector<Long> vStr2vLong(Vector<String> vStrs) {
-		Vector<Long> vLongs = new Vector<Long>(vStrs.size());
-		for (String s : vStrs) {
-			vLongs.add(Long.decode(s));
-		}
-
-		return vLongs;
-	}
-	private static Vector<Integer> vStr2vInteger(Vector<String> vStrs) {
-		Vector<Integer> vInts = new Vector<Integer>(vStrs.size());
-		for (String s : vStrs) {
-			vInts.add(Integer.decode(s));
-		}
-
-		return vInts;
-	}
 	private void doDTAppend(DTNode rootNode, BoardInfo bi) {
 		Vector<BICDTAppend> appends = bi.getDTAppends();
 		for(BICDTAppend dta : appends) {
@@ -184,6 +166,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 					case PROP_PHANDLE: {
 						prop.addValue(new DTPropPHandleVal(vValues.get(i),0));
 					} break;
+					default: /* Bools don't have values */
 					}
 				}
 				parent.addProperty(prop, true);
