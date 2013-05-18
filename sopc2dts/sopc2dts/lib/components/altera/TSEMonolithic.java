@@ -32,7 +32,6 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class TSEMonolithic extends SICTrippleSpeedEthernet {
@@ -51,13 +50,13 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		if(be.getMiiID()==null)
 		{
 			//Always needed for this driver! (atm)
-			node.addProperty(new DTPropNumber("ALTR,mii-id", 0L));
+			node.addProperty(new DTProperty("ALTR,mii-id", 0L));
 		} else {
-			node.addProperty(new DTPropNumber("ALTR,mii-id", Long.valueOf(be.getMiiID())));
+			node.addProperty(new DTProperty("ALTR,mii-id", Long.valueOf(be.getMiiID())));
 		}
 		if(be.getPhyID()!=null)
 		{
-			node.addProperty(new DTPropNumber("ALTR,mii-id", Long.valueOf(be.getPhyID())));
+			node.addProperty(new DTProperty("ALTR,mii-id", Long.valueOf(be.getPhyID())));
 		}
 		return node;
 	}

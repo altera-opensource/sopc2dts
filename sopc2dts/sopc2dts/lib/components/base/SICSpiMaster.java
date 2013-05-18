@@ -27,7 +27,7 @@ import sopc2dts.lib.boardinfo.SpiSlave;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICSpiMaster extends BasicComponent {
 
@@ -49,8 +49,8 @@ public class SICSpiMaster extends BasicComponent {
 				BICSpi bSpi = (BICSpi)bs;
 				if(!bSpi.getSlaves().isEmpty())
 				{
-					node.addProperty(new DTPropNumber("#address-cells", 1L));
-					node.addProperty(new DTPropNumber("#size-cells", 0L));
+					node.addProperty(new DTProperty("#address-cells", 1L));
+					node.addProperty(new DTProperty("#size-cells", 0L));
 					for(SpiSlave slave : bSpi.getSlaves())
 					{
 						node.addChild(slave.toDTNode(bi));

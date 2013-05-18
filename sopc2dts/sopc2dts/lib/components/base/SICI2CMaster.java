@@ -29,7 +29,7 @@ import sopc2dts.lib.boardinfo.I2CSlave;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICI2CMaster extends BasicComponent {
 
@@ -46,8 +46,8 @@ public class SICI2CMaster extends BasicComponent {
 		BICI2C bi2c = bi.getI2CForChip(this.getInstanceName());
 		Vector<I2CSlave> vSlaves = bi2c.getSlaves();
 		if(!vSlaves.isEmpty()) {
-			node.addProperty(new DTPropNumber("#address-cells", 1L));
-			node.addProperty(new DTPropNumber("#size-cells", 0L));
+			node.addProperty(new DTProperty("#address-cells", 1L));
+			node.addProperty(new DTProperty("#size-cells", 0L));
 			Collections.sort(vSlaves);
 			for(I2CSlave s : vSlaves) {
 				node.addChild(s.toDTNode(bi));

@@ -32,6 +32,9 @@ public class DTProperty extends DTElement {
 	public DTProperty(String name) {
 		this(name,null,null);
 	}
+	public DTProperty(String name,long val) {
+		this(name,null,null,val);
+	}
 	public DTProperty(String name,String val) {
 		this(name,null,null,val);
 	}
@@ -46,6 +49,9 @@ public class DTProperty extends DTElement {
 	}
 	public DTProperty(String name, String label, String comment, String val) {
 		this(name,label,comment,new DTPropStringVal(val));
+	}
+	public DTProperty(String name, String label, String comment, long val) {
+		this(name,label,comment,new DTPropNumVal(val));
 	}
 	public DTProperty(String name, String label, String comment, String[] vals) {
 		this(name,label,comment);
@@ -64,6 +70,26 @@ public class DTProperty extends DTElement {
 	public void addByteValues(int[] vals) {
 		for(int v : vals) {
 			vValues.add(new DTPropByteVal(v));
+		}
+	}
+	public void addHexValues(long[] vals) {
+		for(long v : vals) {
+			vValues.add(new DTPropHexNumVal(v));
+		}
+	}
+	public void addHexValues(Vector<Long> vals) {
+		for(long v : vals) {
+			vValues.add(new DTPropHexNumVal(v));
+		}
+	}
+	public void addNumberValues(long[] vals) {
+		for(long v : vals) {
+			vValues.add(new DTPropNumVal(v));
+		}
+	}
+	public void addNumberValues(Vector<Long> vals) {
+		for(long v : vals) {
+			vValues.add(new DTPropNumVal(v));
 		}
 	}
 	public void addStringValues(String[] vals) {

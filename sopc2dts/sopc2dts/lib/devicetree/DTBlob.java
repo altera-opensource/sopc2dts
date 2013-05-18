@@ -144,10 +144,10 @@ public class DTBlob {
 		long ph = 0;
  		if(label.equals(node.getLabel()))
 		{
-			DTPropNumber dtpn = (DTPropNumber)node.getPropertyByName("linux,phandle");
+			DTProperty dtpn = node.getPropertyByName("linux,phandle");
 			if(dtpn==null)
 			{
-				dtpn = new DTPropNumber("linux,phandle",nextPHandle);
+				dtpn = new DTProperty("linux,phandle",nextPHandle);
 				ph = nextPHandle;
 				nextPHandle++;
 				node.addProperty(dtpn);

@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package sopc2dts.lib.devicetree;
 
 import java.util.Vector;
-
+@Deprecated
 public class DTPropNumber extends DTProperty{
 	
 	public DTPropNumber(String name) {

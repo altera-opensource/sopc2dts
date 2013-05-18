@@ -26,8 +26,6 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropHexNumber;
-import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICFlash extends BasicComponent {
@@ -47,8 +45,8 @@ public class SICFlash extends BasicComponent {
 		{
 			if(vPartitions.size()>0)
 			{
-				node.addProperty(new DTPropNumber("#address-cells", 1L));
-				node.addProperty(new DTPropNumber("#size-cells", 1L));
+				node.addProperty(new DTProperty("#address-cells", 1L));
+				node.addProperty(new DTProperty("#size-cells", 1L));
 			}
 			for(FlashPartition part : vPartitions)
 			{
@@ -57,7 +55,8 @@ public class SICFlash extends BasicComponent {
 				Vector<Long> vReg = new Vector<Long>();
 				vReg.add(Long.valueOf(part.getAddress()));
 				vReg.add(Long.valueOf(part.getSize()));
-				p = new DTPropHexNumber("reg", vReg);
+				p = new DTProperty("reg");
+				p.addHexValues(vReg);
 				p.setNumValuesPerRow(2); //Addr + size
 				dtPart.addProperty(p);
 				if(part.isReadonly())
@@ -74,8 +73,8 @@ public class SICFlash extends BasicComponent {
 	{
 		//XXX Refactor to get cfi stuff to seperate class
 		DTNode node = super.toDTNode(bi, conn);
-		node.addProperty(new DTPropNumber("bank-width", Long.valueOf(getBankWidth())));
-		node.addProperty(new DTPropNumber("device-width", 1L));
+		node.addProperty(new DTProperty("bank-width", Long.valueOf(getBankWidth())));
+		node.addProperty(new DTProperty("device-width", 1L));
 		node = addPartitionsToDTNode(bi, node);
 		return node;
 	}

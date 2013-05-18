@@ -23,7 +23,7 @@ import org.xml.sax.Attributes;
 
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropHexNumber;
+import sopc2dts.lib.devicetree.DTPropHexNumVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class I2CSlave implements Comparable<I2CSlave> {
@@ -52,7 +52,7 @@ public class I2CSlave implements Comparable<I2CSlave> {
 	{
 		DTNode node = new DTNode(name + "@0x" + Integer.toHexString(addr),label);
 		node.addProperty(new DTProperty("compatible", name));
-		node.addProperty(new DTPropHexNumber("reg", Long.valueOf(addr)));
+		node.addProperty(new DTProperty("reg", new DTPropHexNumVal(Long.valueOf(addr))));
 		return node;
 	}
 	public int compareTo(I2CSlave o) {

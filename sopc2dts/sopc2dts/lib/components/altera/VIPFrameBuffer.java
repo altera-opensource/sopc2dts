@@ -27,7 +27,7 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class VIPFrameBuffer extends BasicComponent {
 	SICSgdma dmaEngine = null;
@@ -71,7 +71,7 @@ public class VIPFrameBuffer extends BasicComponent {
 		if((symbolWidth!=null) && (numSymbols!=null)) {
 			bpp = Long.decode(symbolWidth.getValue()) * Long.decode(numSymbols.getValue());
 		}
-		node.addProperty(new DTPropNumber("bpp", bpp));
+		node.addProperty(new DTProperty("bpp", bpp));
 		return node;
 	}
 }

@@ -25,7 +25,6 @@ import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICEpcs extends SICFlash {
@@ -38,12 +37,12 @@ public class SICEpcs extends SICFlash {
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{
 		DTNode node = super.toDTNode(bi, conn);
-		node.addProperty(new DTPropNumber("#address-cells", 1L));
-		node.addProperty(new DTPropNumber("#size-cells", 0L));
+		node.addProperty(new DTProperty("#address-cells", 1L));
+		node.addProperty(new DTProperty("#size-cells", 0L));
 		DTNode m25p80 = new DTNode("m25p80@0");
 		m25p80.addProperty(new DTProperty("compatible", "m25p80"));
-		m25p80.addProperty(new DTPropNumber("spi-max-frequency", 25000000L));
-		m25p80.addProperty(new DTPropNumber("reg", 0L));
+		m25p80.addProperty(new DTProperty("spi-max-frequency", 25000000L));
+		m25p80.addProperty(new DTProperty("reg", 0L));
 		addPartitionsToDTNode(bi, m25p80);
 		node.addChild(m25p80);
 		return node;

@@ -23,8 +23,7 @@ import org.xml.sax.Attributes;
 
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropHexNumber;
-import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTPropHexNumVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class SpiSlave {
@@ -83,8 +82,8 @@ public class SpiSlave {
 	{
 		DTNode node = new DTNode(name + "@0x" + Integer.toHexString(reg));
 		node.addProperty(new DTProperty("compatible", compatible));
-		node.addProperty(new DTPropNumber("spi-max-frequency", Long.valueOf(spiMaxFrequency)));
-		node.addProperty(new DTPropHexNumber("reg", Long.valueOf(reg)));
+		node.addProperty(new DTProperty("spi-max-frequency", Long.valueOf(spiMaxFrequency)));
+		node.addProperty(new DTProperty("reg", new DTPropHexNumVal(Long.valueOf(reg))));
 		return node;
 	}
 

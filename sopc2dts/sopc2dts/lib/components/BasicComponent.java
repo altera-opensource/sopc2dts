@@ -34,8 +34,6 @@ import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTProperty;
-import sopc2dts.lib.devicetree.DTPropHexNumber;
-import sopc2dts.lib.devicetree.DTPropNumber;
 
 public class BasicComponent extends BasicElement {
 	private static final String EMBSW_DTS_PARAMS = "embeddedsw.dts.params.";
@@ -138,6 +136,7 @@ public class BasicComponent extends BasicElement {
 	public DTNode toDTNode(BoardInfo bi,Connection conn)
 	{
 		DTNode node = new DTNode(getScd().getGroup() + "@0x" + getAddrFromConnectionStr(conn), instanceName);
+		DTProperty p;
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
 			node.addProperty(new DTProperty("device_type",getScd().getGroup()));
@@ -149,7 +148,8 @@ public class BasicComponent extends BasicElement {
 		Vector<Long> vRegs = getReg((conn != null ? conn.getMasterModule() : null));
 		if(vRegs.size()>0)
 		{
-			DTPropHexNumber p = new DTPropHexNumber("reg",vRegs);
+			p = new DTProperty("reg");
+			p.addHexValues(vRegs);
 			int width = 2;
 			if(conn!=null) {
 				width = conn.getSlaveInterface().getPrimaryWidth() + conn.getSlaveInterface().getSecondaryWidth();
@@ -164,13 +164,15 @@ public class BasicComponent extends BasicElement {
 		if(irqParent!=null)
 		{
 			node.addProperty(new DTProperty("interrupt-parent", new DTPropPHandleVal(irqParent.getInstanceName())));
-			node.addProperty(new DTPropNumber("interrupts",vIrqs));
+			p = new DTProperty("interrupts");
+			p.addNumberValues(vIrqs);
+			node.addProperty(p);
 		}
 		if(isInterruptMaster())
 		{
 			node.addProperty(new DTProperty("interrupt-controller"));
-			node.addProperty(new DTPropNumber("#interrupt-cells", 
-					new Long(getInterfaces(SystemDataType.INTERRUPT, true).firstElement().getPrimaryWidth())));
+			node.addProperty(new DTProperty("#interrupt-cells", 
+					getInterfaces(SystemDataType.INTERRUPT, true).firstElement().getPrimaryWidth()));
 		}
 
 		Vector<Parameter> vParamTodo = new Vector<Parameter>(vParameters);
@@ -184,10 +186,10 @@ public class BasicComponent extends BasicElement {
 				vParamTodo.remove(bp);
 			} else if(ap.getDtsName().equalsIgnoreCase("clock-frequency"))
 			{
-				node.addProperty(new DTPropNumber(ap.getDtsName(), getClockRate()));
+				node.addProperty(new DTProperty(ap.getDtsName(), getClockRate()));
 			} else if(ap.getDtsName().equalsIgnoreCase("regstep"))
 			{
-				node.addProperty(new DTPropNumber(ap.getDtsName(), 4L));
+				node.addProperty(new DTProperty(ap.getDtsName(), 4L));
 			} else if(ap.getFixedValue() != null)
 			{
 				DTProperty prop = createFixedProp(ap);
@@ -235,7 +237,7 @@ public class BasicComponent extends BasicElement {
 		try {
 			if (forceType.equalsIgnoreCase("unsigned"))
 			{
-				prop = new DTPropNumber(dtsName, Long.parseLong(fixedValue));
+				prop = new DTProperty(dtsName, Long.parseLong(fixedValue));
 			} else if (forceType.equalsIgnoreCase("string"))
 			{
 				prop = new DTProperty(dtsName, fixedValue);

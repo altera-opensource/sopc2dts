@@ -24,7 +24,6 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class GpioController extends BasicComponent {
@@ -40,7 +39,7 @@ public class GpioController extends BasicComponent {
 	public DTNode toDTNode(BoardInfo bi,Connection conn)
 	{
 		DTNode n = super.toDTNode(bi, conn);
-		n.addProperty(new DTPropNumber("#gpio-cells", 2L));
+		n.addProperty(new DTProperty("#gpio-cells", 2L));
 		n.addProperty(new DTProperty("gpio-controller"));
 		return n;
 	}

@@ -42,9 +42,7 @@ import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropByteVal;
 import sopc2dts.lib.devicetree.DTPropHexNumVal;
-import sopc2dts.lib.devicetree.DTPropHexNumber;
 import sopc2dts.lib.devicetree.DTPropNumVal;
-import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTPropStringVal;
 import sopc2dts.lib.devicetree.DTProperty;
@@ -90,20 +88,20 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				sopcNode = rootNode;
 				chosenNode = null;
 			}
-			DTPropNumber dtpn = new DTPropNumber("#address-cells", (long)addrCells);
-			rootNode.addProperty(dtpn);
-			dtpn = new DTPropNumber("#size-cells",(long)sizeCells);
-			rootNode.addProperty(dtpn);
+			DTProperty dtp = new DTProperty("#address-cells", (long)addrCells);
+			rootNode.addProperty(dtp);
+			dtp = new DTProperty("#size-cells",(long)sizeCells);
+			rootNode.addProperty(dtp);
 
 			sopcNode = getSlavesFor(bi, povComponent, sopcNode);
 			sopcNode.addProperty(new DTProperty("ranges"));
-			sopcNode.addProperty(new DTPropNumber("#address-cells",(long)addrCells));
-			sopcNode.addProperty(new DTPropNumber("#size-cells",(long)sizeCells));
+			sopcNode.addProperty(new DTProperty("#address-cells",(long)addrCells));
+			sopcNode.addProperty(new DTProperty("#size-cells",(long)sizeCells));
 			Vector<String> vCompat = new Vector<String>();
 			vCompat.add("ALTR,avalon");
 			vCompat.add("simple-bus");
 			sopcNode.addProperty(new DTProperty("compatible", vCompat.toArray(new String[]{})));
-			sopcNode.addProperty(new DTPropNumber("bus-frequency", povComponent.getClockRate()));
+			sopcNode.addProperty(new DTProperty("bus-frequency", povComponent.getClockRate()));
 			if(bi.getPovType().equals(PovType.CPU))
 			{
 				rootNode.addChild(sopcNode);
@@ -192,8 +190,8 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		DTNode cpuNode = new DTNode("cpus");
 		if(bi.getPovType() == PovType.CPU)
 		{
-			cpuNode.addProperty(new DTPropNumber("#address-cells",1L));
-			cpuNode.addProperty(new DTPropNumber("#size-cells",0L));
+			cpuNode.addProperty(new DTProperty("#address-cells",1L));
+			cpuNode.addProperty(new DTProperty("#size-cells",0L));
 			for(BasicComponent comp : sys.getSystemComponents())
 			{
 				if(comp instanceof CpuComponent)
@@ -218,7 +216,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 	DTNode getMemoryNode(BoardInfo bi, BasicComponent master, int addrCells, int sizeCells)
 	{
 		DTNode memNode = new DTNode("memory@0");
-		DTPropHexNumber dtpReg = new DTPropHexNumber("reg");
+		DTProperty dtpReg = new DTProperty("reg");
 		dtpReg.getValues().clear();
 		dtpReg.setNumValuesPerRow(addrCells + sizeCells);
 		memNode.addProperty(new DTProperty("device_type", "memory"));
@@ -239,8 +237,8 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 								BasicComponent comp = mem.getModule();
 								if((comp!=null)&&(!vHandled.contains(comp)))
 								{
-									dtpReg.addValues(mem.getBase());
-									dtpReg.addValues(mem.getSize());
+									dtpReg.addHexValues(mem.getBase());
+									dtpReg.addHexValues(mem.getSize());
 									vHandled.add(comp);
 								}		
 							}
@@ -271,8 +269,8 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 								{
 									if(comp.getScd().getGroup().equalsIgnoreCase("memory"))
 									{
-										dtpReg.addValues(mem.getBase());
-										dtpReg.addValues(mem.getSize());
+										dtpReg.addHexValues(mem.getBase());
+										dtpReg.addHexValues(mem.getSize());
 										vMemoryMapped.add(mem.getModuleName());
 										vHandled.add(comp);
 									}

@@ -19,8 +19,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib;
 
-import sopc2dts.lib.devicetree.DTPropHexNumber;
-import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTPropHexNumVal;
+import sopc2dts.lib.devicetree.DTPropNumVal;
+import sopc2dts.lib.devicetree.DTPropStringVal;
+import sopc2dts.lib.devicetree.DTPropVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class Parameter {
@@ -99,7 +101,8 @@ public class Parameter {
 	}
 	public DTProperty toDTProperty(String dtsName, DataType dt)
 	{
-		DTProperty prop;
+		DTProperty prop = new DTProperty(dtsName, null,name + " type " + dataType);
+		DTPropVal propVal = null;
 		if(dt==null)
 		{
 			dt = dataType;
@@ -107,16 +110,14 @@ public class Parameter {
 		switch(dt)
 		{
 		case UNSIGNED: {
-			prop = new DTPropHexNumber(dtsName, Long.decode(value), null,name + " type " + dataType);
+			propVal = new DTPropHexNumVal(Long.decode(value));
 		} break;
 		case NUMBER: {
-			prop = new DTPropNumber(dtsName, Long.decode(value), null,name + " type " + dataType);
+			propVal = new DTPropNumVal(Long.decode(value));
 		} break;
 		case BOOLEAN: {
-			if(getValueAsBoolean())
+			if(!getValueAsBoolean())
 			{
-				prop = new DTProperty(dtsName, null, name + " type " + dataType);
-			} else {
 				prop = null;
 			}
 		} break;
@@ -130,11 +131,14 @@ public class Parameter {
 			{
 				tmpVal = tmpVal.substring(0, tmpVal.length()-1);
 			}
-			prop = new DTProperty(dtsName, null, name + " type " + dataType, tmpVal);
+			propVal = new DTPropStringVal(tmpVal);
 		} break;
 		default:{
 			prop = null;
 		}
+		}
+		if((prop != null)&&(propVal!=null)) {
+			prop.addValue(propVal);
 		}
 		return prop;
 	}

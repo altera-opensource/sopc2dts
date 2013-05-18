@@ -27,7 +27,7 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class VIPMixer extends BasicComponent {
 	boolean connectedOthers = false;
@@ -39,7 +39,7 @@ public class VIPMixer extends BasicComponent {
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{
 		DTNode node = super.toDTNode(bi, conn);
-		node.addProperty(new DTPropNumber("num-channels", new Long(getInterfaces(SystemDataType.STREAMING, false).size())));
+		node.addProperty(new DTProperty("num-channels", Long.valueOf(getInterfaces(SystemDataType.STREAMING, false).size())));
 		return node;
 	}
 	

@@ -32,8 +32,6 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropHexNumber;
-import sopc2dts.lib.devicetree.DTPropNumber;
 import sopc2dts.lib.devicetree.DTProperty;
 
 
@@ -70,13 +68,14 @@ public class SICBridge extends BasicComponent {
 	{
 		DTNode dtn = super.toDTNode(bi, conn);
 		Vector<Long> vRanges = getDtRanges(conn);
-		dtn.addProperty(new DTPropNumber("#address-cells", (long) getAddressCellCount(true)));
-		dtn.addProperty(new DTPropNumber("#size-cells", (long) getSizeCellCount(true)));
+		dtn.addProperty(new DTProperty("#address-cells", (long) getAddressCellCount(true)));
+		dtn.addProperty(new DTProperty("#size-cells", (long) getSizeCellCount(true)));
 		if(vRanges.isEmpty())
 		{
 			dtn.addProperty(new DTProperty("ranges"));
 		} else {
-			DTPropHexNumber p = new DTPropHexNumber("ranges",vRanges);
+			DTProperty p = new DTProperty("ranges");
+			p.addHexValues(vRanges);
 			p.setNumValuesPerRow(getAddressCellCount(true) + getAddressCellCount(false) + getSizeCellCount(true));
 			dtn.addProperty(p);			
 		}

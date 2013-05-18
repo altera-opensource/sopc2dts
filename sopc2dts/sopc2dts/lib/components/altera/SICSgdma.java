@@ -24,7 +24,7 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumber;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICSgdma extends BasicComponent {
 
@@ -53,7 +53,7 @@ public class SICSgdma extends BasicComponent {
 			}
 			iType++;
 		}
-		node.addProperty(new DTPropNumber("type",Long.valueOf(iType),null,TYPE_NAMES[iType]));
+		node.addProperty(new DTProperty("type",null,TYPE_NAMES[iType],Long.valueOf(iType)));
 		return node;
 	}
 }
