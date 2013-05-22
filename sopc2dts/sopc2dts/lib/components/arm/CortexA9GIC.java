@@ -35,6 +35,7 @@ public class CortexA9GIC extends BasicComponent {
 	public static final int GIC_IRQ_TYPE_FALLING = 2;
 	public static final int GIC_IRQ_TYPE_HIGH = 4;
 	public static final int GIC_IRQ_TYPE_LOW = 8;
+	private boolean irqsRenumbered = false;
 	static SopcComponentDescription scdArmGIC = 
 		new SopcComponentDescription("arm_gic", "intc", "arm", "cortex-a9-gic");
 
@@ -102,19 +103,22 @@ public class CortexA9GIC extends BasicComponent {
 	@Override
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
-		for(Interface intf : vInterfaces) {
-			if(intf.isIRQMaster())
-			{
-				int irqClass = getIrqClassFromIf(intf);
-				for(Connection conn : intf.getConnections()) {
-					int irqType = getIrqTypeFromIf(conn.getSlaveInterface());
-					long[] connVal = conn.getConnValue();
-					connVal[0] = irqClass;
-					/* By default irqnr is stored in last value... */
-					connVal[1] = connVal[2];
-					connVal[2] = irqType;
-				}				
+		if(!irqsRenumbered) {
+			for(Interface intf : vInterfaces) {
+				if(intf.isIRQMaster())
+				{
+					int irqClass = getIrqClassFromIf(intf);
+					for(Connection conn : intf.getConnections()) {
+						int irqType = getIrqTypeFromIf(conn.getSlaveInterface());
+						long[] connVal = conn.getConnValue();
+						connVal[0] = irqClass;
+						/* By default irqnr is stored in last value... */
+						connVal[1] = connVal[2];
+						connVal[2] = irqType;
+					}				
+				}
 			}
+			irqsRenumbered = true;
 		}
 		return false;
 	}
