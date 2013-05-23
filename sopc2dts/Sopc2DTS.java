@@ -43,6 +43,7 @@ import sopc2dts.parsers.BasicSystemLoader;
 
 public class Sopc2DTS {
 	protected Vector<CommandLineOption> vOptions = new Vector<CommandLineOption>();
+	protected CLParameter excludeTimeStamp = new CLParameter("" + false);
 	protected CLParameter showHelp = new CLParameter(""+false);
 	protected CLParameter showVersion = new CLParameter("" + false);
 	protected CLParameter verbose = new CLParameter("" + false);
@@ -89,6 +90,7 @@ public class Sopc2DTS {
 		vOptions.add(new CommandLineOption("gui",		"g", gui,				false,false,"Run in gui mode", null));
 		vOptions.add(new CommandLineOption("version",	null,showVersion,		false,false,"Show version information and exit", null));
 		vOptions.add(new CommandLineOption("mimic-sopc-create-header-files"	,"m", mimicAlteraTools,		false,false,"Try to (mis)behave like sopc-create-header-files does", null));
+		vOptions.add(new CommandLineOption("no-timestamp", null, excludeTimeStamp, false, false, "Don't add a timestamp to generated files", null));
 		vOptions.add(new CommandLineOption("input", 	"i", inputFileName, 	true, true, "The sopcinfo file (optional in gui mode)", "sopcinfo file"));
 		vOptions.add(new CommandLineOption("output",	"o", outputFileName,	true, false,"The output filename","filename"));
 		vOptions.add(new CommandLineOption("pov", 		"p", pov,		 		true, false,"The point of view to generate from. Defaults to the first cpu found", "component name"));
@@ -125,6 +127,7 @@ public class Sopc2DTS {
 			bInfo.setPov(pov.value);
 		}
 		bInfo.setPovType(povType.value);
+		bInfo.setIncludeTime(!Boolean.parseBoolean(excludeTimeStamp.value));
 		if(sort.value.length()>0) {
 			bInfo.setSortType(sort.value);
 		}

@@ -42,7 +42,7 @@ public class UBootHeaderGenerator extends AbstractSopcGenerator {
 
 	@Override
 	public String getTextOutput(BoardInfo bi) {
-		String res = getSmallCopyRightNotice("header") + 
+		String res = getSmallCopyRightNotice("header", bi.isIncludeTime()) + 
 				"#ifndef CUSTOM_FPGA_H_\n" +
 				"#define CUSTOM_FPGA_H_\n\n" +
 				"/* generated from " + sys.getSourceFile().getName() + " */\n\n";

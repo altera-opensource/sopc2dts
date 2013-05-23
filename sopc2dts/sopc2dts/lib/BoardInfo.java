@@ -53,6 +53,7 @@ public class BoardInfo implements ContentHandler {
 	private File sourceFile;
 	String currTag;
 	String flashChip;
+	boolean includeTime = true;
 	Vector<FlashPartition> vPartitions;
 	Vector<String> vMemoryNodes;
 	Vector<BoardInfoComponent> vBics = new Vector<BoardInfoComponent>();
@@ -439,4 +440,10 @@ public class BoardInfo implements ContentHandler {
 	public Vector<Parameter> getAliases() {
 		return vAliases;
     }
+	public boolean isIncludeTime() {
+		return includeTime;
+	}
+	public void setIncludeTime(boolean includeTime) {
+		this.includeTime = includeTime;
+	}
 }

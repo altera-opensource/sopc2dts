@@ -31,7 +31,7 @@ public class DTSGenerator2 extends DTGenerator {
 
 	@Override
 	public String getTextOutput(BoardInfo bi) {
-		String res = getSmallCopyRightNotice("devicetree")
+		String res = getSmallCopyRightNotice("devicetree", bi.isIncludeTime())
 					+ "/dts-v1/;\n";
 		DTNode rootNode = getDTOutput(bi);
 		res += rootNode.toString();
