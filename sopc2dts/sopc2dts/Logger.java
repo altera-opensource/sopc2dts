@@ -24,7 +24,6 @@ import java.util.Vector;
 public class Logger {
 	public enum LogLevel { ERROR, WARNING, INFO, DEBUG };
 	private static LogLevel verbosity = LogLevel.WARNING;
-	private static boolean useStdOutErr = true;
 	private static Vector<LogListener> vListeners = new Vector<LogListener>();
 	
 	public static void increaseVerbosity()
@@ -47,31 +46,19 @@ public class Logger {
 			break;
 		}
 	}
+	public static LogLevel getVerbosity()
+	{
+		return verbosity;
+	}
 	public static void setVerbosity(LogLevel v)
 	{
 		verbosity = v;
 	}
-	public static void log(String log)
+	private static void log(LogEntry log)
 	{
-		log(log,LogLevel.INFO);
-	}
-	public static void log(String log, LogLevel ll)
-	{
-		if(ll.compareTo(verbosity)<=0)
+		for(LogListener l: vListeners)
 		{
-			for(LogListener l: vListeners)
-			{
-				l.messageLogged(log);
-			}
-			if(useStdOutErr)
-			{
-				if(ll.equals(LogLevel.ERROR))
-				{
-					System.err.print(log);
-				} else {
-					System.out.print(log);
-				}
-			}
+			l.messageLogged(log);
 		}
 	}
 	public static void logln(String log)
@@ -80,7 +67,11 @@ public class Logger {
 	}
 	public static void logln(String log, LogLevel ll)
 	{
-		log(log+'\n',ll);
+		logln(null,log,ll);
+	}
+	public static void logln(Object src, String log, LogLevel ll)
+	{
+		log(new LogEntry(src, log, ll));
 	}
 	public static void logException(Exception e)
 	{
@@ -89,12 +80,6 @@ public class Logger {
 		{
 			e.printStackTrace();
 		}
-	}
-	public static void setUseStdOutErr(boolean use) {
-		useStdOutErr = use;
-	}
-	public static boolean isUseStdOutErr() {
-		return useStdOutErr;
 	}
 	public static void addLogListener(LogListener ll)
 	{

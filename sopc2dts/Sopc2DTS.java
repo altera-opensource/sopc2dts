@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,8 @@ import javax.swing.JFrame;
 
 import org.xml.sax.SAXException;
 
+import sopc2dts.LogEntry;
+import sopc2dts.LogListener;
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.generators.AbstractSopcGenerator;
@@ -41,7 +43,8 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.parsers.BasicSystemLoader;
 
 
-public class Sopc2DTS {
+public class Sopc2DTS implements LogListener {
+	private boolean useStdOutErr = true;
 	protected Vector<CommandLineOption> vOptions = new Vector<CommandLineOption>();
 	protected CLParameter excludeTimeStamp = new CLParameter("" + false);
 	protected CLParameter showHelp = new CLParameter(""+false);
@@ -84,6 +87,7 @@ public class Sopc2DTS {
 	}
 	
 	public Sopc2DTS() {
+		Logger.addLogListener(this);
 		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"The board description file", "boardinfo file"));
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
@@ -146,6 +150,7 @@ public class Sopc2DTS {
 			if(!Boolean.parseBoolean(mimicAlteraTools.value))
 			{
 				s2dgui = new Sopc2DTSGui(inputFileName.value, bInfo);
+				useStdOutErr = false;
 				s2dgui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				s2dgui.setVisible(true);
 				res = -1;
@@ -360,6 +365,25 @@ public class Sopc2DTS {
 		System.out.println(programName + " - " + programVersion);
 	}
 	
+	public void messageLogged(LogEntry log) {
+		if(log.getLevel().compareTo(Logger.getVerbosity())<=0)
+		{
+			if(useStdOutErr)
+			{
+				if(log.getLevel().equals(LogLevel.ERROR))
+				{
+					System.err.println(log);
+					StackTraceElement[] trace = log.getTrace();
+					for(StackTraceElement ste : trace) {
+						System.err.println("\tat " + ste.toString());
+					}
+				} else {
+					System.out.println(log);
+				}
+			}
+		}
+	}	
+
 	protected class CLParameter
 	{
 		public String value;
@@ -435,13 +459,9 @@ public class Sopc2DTS {
 							Logger.increaseVerbosity();
 						}
 					}
-					Logger.log("Scanned option " + option + '(' + shortOption + ") with", LogLevel.DEBUG);
-					if(hasValue)
-					{
-						Logger.logln(" value " + parameter.value, LogLevel.DEBUG);
-					} else {
-						Logger.logln("out value.", LogLevel.DEBUG);
-					}
+					Logger.logln("Scanned option " + option + '(' + shortOption + ") with" +
+							(hasValue ? " value " + parameter.value : "out value."), 
+							LogLevel.DEBUG);
 					index++;
 				}
 			}

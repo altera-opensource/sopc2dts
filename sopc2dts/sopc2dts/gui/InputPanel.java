@@ -63,7 +63,6 @@ public class InputPanel extends ThreadedLoadPanel {
 	@Override
 	protected void threadedLoadFile(File f) {
 		componentList.setListData(new Object[]{});
-		mainGui.clearLog();
 	    StringBuilder contents = new StringBuilder();
 	    try {
 	      BufferedReader input =  new BufferedReader(new FileReader(f));

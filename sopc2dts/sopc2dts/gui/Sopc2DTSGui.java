@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011-2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -23,20 +23,16 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 
-import sopc2dts.LogListener;
-import sopc2dts.Logger;
 import sopc2dts.generators.GeneratorFactory.GeneratorType;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 
-public class Sopc2DTSGui extends JFrame implements LogListener {
+public class Sopc2DTSGui extends JFrame {
 	private static final long serialVersionUID = 8613192420393857538L;
 	JTabbedPane jtp = new JTabbedPane();
-	JTextArea txtLog = new JTextArea();
+	LogPanel pnlLog = new LogPanel();
 	InputPanel pnlInput;
 	BoardInfoPanel pnlBoardInfo;
 	OutputPanel pnlOutput;
@@ -46,8 +42,6 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 	public Sopc2DTSGui(String inpFile, BoardInfo bInfo) {
 		super("Sopc2DTS");
 		boardInfo = bInfo;
-		Logger.addLogListener(this);
-		Logger.setUseStdOutErr(false);
 		pnlInput = new InputPanel(inpFile, this);
 		pnlBoardInfo = new BoardInfoPanel(
 				(bInfo.getSourceFile() == null ? null : bInfo.getSourceFile().getName()), this);
@@ -55,20 +49,11 @@ public class Sopc2DTSGui extends JFrame implements LogListener {
 		jtp.addTab("Input", pnlInput);
 		jtp.addTab("Boardinfo", pnlBoardInfo);
 		jtp.addTab("Output", pnlOutput);
-		txtLog.setEditable(false);
-		JScrollPane jsp = new JScrollPane(txtLog);
-		jsp.setPreferredSize(new Dimension(800,200));
+		pnlLog.setPreferredSize(new Dimension(800,200));
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().add(jsp, BorderLayout.SOUTH);
+		this.getContentPane().add(pnlLog, BorderLayout.SOUTH);
 		this.getContentPane().add(jtp, BorderLayout.CENTER);
 		this.pack();
-	}
-	public void clearLog()
-	{
-		txtLog.setText("");
-	}
-	public void messageLogged(String log) {
-		txtLog.setText(txtLog.getText() + log);
 	}
 	public void setSys(AvalonSystem sys) {
 		this.sys = sys;
