@@ -65,6 +65,10 @@ public class Logger {
 	{
 		logln(log,LogLevel.INFO);
 	}
+	public static void logln(Object src, String log)
+	{
+		logln(src,log,LogLevel.INFO);
+	}
 	public static void logln(String log, LogLevel ll)
 	{
 		logln(null,log,ll);
