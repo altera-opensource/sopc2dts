@@ -152,7 +152,7 @@ public class BasicComponent extends BasicElement {
 			p.addHexValues(vRegs);
 			int width = 2;
 			if(conn!=null) {
-				width = conn.getSlaveInterface().getPrimaryWidth() + conn.getSlaveInterface().getSecondaryWidth();
+				width = conn.getMasterInterface().getPrimaryWidth() + conn.getMasterInterface().getSecondaryWidth();
 			}
 			p.setNumValuesPerRow(width);
 			node.addProperty(p);
