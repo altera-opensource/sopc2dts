@@ -159,7 +159,8 @@ public class SopcComponentLib implements ContentHandler {
 	}
 	public BasicComponent getComponentForClass(String className, String instanceName, String version)
 	{
-		if(className.equalsIgnoreCase("triple_speed_ethernet"))
+		if(className.equalsIgnoreCase("triple_speed_ethernet") ||
+			className.equalsIgnoreCase("altera_eth_tse"))
 		{
 			//return new TSEModular(getScdByClassName(className), instanceName, version);			
 			return new TSEMonolithic(className, instanceName, version, getScdByClassName(className));			
