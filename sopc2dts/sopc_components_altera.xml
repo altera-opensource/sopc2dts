@@ -1,5 +1,6 @@
 <SOPC2DTS_COMPONENTLIB vendor="ALTR">
 	<S2DComponent classname="altera_nios2,altera_nios2_qsys" group="cpu" compatDevice="nios2">
+		<CompatibleVersion value="1.0"></CompatibleVersion> 
 		<parameter dtsName="clock-frequency" sopcName="embeddedsw.CMacro.CPU_FREQ"></parameter>
 		<parameter dtsName="dcache-line-size" sopcName="embeddedsw.CMacro.DCACHE_LINE_SIZE"></parameter>
 		<parameter dtsName="icache-line-size" sopcName="embeddedsw.CMacro.ICACHE_LINE_SIZE"></parameter>
