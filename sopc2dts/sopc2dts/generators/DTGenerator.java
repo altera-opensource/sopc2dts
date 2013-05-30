@@ -33,6 +33,7 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.Parameter;
 import sopc2dts.lib.BoardInfo.PovType;
 import sopc2dts.lib.boardinfo.BICDTAppend;
+import sopc2dts.lib.boardinfo.BICDTAppend.DTAppendAction;
 import sopc2dts.lib.boardinfo.BICDTAppend.DTAppendType;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
@@ -146,28 +147,36 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 					dta.getInstanceName(), LogLevel.ERROR);
 					return;
 				}
-				DTProperty prop = new DTProperty(dta.getInstanceName(), dta.getLabel(), boardInfoComment);
-				for (int i = 0; i < vTypes.size(); i++) {
-					switch(vTypes.get(i)) {
-					case PROP_NUMBER: {
-						prop.addValue(new DTPropNumVal(Long.decode(vValues.get(i))));
-					} break;
-					case PROP_HEX: {
-						prop.addValue(new DTPropHexNumVal(Long.decode(vValues.get(i))));
-					} break;
-					case PROP_BYTE: {
-						prop.addValue(new DTPropByteVal(Integer.decode(vValues.get(i))));
-					} break;
-					case PROP_STRING: {
-						prop.addValue(new DTPropStringVal(vValues.get(i)));
-					} break;
-					case PROP_PHANDLE: {
-						prop.addValue(new DTPropPHandleVal(vValues.get(i),0));
-					} break;
-					default: /* Bools don't have values */
+				DTProperty prop = parent.getPropertyByName(dta.getInstanceName());
+				if(dta.getAction() == DTAppendAction.REMOVE) {
+					parent.getProperties().remove(prop);
+				} else {
+					if((dta.getAction() == DTAppendAction.REPLACE) || (prop == null))
+					{
+						prop = new DTProperty(dta.getInstanceName(), dta.getLabel(), boardInfoComment);
 					}
+					for (int i = 0; i < vTypes.size(); i++) {
+						switch(vTypes.get(i)) {
+						case PROP_NUMBER: {
+							prop.addValue(new DTPropNumVal(Long.decode(vValues.get(i))));
+						} break;
+						case PROP_HEX: {
+							prop.addValue(new DTPropHexNumVal(Long.decode(vValues.get(i))));
+						} break;
+						case PROP_BYTE: {
+							prop.addValue(new DTPropByteVal(Integer.decode(vValues.get(i))));
+						} break;
+						case PROP_STRING: {
+							prop.addValue(new DTPropStringVal(vValues.get(i)));
+						} break;
+						case PROP_PHANDLE: {
+							prop.addValue(new DTPropPHandleVal(vValues.get(i),0));
+						} break;
+						default: /* Bools don't have values */
+						}
+					}
+					parent.addProperty(prop, true);
 				}
-				parent.addProperty(prop, true);
 			}
 		}
 	}

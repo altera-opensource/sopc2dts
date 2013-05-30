@@ -30,12 +30,15 @@ import sopc2dts.Logger.LogLevel;
 
 public class BICDTAppend extends BoardInfoComponent {
 	public enum DTAppendType { NODE, PROP_BOOL, PROP_NUMBER, PROP_STRING, PROP_HEX, PROP_BYTE, PROP_PHANDLE };
+	public enum DTAppendAction { ADD, REPLACE, REMOVE };
 	public static final String TAG_NAME = "DTAppend";
 	private static final String VAL_TAG = "val";
 	String[] parentPath;
 	String parentLabel;
 	Vector<String> vValues = new Vector<String>();
 	Vector<DTAppendType> vTypes = new Vector<DTAppendType>();
+	
+	DTAppendAction action = DTAppendAction.REPLACE;
 	String label;
 	String valBuf;
 	private Boolean valSeen = false;
@@ -50,6 +53,7 @@ public class BICDTAppend extends BoardInfoComponent {
 		setPath(atts.getValue("parentpath"));
 		setParentLabel(atts.getValue("parentlabel"));
 		setLabel(atts.getValue("newlabel"));
+		setAction(atts.getValue("action"));
 	}
 	public void setLabel(String l) {
 		label = l;
@@ -93,6 +97,9 @@ public class BICDTAppend extends BoardInfoComponent {
 			}
 		}
 	}
+	private String actionToString(DTAppendAction a) {
+		return a.toString().toLowerCase();
+	}
 	private String typeToString(DTAppendType t) {
 		switch(t) {
 		case NODE:              return "node";
@@ -128,6 +135,7 @@ public class BICDTAppend extends BoardInfoComponent {
 		if(label!=null) {
 			xml += " newlabel=\"" + label + "\"";
 		}
+		xml += " action=\"" + actionToString(action) + "\"";
 		switch(vValues.size()) {
 		case 1:
 			String value = vValues.get(0);
@@ -156,6 +164,9 @@ public class BICDTAppend extends BoardInfoComponent {
 		}
 		return xml;
 	}
+	public DTAppendAction getAction() {
+		return action;
+	}
 	public String[] getParentPath() {
 		return parentPath;
 	}
@@ -170,6 +181,22 @@ public class BICDTAppend extends BoardInfoComponent {
 	}
 	public String getLabel() {
 		return label;
+	}
+	public void setAction(DTAppendAction action) {
+		this.action = action;
+	}
+	public void setAction(String actionStr) {
+		if(actionStr != null) {
+			if(DTAppendAction.ADD.toString().equalsIgnoreCase(actionStr)) {
+				setAction(DTAppendAction.ADD);
+			} else if(DTAppendAction.REPLACE.toString().equalsIgnoreCase(actionStr)) {
+				setAction(DTAppendAction.REPLACE);
+			} else if(DTAppendAction.REMOVE.toString().equalsIgnoreCase(actionStr)) {
+				setAction(DTAppendAction.REMOVE);
+			} else {
+				Logger.logln(this, "Unsupported DTAppend action '" + actionStr +"'.", LogLevel.ERROR);
+			}
+		}
 	}
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
