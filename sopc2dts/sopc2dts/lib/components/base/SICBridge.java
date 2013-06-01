@@ -27,6 +27,7 @@ import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.components.MemoryBlock;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
@@ -36,12 +37,55 @@ import sopc2dts.lib.devicetree.DTProperty;
 
 
 public class SICBridge extends BasicComponent {
-
+	public enum BridgeRemovalStrategy { ALL, BALANCED, NONE };
+	protected static BridgeRemovalStrategy removalStrategy = BridgeRemovalStrategy.BALANCED;
+	
 	public SICBridge(BasicComponent comp) {
 		super(comp);
 	}
 	public SICBridge(String cName, String iName, String version, SopcComponentDescription scd) {
 		super(cName, iName, version,scd);
+	}
+	public static void setRemovalStrategy(BridgeRemovalStrategy strat) {
+		removalStrategy = strat;
+	}
+	public static void setRemovalStrategy(String stratStr) {
+		removalStrategy = BridgeRemovalStrategy.valueOf(stratStr.toUpperCase());
+	}
+	
+	protected long[] translateAddress(Connection masterConn, Connection slaveConn) {
+		return translateAddress(masterConn.getConnValue(),slaveConn.getConnValue());
+	}
+	protected long[] translateAddress(long[] mAddr, long[] sAddr) {
+		//The simple case is adding the slave address to the master's
+		if(mAddr.length == sAddr.length) {
+			//Easy
+			return DTHelper.longArrAdd(mAddr, sAddr);
+		} else if (mAddr.length > sAddr.length) {
+			//Doable
+			long[] nsAddr = new long[mAddr.length];
+			int lDiff = mAddr.length - sAddr.length;
+			for(int i=0; i<nsAddr.length; i++) {
+				if(i<lDiff) {
+					nsAddr[i] = 0;
+				} else {
+					nsAddr[i] = sAddr[i-lDiff];
+				}
+			}
+			return DTHelper.longArrAdd(mAddr, nsAddr);
+		} else {
+			//Aaarrrrghhh!!!!
+			String msg = "Unable to translate this address for you. Master:";
+			for(long l : mAddr) {
+				msg += String.format(" %08X", l);
+			}
+			msg += " slave:";
+				for(long l : sAddr) {
+					msg += String.format(" %08X", l);
+				}
+			Logger.logln(this,msg, LogLevel.ERROR);
+		}
+		return null; //mAddr;
 	}
 	protected Vector<Long> getDtRanges(Connection conn)
 	{
@@ -53,7 +97,7 @@ public class SICBridge extends BasicComponent {
 				for(Connection childConn : master.getConnections())
 				{
 					Interface childIf=childConn.getSlaveInterface();
-					long[] addr = DTHelper.longArrAdd(childConn.getConnValue(), conn.getConnValue());
+					long[] addr = translateAddress(conn, childConn);
 					DTHelper.addAllLongs(vRanges, childConn.getConnValue());
 					DTHelper.addAllLongs(vRanges, addr);
 					DTHelper.addAllLongs(vRanges, childIf.getInterfaceValue());
@@ -127,6 +171,7 @@ public class SICBridge extends BasicComponent {
 				conn.getSlaveInterface().getConnections().add(conn);
 				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + 
 						" to " + conn.getSlaveModule().getInstanceName(), LogLevel.DEBUG);
+				conn.setConnValue(translateAddress(masterConn, slaveConn));
 			}
 			//Now remove connection to master
 			slaveIntf.getConnections().remove(masterConn);
@@ -208,12 +253,21 @@ public class SICBridge extends BasicComponent {
 			{
 				//Always remove tristate bridges.
 				remove = true;
-			} else if((getScd().isSupportingClassName("altera_avalon_pipeline_bridge") ||
-					getScd().isSupportingClassName("altera_avalon_clock_crossing") ||
-					getScd().isSupportingClassName("altera_avalon_half_rate_bridge")) &&
-					(!this.isTranslatingBridge()))
-			{
-				remove = true;
+			} else {
+				switch(removalStrategy) {
+				case ALL:
+					remove = true; break;
+				case NONE:
+					remove = false; break;
+				case BALANCED: 
+					if((getScd().isSupportingClassName("altera_avalon_pipeline_bridge") ||
+							getScd().isSupportingClassName("altera_avalon_clock_crossing") ||
+							getScd().isSupportingClassName("altera_avalon_half_rate_bridge")) &&
+							(!this.isTranslatingBridge()))
+					{
+						remove = true;
+					}
+				}
 			}
 			if(remove)
 			{
@@ -261,5 +315,19 @@ public class SICBridge extends BasicComponent {
 			}
 		}
 		return false;
+	}
+	public Vector<MemoryBlock> getMemoryMap(Connection conn)
+	{
+		Vector<MemoryBlock> vBridgedMap = new Vector<MemoryBlock>();
+		for(Interface bridgeMaster : getInterfaces(SystemDataType.MEMORY_MAPPED, true))
+		{
+			vBridgedMap.addAll(bridgeMaster.getMemoryMap());
+		}
+		for(MemoryBlock mb : vBridgedMap)
+		{
+			//Offset with bridges base.
+			mb.setStart(translateAddress(conn.getConnValue(),mb.getBase()));
+		}
+		return vBridgedMap;
 	}
 }

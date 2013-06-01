@@ -40,6 +40,7 @@ import sopc2dts.gui.Sopc2DTSGui;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.parsers.BasicSystemLoader;
 
 
@@ -53,6 +54,7 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter mimicAlteraTools = new CLParameter("" + false);
 	protected CLParameter inputFileName = new CLParameter("");
 	protected CLParameter boardFileName = new CLParameter("");
+	protected CLParameter bridgeRemoval = new CLParameter("balanced");
 	protected CLParameter outputFileName = new CLParameter("");
 	protected CLParameter outputType = new CLParameter("dts");
 	protected CLParameter pov = new CLParameter("");
@@ -89,6 +91,7 @@ public class Sopc2DTS implements LogListener {
 	public Sopc2DTS() {
 		Logger.addLogListener(this);
 		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"The board description file", "boardinfo file"));
+		vOptions.add(new CommandLineOption("bridge-removal", null, bridgeRemoval, 	true, false,"Bridge removal strategy", "{all,balanced,none}"));
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
 		vOptions.add(new CommandLineOption("gui",		"g", gui,				false,false,"Run in gui mode", null));
@@ -126,6 +129,7 @@ public class Sopc2DTS implements LogListener {
 		{
 			bInfo = new BoardInfo();
 		}
+		SICBridge.setRemovalStrategy(bridgeRemoval.value);
 		if(pov.value.length()>0)
 		{
 			bInfo.setPov(pov.value);

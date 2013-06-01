@@ -26,7 +26,6 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.BasicElement;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.components.base.SICBridge;
-import sopc2dts.lib.devicetree.DTHelper;
 
 /** @brief An interface of a BasicComponent
  * 
@@ -174,18 +173,7 @@ public class Interface extends BasicElement {
 			{
 				if(conn.getSlaveModule() instanceof SICBridge)
 				{
-					/* Get bridged components as well. */
-					Vector<MemoryBlock> vBridgedMap = new Vector<MemoryBlock>();
-					for(Interface bridgeMaster : conn.getSlaveModule().getInterfaces(SystemDataType.MEMORY_MAPPED, true))
-					{
-						vBridgedMap.addAll(bridgeMaster.getMemoryMap());
-					}
-					for(MemoryBlock mb : vBridgedMap)
-					{
-						//Offset with bridges base.
-						mb.base = DTHelper.longArrAdd(mb.base, conn.getConnValue());
-					}
-					vMemoryMap.addAll(vBridgedMap);
+					vMemoryMap.addAll(((SICBridge)conn.getSlaveModule()).getMemoryMap(conn));
 				} else {
 					MemoryBlock mem = new MemoryBlock(conn.getSlaveModule(), conn.getConnValue(), conn.getSlaveInterface().getInterfaceValue());
 					vMemoryMap.add(mem);
@@ -226,6 +214,9 @@ public class Interface extends BasicElement {
 		}
 		return primaryWidth;
 	}
+	public void setPrimaryWidth(int width) {
+		primaryWidth = width;
+	}
 	public int getSecondaryWidth() {
 		if((!isMaster) && (vConnections.size()>0)) {
 			if(vConnections.firstElement()!=null) {
@@ -233,5 +224,8 @@ public class Interface extends BasicElement {
 			}
 		}
 		return secondaryWidth;
+	}
+	public void setSecondaryWidth(int width) {
+		secondaryWidth = width;
 	}
 }
