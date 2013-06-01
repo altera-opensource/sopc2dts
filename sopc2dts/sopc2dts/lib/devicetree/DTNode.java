@@ -56,8 +56,9 @@ public class DTNode extends DTElement {
 			DTProperty propOrg = getPropertyByName(prop.getName());
 			if(propOrg!=null) {
 				if(replaceExising) {
+					int idx = vProps.indexOf(propOrg);
 					vProps.remove(propOrg);
-					vProps.add(prop);
+					vProps.insertElementAt(prop,idx);
 				} else {
 					Logger.logln("Unable to add duplicate property '" + prop.getName() + '\'' +
 							" to node '" + getName() + "' labeled '" + getLabel() + '\'' , LogLevel.ERROR);
