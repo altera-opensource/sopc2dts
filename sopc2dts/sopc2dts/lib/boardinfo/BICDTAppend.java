@@ -80,8 +80,6 @@ public class BICDTAppend extends BoardInfoComponent {
 		if(t != null) {
 			if(t.equalsIgnoreCase("node")) {
 				vTypes.add(DTAppendType.NODE);
-			} else if (t.equalsIgnoreCase("bool")) {
-				// bools have no data; so there is no real type
 			} else if(t.equalsIgnoreCase("number")) {
 				vTypes.add(DTAppendType.PROP_NUMBER);
 			} else if(t.equalsIgnoreCase("string")) {
@@ -92,7 +90,7 @@ public class BICDTAppend extends BoardInfoComponent {
 				vTypes.add(DTAppendType.PROP_BYTE);
 			} else if (t.equalsIgnoreCase("phandle")) {
 				vTypes.add(DTAppendType.PROP_PHANDLE);
-			} else {
+			} else if(!t.equalsIgnoreCase("bool")) {
 				Logger.logln("BICDTAppend.setType unknown type: "+t, LogLevel.ERROR);
 			}
 		}
