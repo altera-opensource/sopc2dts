@@ -67,7 +67,7 @@ public class BasicComponent extends BasicElement {
 			intf.setOwner(this);
 		}
 	}
-	protected Vector<Long> getReg(BasicComponent master)
+	protected Vector<Long> getReg(BasicComponent master, Vector<String> vRegNames)
 	{
 		Vector<Long> vRegs = new Vector<Long>();		
 		for(Interface intf : vInterfaces)
@@ -87,6 +87,7 @@ public class BasicComponent extends BasicElement {
 				{
 					DTHelper.addAllLongs(vRegs, getAddrFromConnection(conn));
 					DTHelper.addAllLongs(vRegs, intf.getInterfaceValue());
+					vRegNames.add(intf.getName());
 				}
 			}
 		}
@@ -145,7 +146,8 @@ public class BasicComponent extends BasicElement {
 				getScd().getCompatibles(version).toArray(new String[]{})); 
 		node.addProperty(compPropString);
 		//Registers
-		Vector<Long> vRegs = getReg((conn != null ? conn.getMasterModule() : null));
+		Vector<String> vRegNames = new Vector<String>();
+		Vector<Long> vRegs = getReg((conn != null ? conn.getMasterModule() : null), vRegNames);
 		if(vRegs.size()>0)
 		{
 			p = new DTProperty("reg");
@@ -156,6 +158,9 @@ public class BasicComponent extends BasicElement {
 			}
 			p.setNumValuesPerRow(width);
 			node.addProperty(p);
+			if((vRegNames.size()>1) && (node.getPropertyByName("reg-names")==null)) {
+				node.addProperty(new DTProperty("reg-names",vRegNames.toArray(new String[]{})));
+			}
 		}
 
 		//Interrupts

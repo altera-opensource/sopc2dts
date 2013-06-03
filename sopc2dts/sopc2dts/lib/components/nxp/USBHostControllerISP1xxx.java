@@ -34,8 +34,10 @@ public class USBHostControllerISP1xxx extends BasicComponent {
 		super(cName, iName, ver, scd);
 	}
 	
+
+	/** @todo Find out regnames */
 	@Override
-	protected Vector<Long> getReg(BasicComponent master) 
+	protected Vector<Long> getReg(BasicComponent master, Vector<String> vRegNames) 
 	{
 		Vector<Long> vRegs = new Vector<Long>();
 		for(Interface intf : vInterfaces)

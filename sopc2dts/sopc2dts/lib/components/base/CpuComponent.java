@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012-2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -40,14 +40,15 @@ public class CpuComponent extends BasicComponent {
 	public long getCpuIndex() {
 		return cpuIndex;
 	}
-	protected Vector<Long> getReg(BasicComponent master)
+	@Override
+	protected Vector<Long> getReg(BasicComponent master, Vector<String> vRegNames)
 	{
 		if(master == null) {
 			Vector<Long> vRegs = new Vector<Long>();
 			vRegs.add(cpuIndex);
 			return vRegs;			
 		} else {
-			return super.getReg(master);
+			return super.getReg(master,vRegNames);
 		}
 	}
 	protected long[] getAddrFromConnection(Connection conn)
