@@ -215,7 +215,7 @@ public class BasicComponent extends BasicElement {
 					assName = null;
 				} else if (assName.startsWith(EMBSW_DTS_PARAMS)) {
 					assName = assName.substring(EMBSW_DTS_PARAMS.length());
-					node.addProperty(bp.toDTProperty(assName));
+					node.addProperty(bp.toDTProperty(assName),true);
 					assName = null;
 				} else if(assName.startsWith(EMBSW_CMACRO) && (bi.getDumpParameters() != parameter_action.NONE)) {
 					assName = assName.substring(EMBSW_CMACRO.length());
