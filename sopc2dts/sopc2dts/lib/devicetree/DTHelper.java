@@ -99,6 +99,16 @@ public class DTHelper {
 		}
 		return 0;
 	}
+	public static long[] longArrSubtract(long[] la, long val) {
+		long[] res = new long[la.length];
+		System.arraycopy(la, 0, res, 0, la.length);
+		for(int i=0; ((i<res.length) &&(val>0)); i++) {
+			res[i] -= (val&0xFFFFFFFFL);
+			val = (val >> 32) & 0xFFFFFFFFL;
+			val -= (res[i] >> 32) & 0xFFFFFFFFL;
+		}
+		return res;
+	}
 	public static String longArrToHexString(long[] val) {
 		String res = "0x";
 		boolean valueFound = false;

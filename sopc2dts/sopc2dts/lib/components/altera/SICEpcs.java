@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,16 +19,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
+import java.util.Vector;
+
+import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.SopcComponentLib;
+import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICEpcs extends SICFlash {
-
+	boolean bAddressFixed = false;
 	public SICEpcs(String cName, String iName, String ver) {
 		super(cName, iName, ver, SopcComponentLib.getInstance().getScdByClassName("altera_avalon_spi"));
 	}
@@ -49,16 +54,26 @@ public class SICEpcs extends SICFlash {
 	}
 	
 	@Override
-	protected long[] getAddrFromConnection(Connection conn)
+	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
-		//Yes this is REALLY ugly. But it just might work :)
-		long regOffset;
-		try {
-			regOffset = Long.decode(getParamValByName("embeddedsw.CMacro.REGISTER_OFFSET"));
-		} catch(Exception e)
-		{
-			regOffset = 0;
+		if(!bAddressFixed) {
+			bAddressFixed = true;
+			try {
+				long regOffset = Long.decode(getParamValByName("embeddedsw.CMacro.REGISTER_OFFSET"));
+				if(regOffset>0) {
+					Vector<Interface> vintf = getInterfaces(SystemDataType.MEMORY_MAPPED, false);
+					for(Interface intf : vintf) {
+						for(Connection conn : intf.getConnections()) {
+							conn.setConnValue(DTHelper.longArrAdd(conn.getConnValue(), regOffset));
+						}
+						intf.setInterfaceValue(DTHelper.longArrSubtract(intf.getInterfaceValue(), regOffset));
+					}
+				}
+			} catch(Exception e) {
+			}			
+			return true;			
+		} else {
+			return false;
 		}
-		return DTHelper.longArrAdd(conn.getConnValue(), regOffset);
 	}
 }
