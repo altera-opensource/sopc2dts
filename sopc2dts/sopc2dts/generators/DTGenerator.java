@@ -70,7 +70,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			{
 				DTNode cpuNode = getCpuNodes(bi);
 				DTNode memNode = getMemoryNode(bi, povComponent, addrCells, sizeCells);
-				sopcNode = new DTNode("sopc@0");
+				sopcNode = new DTNode("sopc@0", "sopc0");
 				chosenNode = getChosenNode(bi);
 				rootNode.addProperty(new DTProperty("model","ALTR," + sys.getSystemName()));
 				rootNode.addProperty(new DTProperty("compatible","ALTR," + sys.getSystemName()));
@@ -117,7 +117,11 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		for(BICDTAppend dta : appends) {
 			DTNode parent = null;
 			if(dta.getParentLabel()!=null) {
-				parent = DTHelper.getChildByLabel(rootNode, dta.getParentLabel());
+				if (dta.getParentLabel().equalsIgnoreCase("")) {
+					parent = rootNode;
+				} else {
+					parent = DTHelper.getChildByLabel(rootNode, dta.getParentLabel());
+				}
 			}
 			if((parent==null) && (dta.getParentPath()!=null)) {
 				parent = rootNode;
