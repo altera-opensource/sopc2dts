@@ -66,6 +66,7 @@ public class Sopc2DTS implements LogListener {
 
 	protected static final String programName = "sopc2dts";
 	protected static final String programVersion = "0.3";
+	private Vector<String> vInfoFileNames = new Vector<String>();
 
 	/**
 	 * @param args
@@ -90,7 +91,7 @@ public class Sopc2DTS implements LogListener {
 	
 	public Sopc2DTS() {
 		Logger.addLogListener(this);
-		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"The board description file", "boardinfo file"));
+		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"board description file (can be used multiple times)", "boardinfo file"));
 		vOptions.add(new CommandLineOption("bridge-removal", null, bridgeRemoval, 	true, false,"Bridge removal strategy", "{all,balanced,none}"));
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
@@ -113,16 +114,20 @@ public class Sopc2DTS implements LogListener {
 		BoardInfo bInfo = null;
 		Sopc2DTSGui s2dgui = null;
 		File f;
-		if(boardFileName.value.length()>0)
+		if(vInfoFileNames.size()>0)
 		{
-			try {
-				bInfo = new BoardInfo(new File(boardFileName.value));						
-			} catch (FileNotFoundException e) {
-				Logger.logException(e);
-			} catch (SAXException e) {
-				Logger.logException(e);
-			} catch (IOException e) {
-				Logger.logException(e);
+
+			bInfo = new BoardInfo();		
+			for (String fn : vInfoFileNames) {
+				try {
+					bInfo.load(new File(fn));
+				} catch (FileNotFoundException e) {
+					Logger.logException(e);
+				} catch (SAXException e) {
+					Logger.logException(e);
+				} catch (IOException e) {
+					Logger.logException(e);
+				}
 			}
 		}
 		if(bInfo==null)
@@ -462,6 +467,8 @@ public class Sopc2DTS implements LogListener {
 						{
 							Logger.increaseVerbosity();
 						}
+					} else if (parameter==boardFileName) {
+						vInfoFileNames.add(parameter.value);
 					}
 					Logger.logln("Scanned option " + option + '(' + shortOption + ") with" +
 							(hasValue ? " value " + parameter.value : "out value."), 

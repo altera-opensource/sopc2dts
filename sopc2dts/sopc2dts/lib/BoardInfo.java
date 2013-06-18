@@ -75,12 +75,16 @@ public class BoardInfo implements ContentHandler {
 	}
 	public BoardInfo(File source) throws FileNotFoundException, SAXException, IOException
 	{
-		sourceFile = source;
-		load(new InputSource(new BufferedReader(new FileReader(sourceFile))));
+		load(source);
 	}
 	public BoardInfo(InputSource in) throws SAXException, IOException
 	{
 		load(in);
+	}
+	public void load(File source) throws FileNotFoundException, SAXException, IOException
+	{
+		sourceFile = source;
+		load(new InputSource(new BufferedReader(new FileReader(sourceFile))));
 	}
 	protected void load(InputSource in) throws SAXException, IOException
 	{
@@ -200,9 +204,7 @@ public class BoardInfo implements ContentHandler {
 		if(pov!=null)
 		{
 			this.pov = pov;
-		} else {
-			this.pov = "";
-		}
+		} 
 	}
 	public String getPov() {
 		return pov;
