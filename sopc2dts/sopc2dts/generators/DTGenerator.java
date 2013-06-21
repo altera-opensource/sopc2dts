@@ -74,6 +74,8 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				chosenNode = getChosenNode(bi);
 				rootNode.addProperty(new DTProperty("model","ALTR," + sys.getSystemName()));
 				rootNode.addProperty(new DTProperty("compatible","ALTR," + sys.getSystemName()));
+				rootNode.addProperty(new DTProperty("#address-cells", (long)addrCells));
+				rootNode.addProperty(new DTProperty("#size-cells",(long)sizeCells));
 				Vector<Parameter> vAliases = bi.getAliases();
 				if (vAliases.size() > 0) {
 					DTNode aliasNode = new DTNode("aliases");
@@ -89,11 +91,6 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				sopcNode = rootNode;
 				chosenNode = null;
 			}
-			DTProperty dtp = new DTProperty("#address-cells", (long)addrCells);
-			rootNode.addProperty(dtp);
-			dtp = new DTProperty("#size-cells",(long)sizeCells);
-			rootNode.addProperty(dtp);
-
 			sopcNode = getSlavesFor(bi, povComponent, sopcNode);
 			sopcNode.addProperty(new DTProperty("ranges"));
 			sopcNode.addProperty(new DTProperty("#address-cells",(long)addrCells));
