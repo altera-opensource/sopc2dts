@@ -173,8 +173,9 @@ public class DTBlob {
 	}
 	
 	void setPHandles(DTNode node) {
-		for(DTProperty prop : node.getProperties())
+		for(int iProp = 0; iProp < node.getProperties().size(); iProp++)
 		{
+			DTProperty prop = node.getProperties().get(iProp);
 			for(DTPropVal pval : prop.getValues()) {
 				if(pval instanceof DTPropPHandleVal)
 				{
