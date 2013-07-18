@@ -1,0 +1,6 @@
+<SOPC2DTS_COMPONENTLIB vendor="labx">
+  <S2DComponent classname="labx_ethernet" group="ethernet" compatDevice="labx_ethernet">
+    <parameter dtsName="mac-port-width" sopcName="MAC_PORT_WIDTH"></parameter>
+    <parameter dtsName="mdio-div" sopcName="MDIO_DIV"></parameter>
+  </S2DComponent>
+</SOPC2DTS_COMPONENTLIB>

@@ -59,6 +59,7 @@ import sopc2dts.lib.components.base.SICEthernet;
 import sopc2dts.lib.components.base.SICI2CMaster;
 import sopc2dts.lib.components.base.SICSpiMaster;
 import sopc2dts.lib.components.base.SICUnknown;
+import sopc2dts.lib.components.labx.LabXEthernet;
 import sopc2dts.lib.components.nxp.USBHostControllerISP1xxx;
 
 public class SopcComponentLib implements ContentHandler {
@@ -182,6 +183,8 @@ public class SopcComponentLib implements ContentHandler {
 			return new GenericTristateController(className, instanceName, version);
 		} else if (className.equalsIgnoreCase("arm_gic")) {
 			return new CortexA9GIC(instanceName, version);
+		} else if (className.equalsIgnoreCase("labx_ethernet")) {
+			return new LabXEthernet(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("hps_bridge_avalon")) {
 			return new MultiBridge(className, instanceName, version, getScdByClassName(className));
 		} else {
