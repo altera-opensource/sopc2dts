@@ -68,7 +68,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			int sizeCells = povComponent.getInterfaces(SystemDataType.MEMORY_MAPPED, true).firstElement().getSecondaryWidth();
 			if(bi.getPovType().equals(PovType.CPU))
 			{
-				DTNode cpuNode = getCpuNodes(bi);
+				DTNode cpuNode = getCpuNodes(bi, povComponent);
 				DTNode memNode = getMemoryNode(bi, povComponent, addrCells, sizeCells);
 				sopcNode = new DTNode("sopc@0", "sopc0");
 				chosenNode = getChosenNode(bi);
@@ -194,12 +194,17 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		chosenNode.addProperty(new DTProperty("bootargs", bi.getBootArgs()));
 		return chosenNode;
 	}
-	DTNode getCpuNodes(BoardInfo bi)
+	DTNode getCpuNodes(BoardInfo bi, BasicComponent povComp)
 	{
 		int numCPUs = 0;
 		DTNode cpuNode = new DTNode("cpus");
 		if(bi.getPovType() == PovType.CPU)
 		{
+			CpuComponent firstCpu = null;
+			if(povComp instanceof CpuComponent)
+			{
+				firstCpu = (CpuComponent)povComp;
+			}
 			cpuNode.addProperty(new DTProperty("#address-cells",1L));
 			cpuNode.addProperty(new DTProperty("#size-cells",0L));
 			for(BasicComponent comp : sys.getSystemComponents())
@@ -207,13 +212,19 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				if(comp instanceof CpuComponent)
 				{
 					CpuComponent cpu = (CpuComponent)comp;
-					if(bi.getPov()==null) {
-						bi.setPov(comp.getInstanceName());
+					if((firstCpu == null) || (firstCpu == cpu) || (firstCpu.isSmpCapableWith(cpu)))
+					{
+						if(bi.getPov()==null) {
+							bi.setPov(comp.getInstanceName());
+						}
+						if(firstCpu == null) {
+							firstCpu = cpu;
+						}
+						cpu.setCpuIndex(numCPUs);
+						cpuNode.addChild(comp.toDTNode(bi, null));
+						numCPUs++;
 					}
-					cpu.setCpuIndex(numCPUs);
-					cpuNode.addChild(comp.toDTNode(bi, null));
 					vHandled.add(comp);
-					numCPUs++;
 				}
 			}
 		}

@@ -27,6 +27,8 @@ import sopc2dts.lib.components.SopcComponentDescription;
 
 public class CpuComponent extends BasicComponent {
 	long cpuIndex = 0;
+	static String[] smpBlackList = { "altera_nios2", "altera_nios2_qsys" };
+	
 	public CpuComponent(BasicComponent comp) {
 		super(comp);
 	}
@@ -58,5 +60,18 @@ public class CpuComponent extends BasicComponent {
 		} else {
 			return super.getAddrFromConnection(conn);
 		}
+	}
+	public boolean isSmpCapableWith(CpuComponent otherCpu) {
+		if(scd.isSupportingClassName(otherCpu.getClassName())) {
+			//Same type of CPU, might be OK to SMP
+			for(String sbl : smpBlackList) {
+				// Check for blacklisted uni-processors...
+				if(scd.isSupportingClassName(sbl)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 }
