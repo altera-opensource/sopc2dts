@@ -19,6 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
+import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.Interface;
@@ -58,7 +60,7 @@ public class MultiBridge extends SICBridge {
 				this.removeInterface(intf);
 				bridge.addInterface(intf);
 			} else {
-				System.err.println("Failed to find " + ifName);
+				Logger.logln("Failed to find " + ifName, LogLevel.DEBUG);
 			}
 		}
 		return bridge;
