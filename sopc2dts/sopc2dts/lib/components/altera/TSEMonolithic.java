@@ -176,7 +176,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 			{
 				if(res.getScd().getGroup().equals("bridge"))
 				{
-					Logger.logln("Warning decriptor memory connected through a bridge. " +
+					Logger.logln("Warning descriptor memory connected through a bridge. " +
 							"I'll probably mess things up trying to guess what memory I'm connected to...",
 							LogLevel.WARNING);
 					Vector<Interface> vIntf = res.getInterfaces(SystemDataType.MEMORY_MAPPED, true);
