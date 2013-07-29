@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,7 @@ import sopc2dts.lib.components.altera.VIPMixer;
 import sopc2dts.lib.components.arm.CortexA9GIC;
 import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.components.base.GpioController;
+import sopc2dts.lib.components.base.MailBox;
 import sopc2dts.lib.components.base.SCDSelfDescribing;
 import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICFlash;
@@ -209,6 +210,9 @@ public class SopcComponentLib implements ContentHandler {
 			} else if (scd.getGroup().equalsIgnoreCase("i2c") &&
 					!(comp instanceof SICI2CMaster)) {
 				return new SICI2CMaster(comp);
+			} else if (scd.getGroup().equalsIgnoreCase("mailbox") &&
+					!(comp instanceof MailBox)) {
+				return new MailBox(comp);
 			} else if (scd.getGroup().equalsIgnoreCase("spi") &&
 					!(comp instanceof SICSpiMaster)) {
 				return new SICSpiMaster(comp);
