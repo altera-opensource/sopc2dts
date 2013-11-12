@@ -46,6 +46,7 @@ public class SpiSlaveMMC extends SpiSlave {
 		DTNode node = super.toDTNode(bi);
 		DTProperty p = new DTProperty("voltage-ranges");
 		p.addNumberValues(new long[] { 3200L, 3400L });
+		node.addProperty(p);
 		return node;
 	}
 }
