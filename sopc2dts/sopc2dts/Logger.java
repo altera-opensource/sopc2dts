@@ -83,6 +83,8 @@ public class Logger {
 		if(verbosity == LogLevel.DEBUG)
 		{
 			e.printStackTrace();
+		} else {
+			logln("Exception occurred: use -v for more information", LogLevel.WARNING);
 		}
 	}
 	public static void addLogListener(LogListener ll)
