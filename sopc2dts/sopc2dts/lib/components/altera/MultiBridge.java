@@ -41,7 +41,10 @@ public class MultiBridge extends SICBridge {
 			f2hBridge = getBridge("f2h",null);			
 			sys.addSystemComponent(f2hBridge);
 			for(int i=0; i<hps2fpgaBridgeNames.length; i++) {
-				createVirtualAddresses(getInterfaceByName(hps2fpgaBridgeNames[i]), i);				
+				Interface intf = getInterfaceByName(hps2fpgaBridgeNames[i]);
+				if (intf != null) {
+					createVirtualAddresses(intf, i);
+				}
 			}
 			return true;
 		} else {
