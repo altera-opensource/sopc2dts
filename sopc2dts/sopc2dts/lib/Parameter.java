@@ -41,6 +41,8 @@ public class Parameter {
 			if(value.charAt(0) == '-')
 			{
 					this.value = String.format("0x%08X", Integer.decode(value));
+			} else {
+				this.value = value;
 			}
 		} break;
 		default: {
