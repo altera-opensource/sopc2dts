@@ -59,6 +59,7 @@ public class BoardInfo implements ContentHandler {
 	Vector<BoardInfoComponent> vBics = new Vector<BoardInfoComponent>();
 	Vector<Parameter> vAliases = new Vector<Parameter>();
 	Vector<String> vIrqMasterClassIgnore = new Vector<String>();
+	Vector<String> vIrqMasterLabelIgnore = new Vector<String>();
 	
 	String bootArgs;
 	BoardInfoComponent currBic;
@@ -122,7 +123,14 @@ public class BoardInfo implements ContentHandler {
 					mFlashPartitions.put(atts.getValue("chip"), vPartitions);
 				} else if(localName.equalsIgnoreCase("IRQMasterIgnore"))
 				{
-					vIrqMasterClassIgnore.add(atts.getValue("className"));
+					String ignore = atts.getValue("className");
+					if(ignore!=null) {
+						vIrqMasterClassIgnore.add(ignore);
+					}
+					ignore = atts.getValue("label");
+					if(ignore!=null) {
+						vIrqMasterLabelIgnore.add(ignore);
+					}
 				} else if(localName.equalsIgnoreCase("Memory"))
 				{
 					vMemoryNodes = new Vector<String>();
@@ -358,6 +366,12 @@ public class BoardInfo implements ContentHandler {
 				return false;
 			}
 		}
+		for(String imi : vIrqMasterLabelIgnore) {
+			if(comp.getInstanceName().equalsIgnoreCase(imi))
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 	public String getXml()
@@ -418,6 +432,10 @@ public class BoardInfo implements ContentHandler {
 		for(String imi : vIrqMasterClassIgnore)
 		{
 			xml += "\t<IRQMasterIgnore className=\"" + imi + "\"/>\n";
+		}
+		for(String imi : vIrqMasterLabelIgnore)
+		{
+			xml += "\t<IRQMasterIgnore label=\"" + imi + "\"/>\n";
 		}
 		//BICs
 		for(BoardInfoComponent bic : vBics)
