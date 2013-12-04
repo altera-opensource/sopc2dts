@@ -58,6 +58,7 @@ public class BoardInfo implements ContentHandler {
 	Vector<String> vMemoryNodes;
 	Vector<BoardInfoComponent> vBics = new Vector<BoardInfoComponent>();
 	Vector<Parameter> vAliases = new Vector<Parameter>();
+	Vector<Parameter> vAliasRefs = new Vector<Parameter>();
 	Vector<String> vIrqMasterClassIgnore = new Vector<String>();
 	Vector<String> vIrqMasterLabelIgnore = new Vector<String>();
 	
@@ -108,8 +109,15 @@ public class BoardInfo implements ContentHandler {
 				if (localName.equalsIgnoreCase("alias")) {
 					String name = atts.getValue("name");
 					String value = atts.getValue("value");
+					if(value!=null) {
 					Logger.logln("alias "+name+ " " + value,LogLevel.INFO);
 					vAliases.add(new Parameter(name, value, Parameter.DataType.STRING));
+					} else if((value=atts.getValue("label")) != null) {
+						Logger.logln("alias "+name+ " " + value,LogLevel.INFO);
+						vAliasRefs.add(new Parameter(name, value, Parameter.DataType.STRING));						
+					} else {
+						Logger.logln("alias "+name+" is badly formatted in boardinfo file",LogLevel.WARNING);
+					}
 				} else if(localName.equalsIgnoreCase("BoardInfo"))
 				{
 					setPov(atts.getValue("pov"));
@@ -437,6 +445,13 @@ public class BoardInfo implements ContentHandler {
 		{
 			xml += "\t<IRQMasterIgnore label=\"" + imi + "\"/>\n";
 		}
+		//Aliases
+		for(Parameter p : vAliases) {
+			xml += "\t<alias name=\"" + p.getName() + "\" value=\"" + p.getValue() + "/>\n";
+		}
+		for(Parameter p : vAliasRefs) {
+			xml += "\t<alias name=\"" + p.getName() + "\" label=\"" + p.getValue() + "/>\n";
+		}
 		//BICs
 		for(BoardInfoComponent bic : vBics)
 		{
@@ -459,6 +474,9 @@ public class BoardInfo implements ContentHandler {
 	}
 	public Vector<Parameter> getAliases() {
 		return vAliases;
+    }
+	public Vector<Parameter> getAliasRefs() {
+		return vAliasRefs;
     }
 	public boolean isIncludeTime() {
 		return includeTime;

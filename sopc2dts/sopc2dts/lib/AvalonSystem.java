@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.parsers.qsys.QSysSystemLoader;
 
@@ -80,6 +81,70 @@ public class AvalonSystem extends BasicElement {
 	}
 	public String getSystemName() {
 		return systemName;
+	}
+	public Vector<Connection> getConnectionPath(Interface start, BasicComponent end) {
+		for(Interface endIf : end.getInterfaces(start.getType(), false)) {
+			Vector<Connection> vPath = getConnectionPath(start, endIf);
+			if(vPath.size()>0)
+				return vPath;
+		}
+		return new Vector<Connection>();
+	}
+	public Vector<Connection> getConnectionPath(BasicComponent start, Interface end) {
+		for(Interface startIf : start.getInterfaces(end.getType(), true)) {
+			Vector<Connection> vPath = getConnectionPath(startIf, end);
+			if(vPath.size()>0)
+				return vPath;
+		}
+		return new Vector<Connection>();
+	}
+	public Vector<Connection> getConnectionPath(Interface start, Interface end) {
+		Vector<Connection> vPath = new Vector<Connection>();
+		for(Connection conn : end.getConnections()) {
+			if(conn.getMasterInterface().equals(start)) {
+				vPath.add(conn);
+				return vPath;
+			}
+		}
+		for(Connection conn : end.getConnections()) {
+			if(conn.getMasterModule() instanceof SICBridge) {
+				SICBridge br = (SICBridge)conn.getMasterModule();
+				Vector<Connection> vPath2 = getConnectionPath(start, br.getBridgedInterface(conn.getMasterInterface()));
+				if(vPath2.size()>0) {
+					vPath.addAll(vPath2);
+					vPath.add(conn);
+					return vPath;
+				}
+			}
+		}
+		return vPath;
+	}
+	public Vector<Connection> getConnectionPath(BasicComponent start, BasicComponent end, SystemDataType type) {
+		for(Interface startIf : start.getInterfaces(type, true)) {
+			for(Interface endIf : end.getInterfaces(type, false)) {
+				Vector<Connection> vPath = getConnectionPath(startIf, endIf);
+				if(vPath.size()>0)
+					return vPath;
+			}
+		}
+		return new Vector<Connection>();
+	}
+	public Vector<Vector<Connection>> getAllPossiblePathsToSlave(Interface end) {
+		return getAllPossiblePathsToSlave(end, new Vector<Connection>());
+	}
+	private Vector<Vector<Connection>> getAllPossiblePathsToSlave(Interface end, Vector<Connection> path) {
+		Vector<Vector<Connection>> vvConn = new Vector<Vector<Connection>>();
+		for(Connection conn : end.getConnections()) {
+			Vector<Connection> newPath = new Vector<Connection>(path);
+			newPath.add(conn);
+			if(conn.getMasterModule() instanceof SICBridge) {
+				Interface newEnd = ((SICBridge)conn.getMasterModule()).getBridgedInterface(conn.getMasterInterface());
+				vvConn.addAll(getAllPossiblePathsToSlave(newEnd,newPath));
+			} else {
+				vvConn.add(newPath);
+			}
+		}
+		return vvConn;
 	}
 	public void setVersion(String ver) {
 		String[] vers = ver.split("\\.");

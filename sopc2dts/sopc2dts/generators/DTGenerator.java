@@ -70,6 +70,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			{
 				DTNode cpuNode = getCpuNodes(bi, povComponent);
 				DTNode memNode = getMemoryNode(bi, povComponent, addrCells, sizeCells);
+				DTNode aliasNode = null;
 				sopcNode = new DTNode("sopc@0", "sopc0");
 				chosenNode = getChosenNode(bi);
 				rootNode.addProperty(new DTProperty("model","ALTR," + sys.getSystemName()));
@@ -78,10 +79,36 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				rootNode.addProperty(new DTProperty("#size-cells",(long)sizeCells));
 				Vector<Parameter> vAliases = bi.getAliases();
 				if (vAliases.size() > 0) {
-					DTNode aliasNode = new DTNode("aliases");
+					aliasNode = new DTNode("aliases");
 					for (Parameter p : vAliases) {
 						aliasNode.addProperty(new DTProperty(p.getName(),p.getValue()));
 					}
+				}
+				vAliases = bi.getAliasRefs();
+				if (vAliases.size() > 0) {
+					if(aliasNode==null) {
+						aliasNode = new DTNode("aliases");
+					}
+					for (Parameter p : vAliases) {
+						BasicComponent slave = sys.getComponentByName(p.getValue());
+						if(slave!=null) {
+							Vector<Connection> vConn = sys.getConnectionPath(povComponent, slave,SystemDataType.MEMORY_MAPPED);
+							String path="";
+							for(Connection c : vConn) {
+								path += "/" + c.getSlaveModule().getScd().getGroup() + "@" + DTHelper.longArrToHexString(c.getConnValue());
+							}
+							if(path.length()>0) {
+								aliasNode.addProperty(new DTProperty(p.getName(),path));								
+							} else {
+								Logger.logln(this, "Failed to find component '" + p.getValue() +"' path for alias: " + p.getName(), LogLevel.WARNING);
+							}
+						} else {
+							Logger.logln(this, "Failed to find component '" + p.getValue() +"' for alias: " + p.getName(), LogLevel.WARNING);
+						}
+					}
+				}
+				
+				if(aliasNode!=null) {
 				    rootNode.addChild(aliasNode);
 				}
 				rootNode.addChild(cpuNode);
