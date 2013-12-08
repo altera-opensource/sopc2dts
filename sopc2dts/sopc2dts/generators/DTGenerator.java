@@ -161,7 +161,13 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				}
 			}
 			if(parent==null) {
-				Logger.logln("DTAppend: Unable to find parent for " + dta.getInstanceName() + ". Adding to root", LogLevel.WARNING);
+				String pLabel;
+				if (dta.getParentLabel()!=null) {
+					pLabel = "null";
+				} else {
+					pLabel = dta.getParentLabel();
+				}
+				Logger.logln("DTAppend: Unable to find parent, "+pLabel+", for " + dta.getInstanceName() + ". Adding to root", LogLevel.WARNING);
 				parent = rootNode;
 			}
 			Vector<DTAppendType> vTypes = dta.getTypes();
