@@ -28,6 +28,7 @@ import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.devicetree.DTHelper;
 
@@ -54,7 +55,7 @@ public class SopcInfoConnection extends SopcInfoElementWithParams {
 	}
 	private long getIrqNumber() {
 		long nr = Long.decode(getParamValue("irqNumber"));
-		String offset = masterInterface.getParamValByName("embeddedsw.dts.irq.rx_offset");
+		String offset = masterInterface.getParamValByName(BasicComponent.EMBSW_DTS_IRQ + ".rx_offset");
 		if (offset != null) {
 			nr += Long.decode(offset);
 		} 

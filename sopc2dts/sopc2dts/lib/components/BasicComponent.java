@@ -36,9 +36,15 @@ import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class BasicComponent extends BasicElement {
-	private static final String EMBSW_DTS_PARAMS = "embeddedsw.dts.params.";
-	private static final String EMBSW_DTS_COMPAT = "embeddedsw.dts.compatible";
-	private static final String EMBSW_CMACRO = "embeddedsw.CMacro";
+	public static final String EMBSW = "embeddedsw";
+	public static final String EMBSW_CMACRO = EMBSW + ".CMacro";
+	public static final String EMBSW_DTS = EMBSW + ".dts";
+	public static final String EMBSW_DTS_COMPAT = EMBSW_DTS + ".compatible";
+	public static final String EMBSW_DTS_GROUP = EMBSW_DTS + ".group";
+	public static final String EMBSW_DTS_IRQ = EMBSW_DTS + ".irq";
+	public static final String EMBSW_DTS_NAME = EMBSW_DTS + ".name";
+	public static final String EMBSW_DTS_PARAMS = EMBSW_DTS + ".params.";
+	public static final String EMBSW_DTS_VENDOR = EMBSW_DTS + ".vendor";
 	
 	public enum parameter_action { NONE, CMACRCO, ALL };
 	private String instanceName;

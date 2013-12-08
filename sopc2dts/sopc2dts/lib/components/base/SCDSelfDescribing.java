@@ -27,9 +27,9 @@ public class SCDSelfDescribing extends SopcComponentDescription {
 	public SCDSelfDescribing(BasicComponent comp)
 	{
 		super(comp.getClassName(),
-				comp.getParamValByName("embeddedsw.dts.group"),
-				comp.getParamValByName("embeddedsw.dts.vendor"),
-				comp.getParamValByName("embeddedsw.dts.name"));
+				comp.getParamValByName(BasicComponent.EMBSW_DTS_GROUP),
+				comp.getParamValByName(BasicComponent.EMBSW_DTS_VENDOR),
+				comp.getParamValByName(BasicComponent.EMBSW_DTS_NAME));
 		if(device == null) {
 			device = comp.getClassName();
 		}
@@ -45,12 +45,12 @@ public class SCDSelfDescribing extends SopcComponentDescription {
 	 * In the long run this will remove the need for those xml-files.
 	 */
 	public static boolean isSelfDescribing(BasicComponent comp) {
-		String pVal = comp.getParamValByName("embeddedsw.dts.vendor");
+		String pVal = comp.getParamValByName(BasicComponent.EMBSW_DTS_VENDOR);
 		if((pVal == null) || (pVal.length() == 0)) {
 			//Vendor info is mandatory
 			return false;
 		}
-		pVal = comp.getParamValByName("embeddedsw.dts.group");
+		pVal = comp.getParamValByName(BasicComponent.EMBSW_DTS_GROUP);
 		if((pVal == null) || (pVal.length() == 0)) {
 			//group/type info is mandatory
 			return false;

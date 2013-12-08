@@ -43,24 +43,26 @@ public class CortexA9GIC extends BasicComponent {
 		super("arm_gic", iName, ver, scdArmGIC);
 	}
 	static int getIrqClassFromIf(Interface intf) {
+		final String RX_TYPE = EMBSW_DTS_IRQ + ".rx_type";
 		int irqClass = (intf.getName().equalsIgnoreCase("arm_gic_ppi") ? 
 				GIC_IRQ_CLASS_PPI : GIC_IRQ_CLASS_SPI);
-		String irqClassStr= intf.getParamValByName("embeddedsw.dts.irq.rx_type");
+		String irqClassStr= intf.getParamValByName(RX_TYPE);
 		if(irqClassStr!=null) {
 			if (irqClassStr.contentEquals("arm_gic_ppi")) {
 				irqClass = GIC_IRQ_CLASS_PPI;
 			} else if (irqClassStr.contentEquals("arm_gic_spi")) {
 				irqClass = GIC_IRQ_CLASS_SPI;
 			} else {
-				Logger.logln("unknown embeddedsw.dts.irq.rx_type: " + irqClassStr,LogLevel.ERROR);
+				Logger.logln("unknown " + RX_TYPE + ": " + irqClassStr,LogLevel.ERROR);
 			}
 		}
 		return irqClass;
 	}
 
 	static int getIrqTypeFromIf(Interface intf) {
+		final String TX_TYPE = EMBSW_DTS_IRQ + ".tx_type";
 		int irqType = GIC_IRQ_TYPE_HIGH;
-		String irqTypeStr = intf.getParamValByName("embeddedsw.dts.irq.tx_type");
+		String irqTypeStr = intf.getParamValByName(TX_TYPE);
 		if (irqTypeStr!=null) {
 			if(irqTypeStr.contentEquals("ACTIVE_HIGH")) {
 				irqType = GIC_IRQ_TYPE_HIGH;
@@ -71,10 +73,10 @@ public class CortexA9GIC extends BasicComponent {
 			} else if (irqTypeStr.contentEquals("RISING_EDGE")) {
 				irqType = GIC_IRQ_TYPE_RISING;
 			} else {
-				Logger.logln("unknown embedded.dts.irq_tx_type: " + irqTypeStr,LogLevel.ERROR);
+				Logger.logln("unknown " + TX_TYPE + ": " + irqTypeStr,LogLevel.ERROR);
 			}
 		}
-		String txMask = intf.getParamValByName("embeddedsw.dts.irq.tx_mask");
+		String txMask = intf.getParamValByName(EMBSW_DTS_IRQ + ".tx_mask");
 		if (txMask != null) {
 			Logger.logln("got mask "+txMask, LogLevel.DEBUG);
 			irqType |= Integer.decode(txMask);
