@@ -93,7 +93,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 						BasicComponent slave = sys.getComponentByName(p.getValue());
 						if(slave!=null) {
 							Vector<Connection> vConn = sys.getConnectionPath(povComponent, slave,SystemDataType.MEMORY_MAPPED);
-							String path="";
+							String path="/" + sopcNode.getName();
 							for(Connection c : vConn) {
 								path += "/" + c.getSlaveModule().getScd().getGroup() + "@" + DTHelper.longArrToHexString(c.getConnValue());
 							}
