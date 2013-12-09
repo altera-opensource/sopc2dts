@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -41,10 +41,10 @@ public class GenericTristateController extends BasicComponent {
 	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
 		boolean bChanged = false;
-		String driverType = getParamValByName("embeddedsw.configuration.softwareDriver");
+		String driverType = getParamValByName(BasicComponent.EMBSW_CONF + ".softwareDriver");
 		if(driverType==null)
 		{
-			driverType = getParamValByName("embeddedsw.configuration.hwClassnameDriverSupportDefault");
+			driverType = getParamValByName(BasicComponent.EMBSW_CONF + ".hwClassnameDriverSupportDefault");
 		}
 		if(driverType==null)
 		{

@@ -26,6 +26,7 @@ import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.SopcComponentLib;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.devicetree.DTHelper;
@@ -59,7 +60,7 @@ public class SICEpcs extends SICFlash {
 		if(!bAddressFixed) {
 			bAddressFixed = true;
 			try {
-				long regOffset = Long.decode(getParamValByName("embeddedsw.CMacro.REGISTER_OFFSET"));
+				long regOffset = Long.decode(getParamValByName(EMBSW_CMACRO + ".REGISTER_OFFSET"));
 				if(regOffset>0) {
 					Vector<Interface> vintf = getInterfaces(SystemDataType.MEMORY_MAPPED, false);
 					for(Interface intf : vintf) {

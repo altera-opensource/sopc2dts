@@ -38,6 +38,7 @@ import sopc2dts.lib.devicetree.DTProperty;
 public class BasicComponent extends BasicElement {
 	public static final String EMBSW = "embeddedsw";
 	public static final String EMBSW_CMACRO = EMBSW + ".CMacro";
+	public static final String EMBSW_CONF = EMBSW + ".configuration";
 	public static final String EMBSW_DTS = EMBSW + ".dts";
 	public static final String EMBSW_DTS_COMPAT = EMBSW_DTS + ".compatible";
 	public static final String EMBSW_DTS_GROUP = EMBSW_DTS + ".group";

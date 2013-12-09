@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -31,12 +31,12 @@ public class UBootComponentLib {
 	{
 		HashMap<String, String> props = new HashMap<String, String>();
 		props.put("CONFIG_SYS_CLK_FREQ",		"gen|clk");
-		props.put("CONFIG_SYS_RESET_ADDR", 		"prop|embeddedsw.CMacro.RESET_ADDR");
-		props.put("CONFIG_SYS_EXCEPTION_ADDR", 	"prop|embeddedsw.CMacro.EXCEPTION_ADDR");
-		props.put("CONFIG_SYS_ICACHE_SIZE", 	"prop|embeddedsw.CMacro.ICACHE_SIZE");
-		props.put("CONFIG_SYS_ICACHELINE_SIZE", "prop|embeddedsw.CMacro.ICACHE_LINE_SIZE");
-		props.put("CONFIG_SYS_DCACHE_SIZE", 	"prop|embeddedsw.CMacro.DCACHE_SIZE");
-		props.put("CONFIG_SYS_DCACHELINE_SIZE", "prop|embeddedsw.CMacro.DCACHE_LINE_SIZE");
+		props.put("CONFIG_SYS_RESET_ADDR", 		"prop|" + BasicComponent.EMBSW_CMACRO + ".RESET_ADDR");
+		props.put("CONFIG_SYS_EXCEPTION_ADDR", 	"prop|" + BasicComponent.EMBSW_CMACRO + ".EXCEPTION_ADDR");
+		props.put("CONFIG_SYS_ICACHE_SIZE", 	"prop|" + BasicComponent.EMBSW_CMACRO + ".ICACHE_SIZE");
+		props.put("CONFIG_SYS_ICACHELINE_SIZE", "prop|" + BasicComponent.EMBSW_CMACRO + ".ICACHE_LINE_SIZE");
+		props.put("CONFIG_SYS_DCACHE_SIZE", 	"prop|" + BasicComponent.EMBSW_CMACRO + ".DCACHE_SIZE");
+		props.put("CONFIG_SYS_DCACHELINE_SIZE", "prop|" + BasicComponent.EMBSW_CMACRO + ".DCACHE_LINE_SIZE");
 		/* TODO This is a hack. doesn't work for nommu */
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_nios2","altera_nios2_qsys"}, props, 
@@ -60,7 +60,7 @@ public class UBootComponentLib {
 		props = new HashMap<String, String>();
 		props.put("CONFIG_SYS_UART_BASE",		"gen|ioaddr");
 		props.put("CONFIG_SYS_UART_FREQ",		"gen|clk");
-		props.put("CONFIG_SYS_UART_BAUD",		"prop|embeddedsw.CMacro.BAUD");
+		props.put("CONFIG_SYS_UART_BAUD",		"prop|" + BasicComponent.EMBSW_CMACRO + ".BAUD");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "altera_avalon_uart", "fifoed_avalon_uart_classic"}, 
 				props, null));
@@ -118,8 +118,8 @@ public class UBootComponentLib {
 		props.put("CONFIG_SYS_ALTERA_TSE_SGDMA_TX_BASE","gen|ioaddr2");
 		props.put("CONFIG_SYS_ALTERA_TSE_DESC_BASE","gen|ioaddr3");
 		props.put("CONFIG_SYS_ALTERA_TSE_DESC_SIZE","gen|size3");
-		props.put("CONFIG_SYS_ALTERA_TSE_RX_FIFO", "prop|embeddedsw.CMacro.RECEIVE_FIFO_DEPTH");
-		props.put("CONFIG_SYS_ALTERA_TSE_TX_FIFO", "prop|embeddedsw.CMacro.TRANSMIT_FIFO_DEPTH");
+		props.put("CONFIG_SYS_ALTERA_TSE_RX_FIFO", "prop|" + BasicComponent.EMBSW_CMACRO + ".RECEIVE_FIFO_DEPTH");
+		props.put("CONFIG_SYS_ALTERA_TSE_TX_FIFO", "prop|" + BasicComponent.EMBSW_CMACRO + ".TRANSMIT_FIFO_DEPTH");
 		vComponents.add(new UBootLibComponent(
 				new String[] { "triple_speed_ethernet" }, props, 
 				"#define CONFIG_ALTERA_TSE\n" +

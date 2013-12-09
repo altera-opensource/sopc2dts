@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -43,7 +43,7 @@ public class SICLan91c111 extends SICEthernet {
 		try {
 			String v = getParamValByName("registerOffset");
 			if (v == null)
-				v = getParamValByName("embeddedsw.CMacro.LAN91C111_REGISTERS_OFFSET");
+				v = getParamValByName(EMBSW_CMACRO + ".LAN91C111_REGISTERS_OFFSET");
 			
 			regOffset = Long.decode(v);
 		} catch(Exception e)

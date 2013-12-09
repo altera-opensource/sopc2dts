@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,7 @@ public class UBootLibComponent {
 	}
 	protected static boolean isMMUEnabled(BasicComponent comp)
 	{
-		if(comp.getParamByName("embeddedsw.CMacro.MMU_PRESENT")!=null)
+		if(comp.getParamByName(BasicComponent.EMBSW_CMACRO + ".MMU_PRESENT")!=null)
 		{
 			return true;
 		}
