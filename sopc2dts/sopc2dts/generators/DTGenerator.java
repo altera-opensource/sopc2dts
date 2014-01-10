@@ -38,6 +38,7 @@ import sopc2dts.lib.boardinfo.BICDTAppend.DTAppendType;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.MemoryBlock;
+import sopc2dts.lib.components.base.ClockSource;
 import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
@@ -62,6 +63,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		BasicComponent povComponent = getPovComponent(bi);
 		DTNode sopcNode;
 		DTNode chosenNode;
+		DTNode clocksNode = null;
 		if(povComponent!=null)
 		{
 			int addrCells = povComponent.getInterfaces(SystemDataType.MEMORY_MAPPED, true).firstElement().getPrimaryWidth();
@@ -73,6 +75,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 				DTNode aliasNode = null;
 				sopcNode = new DTNode("sopc@0", "sopc0");
 				chosenNode = getChosenNode(bi);
+				clocksNode = getClocksNode(bi);
 				rootNode.addProperty(new DTProperty("model","ALTR," + sys.getSystemName()));
 				rootNode.addProperty(new DTProperty("compatible","ALTR," + sys.getSystemName()));
 				rootNode.addProperty(new DTProperty("#address-cells", (long)addrCells));
@@ -129,6 +132,9 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			sopcNode.addProperty(new DTProperty("bus-frequency", povComponent.getClockRate()));
 			if(bi.getPovType().equals(PovType.CPU))
 			{
+				if(clocksNode!=null) {
+					rootNode.addChild(clocksNode);
+				}
 				rootNode.addChild(sopcNode);
 				rootNode.addChild(chosenNode);
 			}
@@ -226,6 +232,24 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 		}
 		chosenNode.addProperty(new DTProperty("bootargs", bi.getBootArgs()));
 		return chosenNode;
+	}
+	DTNode getClocksNode(BoardInfo bi)
+	{
+		DTNode cn = null;
+		if(bi.isShowClockTree()) {
+			cn = new DTNode("clocks");
+			for(BasicComponent comp : sys.getSystemComponents()) {
+				if(comp instanceof ClockSource) {
+					if(cn.getProperties().size()==0) {
+						cn.addProperty(new DTProperty("#address-cells",1L));
+						cn.addProperty(new DTProperty("#size-cells",1L));
+					}
+					cn.addChild(comp.toDTNode(bi, null));
+					vHandled.add(comp);
+				}
+			}
+		}
+		return cn;
 	}
 	DTNode getCpuNodes(BoardInfo bi, BasicComponent povComp)
 	{

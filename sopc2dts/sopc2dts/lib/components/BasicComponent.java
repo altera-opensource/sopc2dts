@@ -32,7 +32,10 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropNumVal;
+import sopc2dts.lib.devicetree.DTPropPHandle;
 import sopc2dts.lib.devicetree.DTPropPHandleVal;
+import sopc2dts.lib.devicetree.DTPropVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class BasicComponent extends BasicElement {
@@ -186,7 +189,12 @@ public class BasicComponent extends BasicElement {
 			node.addProperty(new DTProperty("#interrupt-cells", 
 					getInterfaces(SystemDataType.INTERRUPT, true).firstElement().getPrimaryWidth()));
 		}
-
+		if(bi.isShowClockTree()) {
+			DTProperty[] clkProps = getClocksProperty();
+			for(DTProperty dtp : clkProps) {
+				node.addProperty(dtp);
+			}
+		}
 		Vector<Parameter> vParamTodo = new Vector<Parameter>(vParameters);
 		for(SopcComponentDescription.SICAutoParam ap : getScd().getAutoParams())
 		{
@@ -373,13 +381,59 @@ public class BasicComponent extends BasicElement {
 				try {
 					rate = DTHelper.longArrToLong(intf.getConnections().firstElement().getConnValue());
 				} catch(ArrayIndexOutOfBoundsException e) {
-					Logger.logException(e);
+					Logger.logln(e.toString(), LogLevel.DEBUG);
 				} catch(NoSuchElementException e) {
-					Logger.logException(e);
+					Logger.logln(e.toString(), LogLevel.DEBUG);
 				}
 			}
 		}
 		return rate;
+	}
+	public DTPropVal[] getClockMasterPH(Interface cm) {
+		Vector<Interface> vCms = getInterfaces(SystemDataType.CLOCK, true);
+		DTPropPHandleVal phv = new DTPropPHandleVal(getInstanceName());
+		
+		if(vCms.size()==1) {
+			return new DTPropVal[]{ phv };
+		} else {
+			for(int i=0; i<vCms.size(); i++) {
+				if(vCms.get(i) == cm) {
+					return new DTPropVal[]{ phv, new DTPropNumVal(i) };
+				}
+			}
+		}
+		return null;
+	}
+	public DTProperty[] getClocksProperty()
+	{
+		DTProperty props[] = {};
+		Vector<Interface> vClockSlaves = getInterfaces(SystemDataType.CLOCK, false);
+		if(vClockSlaves.size()>0) {
+			DTProperty prop = new DTProperty("clocks");
+			Vector<String> vNames = new Vector<String>();
+			for(Interface cs : vClockSlaves) {
+				if(!cs.getConnections().isEmpty()) {
+					BasicComponent mcomp = cs.getConnections().firstElement().getMasterModule();
+					DTPropVal[] phvs = mcomp.getClockMasterPH(cs.getConnections().firstElement().getMasterInterface());
+					for(DTPropVal phv : phvs) {
+						prop.addValue(phv);
+					}
+					vNames.add(cs.getName());
+				}
+			}
+			if(vNames.size()>1) {
+				props = new DTProperty[2];
+				props[1] = new DTProperty("clock-names",vNames.toArray(new String[]{}));
+			} else if (vNames.size() == 0) {
+				return props;
+			}else {
+				props = new DTProperty[1];				
+			}
+			props[0] = prop;
+		} else {
+			props = new DTProperty[0];
+		}
+		return props;
 	}
 	public Integer getPreferredPriWidthForIf(String iName, SystemDataType dt, boolean master) {
 		return null;

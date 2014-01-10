@@ -63,6 +63,7 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter sopcParameters = new CLParameter("none");
 	protected CLParameter sort = new CLParameter("");
 	protected CLParameter gui = new CLParameter("" + false);
+	protected CLParameter showClocks = new CLParameter(""+false);
 
 	protected static final String programName = "sopc2dts";
 	protected static final String programVersion = "0.3";
@@ -96,6 +97,7 @@ public class Sopc2DTS implements LogListener {
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
 		vOptions.add(new CommandLineOption("gui",		"g", gui,				false,false,"Run in gui mode", null));
+		vOptions.add(new CommandLineOption("clocks",	"c", showClocks,		false,false,"Show clocks in Device Tree Source", null));
 		vOptions.add(new CommandLineOption("version",	null,showVersion,		false,false,"Show version information and exit", null));
 		vOptions.add(new CommandLineOption("mimic-sopc-create-header-files"	,"m", mimicAlteraTools,		false,false,"Try to (mis)behave like sopc-create-header-files does", null));
 		vOptions.add(new CommandLineOption("no-timestamp", null, excludeTimeStamp, false, false, "Don't add a timestamp to generated files", null));
@@ -153,6 +155,9 @@ public class Sopc2DTS implements LogListener {
 		} else if(sopcParameters.value.equalsIgnoreCase("all"))
 		{
 			bInfo.setDumpParameters(BasicComponent.parameter_action.ALL);
+		}
+		if (Boolean.parseBoolean(showClocks.value)) {
+			bInfo.showClockTree();
 		}
 		if(Boolean.parseBoolean(gui.value))
 		{

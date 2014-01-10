@@ -50,6 +50,7 @@ import sopc2dts.lib.components.altera.TSEMonolithic;
 import sopc2dts.lib.components.altera.VIPFrameBuffer;
 import sopc2dts.lib.components.altera.VIPMixer;
 import sopc2dts.lib.components.arm.CortexA9GIC;
+import sopc2dts.lib.components.base.ClockSource;
 import sopc2dts.lib.components.base.CpuComponent;
 import sopc2dts.lib.components.base.GpioController;
 import sopc2dts.lib.components.base.MailBox;
@@ -204,6 +205,10 @@ public class SopcComponentLib implements ContentHandler {
 			} else if (scd.getGroup().equalsIgnoreCase("cpu") &&
 					!(comp instanceof CpuComponent)) {
 				return new CpuComponent(comp);
+			} else if ((scd.getGroup().equalsIgnoreCase("clock") || 
+						scd.getGroup().equalsIgnoreCase("clock_source")) &&
+					!(comp instanceof ClockSource)) {
+				return new ClockSource(comp);
 			} else if (scd.getGroup().equalsIgnoreCase("flash") &&
 					!(comp instanceof SICFlash)) {
 				return new SICFlash(comp);
