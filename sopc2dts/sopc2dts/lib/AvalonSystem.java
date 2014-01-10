@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -160,6 +160,30 @@ public class AvalonSystem extends BasicElement {
 	}
 	public void recheckComponents()
 	{
+		for(int i=0; i<vSystemComponents.size();i++)
+		{
+			if(vSystemComponents.get(i).getScd().getGroup().equalsIgnoreCase("ignore"))
+			{
+				/* First disconnect the component */
+				for(Interface intf : vSystemComponents.get(i).getInterfaces()) {
+					for(Connection conn : intf.getConnections()) {
+						Interface other;
+						if(intf.isMaster()) {
+							other = conn.getSlaveInterface();
+						} else {
+							other = conn.getMasterInterface();
+						}
+						if(other!=null) {
+							other.getConnections().remove(conn);
+						}
+					}
+				}
+				/* Then remove it */
+				vSystemComponents.remove(i);
+				//don't advance
+				i--;
+			}
+		}
 		/*
 		 * Try to find hierarchy
 		 */
