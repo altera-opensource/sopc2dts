@@ -98,8 +98,8 @@
 	<S2DComponent classname="altera_interface_generator" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_hps_io" group="ignore"></S2DComponent>
-	<S2DComponent classname="altera_jtag_avalon_master" group="ignore"></S2DComponent>
-	<S2DComponent classname="intr_capturer" group="ignore"></S2DComponent>
+	<S2DComponent classname="altera_jtag_avalon_master" group="remove"></S2DComponent>
+	<S2DComponent classname="intr_capturer" group="remove"></S2DComponent>
 	<S2DComponent classname="timing_adapter" group="ignore">
 	                <TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
 	</S2DComponent>
