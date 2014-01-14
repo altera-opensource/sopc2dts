@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -219,6 +219,31 @@ public class AvalonSystem extends BasicElement {
 					Logger.logln("Failed to find interfaces for the Transparent bridge in " + 
 							comp.getInstanceName() + " of type " + comp.getClassName(), LogLevel.WARNING);
 				}
+			}
+		}
+		for(int i=0; i<vSystemComponents.size(); i++) {
+			if(vSystemComponents.get(i).getScd().getGroup().equalsIgnoreCase("remove")) {
+				/* First disconnect the component */
+				for(Interface intf : vSystemComponents.get(i).getInterfaces()) {
+					Vector<Connection> vConn = intf.getConnections();
+					while(vConn.size()>0) {
+						Connection conn = vConn.firstElement();
+						Interface other;
+						if(intf.isMaster()) {
+							other = conn.getSlaveInterface();
+						} else {
+							other = conn.getMasterInterface();
+						}
+						if(other!=null) {
+							other.getConnections().remove(conn);
+						}
+						vConn.remove(conn);
+					}
+				}
+				/* Then remove it */
+				vSystemComponents.remove(i);
+				//don't advance
+				i--;
 			}
 		}
 		/*
