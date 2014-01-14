@@ -177,7 +177,7 @@ public class BasicComponent extends BasicElement {
 		BasicComponent irqParent = getInterrupts(vIrqs,bi);
 		if(irqParent!=null)
 		{
-			node.addProperty(new DTProperty("interrupt-parent", new DTPropPHandleVal(irqParent.getInstanceName())));
+			node.addProperty(new DTProperty("interrupt-parent", new DTPropPHandleVal(irqParent)));
 			p = new DTProperty("interrupts");
 			p.addNumberValues(vIrqs);
 			node.addProperty(p);
@@ -390,7 +390,7 @@ public class BasicComponent extends BasicElement {
 	}
 	public DTPropVal[] getClockMasterPH(Interface cm) {
 		Vector<Interface> vCms = getInterfaces(SystemDataType.CLOCK, true);
-		DTPropPHandleVal phv = new DTPropPHandleVal(getInstanceName());
+		DTPropPHandleVal phv = new DTPropPHandleVal(this);
 		
 		if(vCms.size()==1) {
 			return new DTPropVal[]{ phv };
