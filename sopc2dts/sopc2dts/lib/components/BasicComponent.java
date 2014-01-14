@@ -33,7 +33,6 @@ import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.lib.devicetree.DTHelper;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTPropNumVal;
-import sopc2dts.lib.devicetree.DTPropPHandle;
 import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTPropVal;
 import sopc2dts.lib.devicetree.DTProperty;
@@ -426,7 +425,7 @@ public class BasicComponent extends BasicElement {
 				props[1] = new DTProperty("clock-names",vNames.toArray(new String[]{}));
 			} else if (vNames.size() == 0) {
 				return props;
-			}else {
+			} else {
 				props = new DTProperty[1];				
 			}
 			props[0] = prop;
