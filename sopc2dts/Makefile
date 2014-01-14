@@ -61,12 +61,6 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/devicetree/DTBlob.java \
 	sopc2dts/lib/devicetree/DTElement.java \
 	sopc2dts/lib/devicetree/DTNode.java \
-	sopc2dts/lib/devicetree/DTPropBool.java \
-	sopc2dts/lib/devicetree/DTPropByte.java \
-	sopc2dts/lib/devicetree/DTPropHexNumber.java \
-	sopc2dts/lib/devicetree/DTPropNumber.java \
-	sopc2dts/lib/devicetree/DTPropPHandle.java \
-	sopc2dts/lib/devicetree/DTPropString.java \
 	sopc2dts/lib/devicetree/DTProperty.java \
 	sopc2dts/lib/devicetree/DTPropByteVal.java \
 	sopc2dts/lib/devicetree/DTPropHexNumVal.java \
