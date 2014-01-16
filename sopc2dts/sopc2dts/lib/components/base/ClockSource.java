@@ -51,7 +51,7 @@ public class ClockSource extends BasicComponent {
 		node.addProperty(new DTProperty("compatible", "fixed-clock"));
 		node.addProperty(new DTProperty("#clock-cells", 0L));
 		node.addProperty(new DTProperty("clock-frequency",null,freq2String(cm.getInterfaceValue()[0]), cm.getInterfaceValue()[0]));
-		node.addProperty(new DTProperty("clock-output-names",cm.getName()));
+		node.addProperty(new DTProperty("clock-output-names",getInstanceName() + '-' + cm.getName()));
 		return node;
 	}
 	public static String freq2String(long freq) {
