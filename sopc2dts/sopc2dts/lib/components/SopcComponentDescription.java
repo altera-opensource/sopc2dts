@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -200,15 +200,13 @@ public class SopcComponentDescription {
 	public void setCompatible(Vector<String> vCompatible) {
 		this.vCompatible = vCompatible;
 	}
-	protected int compareVersions(String v1, String v2)
+	public static int compareVersions(String v1, String v2)
 	{
 		String[] v1Parts = v1.split("\\.");
 		String[] v2Parts = v2.split("\\.");
 		int diff = 0;
-//		System.out.println("Compare " + v1 + " to " + v2);
 		for(int iPart = 0; (iPart<v1Parts.length) && (iPart<v2Parts.length) && (diff==0); iPart++)
 		{
-//			System.out.println("ComparePart " + v1Parts[iPart] + " to " + v2Parts[iPart]);
 			try {
 				int num1 = Integer.decode(v1Parts[iPart]);
 				int num2 = Integer.decode(v2Parts[iPart]);

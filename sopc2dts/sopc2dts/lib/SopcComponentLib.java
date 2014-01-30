@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -42,6 +42,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.altera.GenericTristateController;
+import sopc2dts.lib.components.altera.InterfaceGenerator;
 import sopc2dts.lib.components.altera.MultiBridge;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
@@ -49,6 +50,8 @@ import sopc2dts.lib.components.altera.SICSgdma;
 import sopc2dts.lib.components.altera.TSEMonolithic;
 import sopc2dts.lib.components.altera.VIPFrameBuffer;
 import sopc2dts.lib.components.altera.VIPMixer;
+import sopc2dts.lib.components.altera.hps.ClockManager;
+import sopc2dts.lib.components.altera.hps.ClockManagerV;
 import sopc2dts.lib.components.arm.CortexA9GIC;
 import sopc2dts.lib.components.base.ClockSource;
 import sopc2dts.lib.components.base.CpuComponent;
@@ -175,6 +178,8 @@ public class SopcComponentLib implements ContentHandler {
 			return new SICLan91c111(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_avalon_video_sync_generator")) {
 			return new VIPFrameBuffer(className, instanceName, version, getScdByClassName(className));
+		} else if (className.equalsIgnoreCase("altera_interface_generator")) {
+			return new InterfaceGenerator(className, instanceName, version, getScdByClassName(className));
 		} else if ((className.equalsIgnoreCase("alt_vip_mix")) ||
 				(className.equalsIgnoreCase("alt_vip_switch"))){
 			return new VIPMixer(className, instanceName, version, getScdByClassName(className));
@@ -209,6 +214,9 @@ public class SopcComponentLib implements ContentHandler {
 						scd.getGroup().equalsIgnoreCase("clock_source")) &&
 					!(comp instanceof ClockSource)) {
 				return new ClockSource(comp);
+			} else if ((scd.getGroup().equalsIgnoreCase("clkmgr")) &&
+				!(comp instanceof ClockManager)) {
+			return new ClockManagerV(comp);
 			} else if (scd.getGroup().equalsIgnoreCase("flash") &&
 					!(comp instanceof SICFlash)) {
 				return new SICFlash(comp);

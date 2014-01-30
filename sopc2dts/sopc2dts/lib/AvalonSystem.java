@@ -61,6 +61,18 @@ public class AvalonSystem extends BasicElement {
 		return null;
 	}
 
+	public Vector<BasicComponent> getComponentsByClass(String cname)
+	{
+		Vector<BasicComponent> vRes = new Vector<BasicComponent>();
+		for(BasicComponent comp : vSystemComponents)
+		{
+			if (comp.getClassName().equalsIgnoreCase(cname)) {
+				vRes.add(comp);
+			}
+		}
+		return vRes;
+	}
+
 	public Vector<BasicComponent> getMasterComponents() {
 		Vector<BasicComponent> vRes = new Vector<BasicComponent>();
 		for(BasicComponent comp : vSystemComponents)
@@ -252,19 +264,18 @@ public class AvalonSystem extends BasicElement {
 		 */
 		for(int i=0; i<vSystemComponents.size();i++)
 		{
-			if(vSystemComponents.get(i).removeFromSystemIfPossible(this))
-			{
-				//Restart loop after modifications...
-				i=0;
-			}
-		}
-		for(int i=0; i<vSystemComponents.size(); i++) {
 			BasicComponent comp = vSystemComponents.get(i);
 			BasicComponent checkedComp = SopcComponentLib.getInstance().finalCheckOnComponent(comp);
 			if(comp != checkedComp) {
 				vSystemComponents.remove(comp);
 				vSystemComponents.add(checkedComp);
 				i=0;
+			} else {
+				if(vSystemComponents.get(i).removeFromSystemIfPossible(this))
+				{
+					//Restart loop after modifications...
+					i=0;
+				}
 			}
 		}
 	}

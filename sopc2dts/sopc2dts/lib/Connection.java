@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,12 @@ public class Connection extends BasicElement {
 	protected SystemDataType type = SystemDataType.CONDUIT;
 	protected long connValue[];
 	
+	public Connection(Interface master, Interface slave) {
+		this(master,slave, master.getType());
+	}
+	public Connection(Interface master, Interface slave, boolean connect) {
+		this(master,slave, master.getType(), connect);
+	}
 	public Connection(Interface master, Interface slave, SystemDataType t)
 	{
 		this(master, slave, t, false);

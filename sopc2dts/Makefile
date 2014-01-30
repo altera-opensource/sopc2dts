@@ -49,6 +49,13 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/SICSgdma.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
 	sopc2dts/lib/components/altera/TSEMonolithic.java \
+	sopc2dts/lib/components/altera/InterfaceGenerator.java \
+	sopc2dts/lib/components/altera/hps/ClockManager.java \
+	sopc2dts/lib/components/altera/hps/ClockManagerV.java \
+	sopc2dts/lib/components/altera/hps/SocFpgaGateClock.java \
+	sopc2dts/lib/components/altera/hps/SocFpgaPeripClock.java \
+	sopc2dts/lib/components/altera/hps/SocFpgaPllClock.java \
+	sopc2dts/lib/components/altera/hps/VirtualClockElement.java \
 	sopc2dts/lib/components/base/FlashPartition.java \
 	sopc2dts/lib/components/base/GpioController.java \
 	sopc2dts/lib/components/base/SCDSelfDescribing.java \
