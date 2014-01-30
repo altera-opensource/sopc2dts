@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,6 @@ import java.io.File;
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
-import sopc2dts.parsers.ptf.PtfSystemLoader;
 import sopc2dts.parsers.qsys.QSysSystemLoader;
 import sopc2dts.parsers.sopcinfo.SopcInfoSystemLoader;
 
@@ -45,12 +44,6 @@ public class BasicSystemLoader  {
 						LogLevel.DEBUG);
 				QSysSystemLoader qsl = new QSysSystemLoader();
 				return qsl.loadSystem(source);
-			} else if(source.getName().endsWith(".ptf"))
-			{
-				Logger.logln("Loading " + source.getName() + " using PtfSystemLoader", 
-						LogLevel.DEBUG);
-				PtfSystemLoader pleaseUpgradeYourQuartus = new PtfSystemLoader();
-				return pleaseUpgradeYourQuartus.loadSystem(source);
 			} else {
 				Logger.logln("Don't know how to parse " + source.getName(),
 						LogLevel.ERROR);

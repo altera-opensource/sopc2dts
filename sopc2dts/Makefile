@@ -78,10 +78,6 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/uboot/UBootComponentLib.java \
 	sopc2dts/lib/uboot/UBootLibComponent.java \
 	sopc2dts/parsers/BasicSystemLoader.java \
-	sopc2dts/parsers/ptf/PHIgnore.java \
-	sopc2dts/parsers/ptf/PHInterface.java \
-	sopc2dts/parsers/ptf/PtfHandler.java \
-	sopc2dts/parsers/ptf/PtfSystemLoader.java \
 	sopc2dts/parsers/qsys/QSysSubSystem.java \
 	sopc2dts/parsers/qsys/QSysSystemLoader.java \
 	sopc2dts/parsers/sopcinfo/SopcInfoAssignment.java \
