@@ -32,6 +32,7 @@ public class SopcComponentDescription {
 	private Vector<SICAutoParam> vAutoParams = new Vector<SICAutoParam>();
 	Vector<SICRequiredParam> vRequiredParams = new Vector<SICRequiredParam>();
 	Vector<String> vCompatibleVersions = new Vector<String>();
+	Vector<String> vOverridesVersions = new Vector<String>();
 	Vector<TransparentInterfaceBridge> vTransparentBridges = new Vector<TransparentInterfaceBridge>();
 	
 	public SopcComponentDescription(String cn, String grp, String vnd, String dev)
@@ -197,6 +198,10 @@ public class SopcComponentDescription {
 		vCompatibleVersions.add(compat);
 	}
 	
+	public void addOverriddenVersion(String version)
+	{
+		vOverridesVersions.add(version);
+	}
 	public void setCompatible(Vector<String> vCompatible) {
 		this.vCompatible = vCompatible;
 	}
@@ -275,7 +280,14 @@ public class SopcComponentDescription {
 		vRes.addAll(vCompatible);
 		return vRes;
 	}
-
+	public boolean isOverriddenVersion(String version) {
+		for(String overVers : vOverridesVersions) {
+			if(compareVersions(overVers, version) == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 	public void setAutoParams(Vector<SICAutoParam> vAutoParams) {
 		this.vAutoParams = vAutoParams;
 	}

@@ -244,11 +244,12 @@ public class SopcComponentLib implements ContentHandler {
 		if(SCDSelfDescribing.isSelfDescribing(comp) && 
 				!(comp.getScd() instanceof SCDSelfDescribing))
 		{
-			if(!(comp.getScd() instanceof SICUnknown))
+			if((!(comp.getScd() instanceof SICUnknown)) &&
+					(comp.getScd().isOverriddenVersion(comp.getVersion())))
 			{
 				Logger.logln("Component " + comp.getInstanceName() + " of class "
 						+ comp.getClassName() + " is self-describing "
-						+ "but has a lib-version as well. Not using self-described version",
+						+ "but the lib-version overrides version '" + comp.getVersion() + "'",
 						LogLevel.INFO);
 			} else {
 				comp.setScd(new SCDSelfDescribing(comp));
@@ -318,6 +319,9 @@ public class SopcComponentLib implements ContentHandler {
 			} else if((localName.equalsIgnoreCase("CompatibleVersion"))&&(currScd!=null))
 			{
 				currScd.addCompatibleVersion(atts.getValue("value"));
+			} else if((localName.equalsIgnoreCase("OverrideVersion"))&&(currScd!=null))
+			{
+				currScd.addOverriddenVersion(atts.getValue("value"));
 			} else if((localName.equalsIgnoreCase("TransparentInterfaceBridge"))&&(currScd!=null))
 			{
 				currScd.getTransparentBridges().add(currScd.new TransparentInterfaceBridge(
@@ -339,7 +343,8 @@ public class SopcComponentLib implements ContentHandler {
 					(!localName.equalsIgnoreCase("parameter")) &&
 					(!localName.equalsIgnoreCase("RequiredParameter")) &&
 					(!localName.equalsIgnoreCase("TransparentInterfaceBridge")) &&
-					(!localName.equalsIgnoreCase("CompatibleVersion"))) 
+					(!localName.equalsIgnoreCase("CompatibleVersion")) &&
+					(!localName.equalsIgnoreCase("OverrideVersion"))) 
 			{
 				System.out.println("End element " + localName);
 			}

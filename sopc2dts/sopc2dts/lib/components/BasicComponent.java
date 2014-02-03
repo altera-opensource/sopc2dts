@@ -466,4 +466,7 @@ public class BasicComponent extends BasicElement {
 	public String getClassName() {
 		return className;
 	}
+	public String getVersion() {
+		return version;
+	}
 }
