@@ -118,7 +118,7 @@ public class BasicComponent extends BasicElement {
 		}
 		return irqParent;
 	}
-	protected BasicComponent getInterrupts(Vector<Long> vIrqs, BoardInfo bi)
+	protected BasicComponent getInterrupts(Vector<Long> vIrqs, BoardInfo bi, Vector<String>vIrqNames)
 	{
 		BasicComponent irqParent = null;
 		for(Interface intf : getInterfaces())
@@ -136,6 +136,7 @@ public class BasicComponent extends BasicElement {
 					for(Connection c : intf.getConnections()) {
 						if(c.getMasterModule().equals(irqParent)) {
 							DTHelper.addAllLongs(vIrqs, c.getConnValue());
+							vIrqNames.add(intf.getName());
 						}
 					}
 				}
@@ -174,13 +175,19 @@ public class BasicComponent extends BasicElement {
 
 		//Interrupts
 		Vector<Long> vIrqs = new Vector<Long>();
-		BasicComponent irqParent = getInterrupts(vIrqs,bi);
+		Vector<String>vIrqNames = new Vector<String>();
+		BasicComponent irqParent = getInterrupts(vIrqs,bi,vIrqNames);
 		if(irqParent!=null)
 		{
 			node.addProperty(new DTProperty("interrupt-parent", new DTPropPHandleVal(irqParent)));
 			p = new DTProperty("interrupts");
 			p.addNumberValues(vIrqs);
 			node.addProperty(p);
+			if (vIrqNames.size() > 1) {
+				p = new DTProperty("interrupt-names");
+				p.addStringValues(vIrqNames.toArray(new String[vIrqNames.size()]));
+				node.addProperty(p);
+			}
 		}
 		if(isInterruptMaster())
 		{
