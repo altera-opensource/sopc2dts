@@ -314,6 +314,20 @@ public class AvalonSystem extends BasicElement {
 			} else {
 				Logger.logln(qsysFile.getAbsolutePath() + " does not exist");
 			}
+		} else {
+			boolean isConnected = false;
+			for(Interface intf : comp.getInterfaces()) {
+				if(!intf.getConnections().isEmpty()) {
+					isConnected = true;
+				}
+			}
+			if(isConnected) {
+				Logger.logln(comp, "Looks like a QSys subsystem, but it's connected. Not removing.",LogLevel.INFO);
+			} else {
+				Logger.logln(comp, "Looks like an unconnected QSys subsystem. Removing...",LogLevel.DEBUG);
+				removeSystemComponent(comp);
+				return true;
+			}
 		}
 		return false;
 	}
