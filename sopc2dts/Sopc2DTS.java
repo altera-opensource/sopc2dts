@@ -64,6 +64,9 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter sort = new CLParameter("");
 	protected CLParameter gui = new CLParameter("" + false);
 	protected CLParameter showClocks = new CLParameter(""+false);
+	protected CLParameter showConduit = new CLParameter(""+false);
+	protected CLParameter showReset = new CLParameter(""+false);
+	protected CLParameter showStreaming = new CLParameter(""+false);
 
 	protected static final String programName = "sopc2dts";
 	protected static final String programVersion = "0.3";
@@ -97,7 +100,8 @@ public class Sopc2DTS implements LogListener {
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
 		vOptions.add(new CommandLineOption("gui",		"g", gui,				false,false,"Run in gui mode", null));
-		vOptions.add(new CommandLineOption("clocks",	"c", showClocks,		false,false,"Show clocks in Device Tree Source", null));
+		vOptions.add(new CommandLineOption("clocks",	"c", showClocks,		false,false,"Show clocks in Device Tree Source / graph", null));
+		vOptions.add(new CommandLineOption("conduits",	null, showConduit,		false,false,"Show conduit interfaces in graph", null));
 		vOptions.add(new CommandLineOption("version",	null,showVersion,		false,false,"Show version information and exit", null));
 		vOptions.add(new CommandLineOption("mimic-sopc-create-header-files"	,"m", mimicAlteraTools,		false,false,"Try to (mis)behave like sopc-create-header-files does", null));
 		vOptions.add(new CommandLineOption("no-timestamp", null, excludeTimeStamp, false, false, "Don't add a timestamp to generated files", null));
@@ -105,7 +109,9 @@ public class Sopc2DTS implements LogListener {
 		vOptions.add(new CommandLineOption("output",	"o", outputFileName,	true, false,"The output filename","filename"));
 		vOptions.add(new CommandLineOption("pov", 		"p", pov,		 		true, false,"The point of view to generate from. Defaults to the first cpu found", "component name"));
 		vOptions.add(new CommandLineOption("pov-type", 	null, povType,			true, false,"The point of view device type", "{cpu,pci}"));
+		vOptions.add(new CommandLineOption("reset",		null, showReset,		false,false,"Show reset interfaces in graph", null));
 		vOptions.add(new CommandLineOption("sort", 		"s", sort,		 		true, false,"Sort components by", "{none,address,name,label}"));
+		vOptions.add(new CommandLineOption("streaming",	null, showStreaming,	false,false,"Show streaming interfaces in graph", null));
 		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dtb,dtb-hex8,dtb-hex32,dtb-char-arr,dts,uboot,kernel}"));
 		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
 		vOptions.add(new CommandLineOption("sopc-parameters", 	null,sopcParameters, true, false,"What sopc-parameters to include in DTS", "{node,cmacro,all}"));
@@ -158,6 +164,15 @@ public class Sopc2DTS implements LogListener {
 		}
 		if (Boolean.parseBoolean(showClocks.value)) {
 			bInfo.showClockTree();
+		}
+		if (Boolean.parseBoolean(showConduit.value)) {
+			bInfo.showConduits();
+		}
+		if (Boolean.parseBoolean(showReset.value)) {
+			bInfo.showResets();
+		}
+		if (Boolean.parseBoolean(showStreaming.value)) {
+			bInfo.showStreaming();
 		}
 		if(Boolean.parseBoolean(gui.value))
 		{

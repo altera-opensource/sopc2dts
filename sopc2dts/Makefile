@@ -7,6 +7,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/generators/DTGenerator.java \
 	sopc2dts/generators/DTSGenerator2.java \
 	sopc2dts/generators/GeneratorFactory.java \
+	sopc2dts/generators/GraphGenerator.java \
 	sopc2dts/generators/KernelHeadersGenerator.java \
 	sopc2dts/generators/SopcCreateHeaderFilesImitator.java \
 	sopc2dts/generators/UBootHeaderGenerator.java \

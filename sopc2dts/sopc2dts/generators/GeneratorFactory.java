@@ -22,7 +22,7 @@ package sopc2dts.generators;
 import sopc2dts.lib.AvalonSystem;
 
 public class GeneratorFactory {
-	public enum GeneratorType { DTS, DTB, DTB_IHEX8, DTB_IHEX32, U_BOOT, KERNEL_HEADERS, DTB_CHAR_ARR };
+	public enum GeneratorType { DTS, DTB, DTB_IHEX8, DTB_IHEX32, GRAPH, U_BOOT, KERNEL_HEADERS, DTB_CHAR_ARR };
 
 	public static String getGeneratorNameByType(GeneratorType genType)
 	{
@@ -42,6 +42,9 @@ public class GeneratorFactory {
 		}
 		case DTB_CHAR_ARR: {
 			return "dtb-char-arr";
+		}
+		case GRAPH: {
+			return "graph";
 		}
 		case U_BOOT: {
 			return "u-boot";
@@ -69,6 +72,9 @@ public class GeneratorFactory {
 		case DTB_IHEX32: {
 			return "<HTML>Intel hex32 containing the dtb<BR>compatible with Altera 32bits onchip rom</HTML>";
 		}
+		case GRAPH: {
+			return "<HTML>DOT Graph of the system</HTML>";
+		}
 		case U_BOOT: {
 			return "<HTML>U-Boot headers</HTML>";
 		}
@@ -95,6 +101,9 @@ public class GeneratorFactory {
 		} else if(type.equalsIgnoreCase("dtb-char-arr"))
 		{
 			return GeneratorType.DTB_CHAR_ARR;
+		} else if(type.equalsIgnoreCase("graph"))
+		{
+			return GeneratorType.GRAPH;
 		} else if(type.equalsIgnoreCase("u-boot") || type.equalsIgnoreCase("uboot")) {
 			return GeneratorType.U_BOOT;
 		} else if(type.equalsIgnoreCase("kernel"))
@@ -127,6 +136,9 @@ public class GeneratorFactory {
 			}
 			case DTB_CHAR_ARR: {
 				return new DTBCCharArray(sys);
+			}
+			case GRAPH: {
+				return new GraphGenerator(sys);
 			}
 			case U_BOOT: {
 				return new UBootHeaderGenerator(sys);

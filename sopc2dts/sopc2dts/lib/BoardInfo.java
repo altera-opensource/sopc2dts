@@ -55,6 +55,9 @@ public class BoardInfo implements ContentHandler {
 	String flashChip;
 	boolean includeTime = true;
 	boolean showClockTree = false;
+	boolean showConduits = false;
+	boolean showResets = false;
+	boolean showStreaming = false;
 	Vector<FlashPartition> vPartitions;
 	Vector<String> vMemoryNodes;
 	Vector<BoardInfoComponent> vBics = new Vector<BoardInfoComponent>();
@@ -482,11 +485,29 @@ public class BoardInfo implements ContentHandler {
 	public boolean isIncludeTime() {
 		return includeTime;
 	}
+	public boolean isShowClockTree() {
+		return showClockTree;
+	}
+	public boolean isShowConduits() {
+		return showConduits;
+	}
+	public boolean isShowResets() {
+		return showResets;
+	}
+	public boolean isShowStreaming() {
+		return showStreaming;
+	}
 	public void showClockTree() {
 		showClockTree = true;
 	}
-	public boolean isShowClockTree() {
-		return showClockTree;
+	public void showConduits() {
+		this.showConduits = true;
+	}
+	public void showResets() {
+		this.showResets = true;
+	}
+	public void showStreaming() {
+		this.showStreaming = true;
 	}
 	public void setIncludeTime(boolean includeTime) {
 		this.includeTime = includeTime;
