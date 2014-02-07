@@ -26,7 +26,6 @@ import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.SopcComponentLib;
-import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.base.SICFlash;
 import sopc2dts.lib.devicetree.DTHelper;
