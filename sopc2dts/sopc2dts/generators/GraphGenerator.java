@@ -36,28 +36,34 @@ public class GraphGenerator extends AbstractSopcGenerator {
 	@Override
 	public String getTextOutput(BoardInfo bi) {
 		String res = "digraph sopc2dot {\n" +
-				"  node [shape=Mrecord]\n";
+				"  node [shape=rect]\n";
 		for(BasicComponent comp : sys.getSystemComponents()) {
-			res += "  " + comp.getInstanceName() + "[label=\"{" + 
-					comp.getInstanceName() + "|Class: " + comp.getClassName();
+			res += "  " + comp.getInstanceName() + " [label=<<table border=\"0\">\n" +
+					"\t<tr><td port=\"name\" bgcolor=\"lightgray\">" + comp.getInstanceName() + "</td></tr>\n" +
+					"\t<tr><td port=\"class\">Class: " + comp.getClassName() + "</td></tr>\n";
 			for(Interface intf : comp.getInterfaces()) {
-				if(showInterface(intf,bi)) {
-					res+="|<" + intf.getName() + "> " + intf.getName();
+				String color = getColorForInterface(intf, bi);
+				if(color!=null) {
+					res+="\t<tr><td port=\"" + undashify(intf.getName()) + "\" bgcolor=\"light" + color + "\"> " + intf.getName() + "</td></tr>\n";	
 				}
 			}
-			res += "}\"]\n";
+			res += "\t</table>>]\n";
 		}
 		for(BasicComponent comp : sys.getSystemComponents()) {
 			for(Interface masterIf : comp.getInterfaces()) {
-				if(masterIf.isMaster() && showInterface(masterIf,bi)) {
+				String color = getColorForInterface(masterIf,bi);
+				if(masterIf.isMaster() && color !=null) {
 					for(Connection conn : masterIf.getConnections()) {
 						Interface slaveIf = conn.getSlaveInterface();
-						res += comp.getInstanceName() + ":" + masterIf.getName() + " -> " + 
-								slaveIf.getOwner().getInstanceName() + ":" + slaveIf.getName();
+						res += comp.getInstanceName() + ":" + undashify(masterIf.getName()) + " -> " + 
+								slaveIf.getOwner().getInstanceName() + ":" + undashify(slaveIf.getName());
+						res +=" [color=\"" + color + "\"";
 						if(conn.getType() == SystemDataType.MEMORY_MAPPED) {
-							res += " [label=\"" + DTHelper.longArrToHexString(conn.getConnValue()) + "\"]\n";
+							res += " label=\"" + DTHelper.longArrToHexString(conn.getConnValue()) + "\"]\n";
+						} else if (conn.getType() == SystemDataType.INTERRUPT) {
+							res += " label=\"" + DTHelper.longArrToLong(conn.getConnValue()) + "\"]\n";
 						} else {
-							res += "\n";
+							res += "]\n";
 						}
 					}
 				}
@@ -66,14 +72,20 @@ public class GraphGenerator extends AbstractSopcGenerator {
 		res += "}\n";
 		return res;
 	}
-	boolean showInterface(Interface intf, BoardInfo bi) {
+	String getColorForInterface(Interface intf, BoardInfo bi) {
 		switch(intf.getType()) {
-		case CLOCK:			return bi.isShowClockTree();
-		case CONDUIT:		return bi.isShowConduits();
-		case MEMORY_MAPPED:	return true;
-		case RESET:			return bi.isShowResets();
-		case STREAMING:		return bi.isShowStreaming();
-		default:			return false;
+		case CLOCK:			return (bi.isShowClockTree() 	? "green"	: null);
+		case CONDUIT:		return (bi.isShowConduits()		? "salmon"	: null);
+		case MEMORY_MAPPED:	return 							  "blue";
+		case RESET:			return (bi.isShowResets()		? "gray"	: null);
+		case STREAMING:		return (bi.isShowStreaming()	? "yellow"	: null);
+		case INTERRUPT:		return 							  "pink";
+		case CUSTOM_INSTRUCTION: return						  "seagreen";
+		default:			System.err.println("Not drawing type: " + intf.getType());return null;
 		}
+	}
+	static String undashify(String in) {
+		/* HTML Version seems to choke on both _ and - so just use a letter... */
+		return in.replace('-','d').replace('_', 'u');
 	}
 }
