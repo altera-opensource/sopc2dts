@@ -51,6 +51,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
 	sopc2dts/lib/components/altera/TSEMonolithic.java \
 	sopc2dts/lib/components/altera/InterfaceGenerator.java \
+	sopc2dts/lib/components/altera/InterruptBridge.java \
 	sopc2dts/lib/components/altera/hps/ClockManager.java \
 	sopc2dts/lib/components/altera/hps/ClockManagerV.java \
 	sopc2dts/lib/components/altera/hps/SocFpgaGateClock.java \

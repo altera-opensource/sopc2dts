@@ -99,6 +99,7 @@
 	<S2DComponent classname="altera_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_hps_io" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_jtag_avalon_master" group="remove"></S2DComponent>
+	<S2DComponent classname="altera_irq_bridge" group="ignore"/>
 	<S2DComponent classname="intr_capturer" group="remove"></S2DComponent>
 	<S2DComponent classname="timing_adapter" group="ignore">
 	                <TransparentInterfaceBridge master="out" slave="in"></TransparentInterfaceBridge>
@@ -168,7 +169,9 @@
 		group="ata" compatDevice="cf">
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
-	<S2DComponent classname="multiplexer" group="ignore"></S2DComponent>
+	<S2DComponent classname="multiplexer" group="ignore">
+	                <TransparentInterfaceBridge master="out" slave="in0,in1"></TransparentInterfaceBridge>
+	</S2DComponent>
 	<S2DComponent classname="demultiplexer" group="ignore"></S2DComponent>
 	<S2DComponent classname="alt_vip_tpg" group="vip-tpg"
 		compatDevice="vip-testpattern-generator">

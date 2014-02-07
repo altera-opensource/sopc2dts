@@ -89,6 +89,21 @@ public class Connection extends BasicElement {
 		slaveInterface = intf;
 		slaveInterface.getConnections().add(this);
 	}
+	public void disconnect() {
+		disconnect(masterInterface);
+		disconnect(slaveInterface);
+	}
+	public void disconnect(Interface intf) {
+		if(intf!=null) {
+			intf.getConnections().remove(this);
+			if(slaveInterface==intf) {
+				slaveInterface = null;
+			}
+			if(masterInterface==intf) {
+				masterInterface = null;
+			}
+		}
+	}
 	public long[] getConnValue()
 	{
 		return connValue;

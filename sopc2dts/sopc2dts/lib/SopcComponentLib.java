@@ -43,6 +43,7 @@ import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.altera.GenericTristateController;
 import sopc2dts.lib.components.altera.InterfaceGenerator;
+import sopc2dts.lib.components.altera.InterruptBridge;
 import sopc2dts.lib.components.altera.MultiBridge;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
@@ -180,6 +181,8 @@ public class SopcComponentLib implements ContentHandler {
 			return new VIPFrameBuffer(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_interface_generator")) {
 			return new InterfaceGenerator(className, instanceName, version, getScdByClassName(className));
+		} else if (className.equalsIgnoreCase("altera_irq_bridge")) {
+			return new InterruptBridge(className, instanceName, version, getScdByClassName(className));
 		} else if ((className.equalsIgnoreCase("alt_vip_mix")) ||
 				(className.equalsIgnoreCase("alt_vip_switch"))){
 			return new VIPMixer(className, instanceName, version, getScdByClassName(className));
