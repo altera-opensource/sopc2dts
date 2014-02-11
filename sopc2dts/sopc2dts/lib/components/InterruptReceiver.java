@@ -17,50 +17,49 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-package sopc2dts.lib.components.altera;
+package sopc2dts.lib.components;
+
+import java.util.Vector;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
-import sopc2dts.lib.components.InterruptReceiver;
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.Interface;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.SopcComponentDescription;
 
-public class InterruptBridge extends InterruptReceiver
+public class InterruptReceiver extends BasicComponent
 {
 	private boolean removed = false;
 
-	public InterruptBridge(String cName, String iName, String ver, SopcComponentDescription scd) {
+	public InterruptReceiver(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
-	private Interface getIrqSlaveInterfaceWithBridgeOffset(long off) {
-		for (Interface intf : getInterfaces(SystemDataType.INTERRUPT,false)) {
-			String offset = intf.getParamValByName("bridgedReceiverOffset");
-			if(offset!=null) {
-				if(Long.decode(offset) == off) {
-					return intf;
-				}
-			} else {
-				if(intf.getName().equalsIgnoreCase("sender" + off + "_irq")) { 
-					return intf;
-				}
-			}
-		}
-		return null;
-	}
+
 	protected void removeConnection(Connection conn)
 	{
-		Interface irqSlave = getIrqSlaveInterfaceWithBridgeOffset(conn.getConnValue()[0]);
-		if(irqSlave == null) {
-			Logger.logln(this, "Failed to find irqSlave interface responding to nr: " + conn.getConnValue()[0], LogLevel.ERROR);
-		} else {
-			/* Connect upstream and downstream directly */
-			while(!irqSlave.getConnections().isEmpty()) {
-				irqSlave.getConnections().firstElement().connect(conn.getSlaveInterface());
+		conn.disconnect();
+	}
+	@Override
+	public boolean removeFromSystemIfPossible(AvalonSystem sys)
+	{
+		if (!removed) {
+			removed = true;
+			Vector<Interface> vIrqMasters = getInterfaces(SystemDataType.INTERRUPT, true);
+			if (vIrqMasters.size() != 1) {
+				Logger.logln("Invalid number of interrupt receivers: "+vIrqMasters, LogLevel.ERROR);
+				return false;
 			}
+			Interface irqMaster = vIrqMasters.firstElement();
+			Logger.logln("irq receiver is " + irqMaster.getName(),LogLevel.DEBUG);
+			while(!irqMaster.getConnections().isEmpty()) {
+				removeConnection(irqMaster.getConnections().firstElement());
+			}
+			return true;
+		} else {
+			return false;
 		}
-		/* Dispose of useless connection */
-		conn.disconnect();		
 	}
 }

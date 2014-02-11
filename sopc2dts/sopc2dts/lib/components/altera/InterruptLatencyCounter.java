@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2014 Matthew Gerlach <mgerlach@altera.com>
+Copyright (C) 2014 Matthew Gerlach <matt@smallplanetbrewery.com>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -27,40 +27,20 @@ import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 
-public class InterruptBridge extends InterruptReceiver
+public class InterruptLatencyCounter extends InterruptReceiver
 {
-	private boolean removed = false;
 
-	public InterruptBridge(String cName, String iName, String ver, SopcComponentDescription scd) {
+	public InterruptLatencyCounter(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
 	}
-	private Interface getIrqSlaveInterfaceWithBridgeOffset(long off) {
-		for (Interface intf : getInterfaces(SystemDataType.INTERRUPT,false)) {
-			String offset = intf.getParamValByName("bridgedReceiverOffset");
-			if(offset!=null) {
-				if(Long.decode(offset) == off) {
-					return intf;
-				}
-			} else {
-				if(intf.getName().equalsIgnoreCase("sender" + off + "_irq")) { 
-					return intf;
-				}
-			}
-		}
-		return null;
-	}
+
 	protected void removeConnection(Connection conn)
 	{
-		Interface irqSlave = getIrqSlaveInterfaceWithBridgeOffset(conn.getConnValue()[0]);
-		if(irqSlave == null) {
-			Logger.logln(this, "Failed to find irqSlave interface responding to nr: " + conn.getConnValue()[0], LogLevel.ERROR);
-		} else {
-			/* Connect upstream and downstream directly */
-			while(!irqSlave.getConnections().isEmpty()) {
-				irqSlave.getConnections().firstElement().connect(conn.getSlaveInterface());
-			}
-		}
-		/* Dispose of useless connection */
-		conn.disconnect();		
+		Interface irq_sender = conn.getSlaveInterface();
+		Interface new_sender = new Interface(irq_sender.getOwner().getInstanceName(),SystemDataType.INTERRUPT,false,this);
+		addInterface(new_sender);
+		conn.disconnect();
+		new_sender.setConnections(irq_sender.getConnections());		
 	}
+
 }

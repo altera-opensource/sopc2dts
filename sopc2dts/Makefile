@@ -40,6 +40,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/boardinfo/SpiSlave.java \
 	sopc2dts/lib/boardinfo/SpiSlaveMMC.java \
 	sopc2dts/lib/components/BasicComponent.java \
+	sopc2dts/lib/components/InterruptReceiver.java \
 	sopc2dts/lib/components/Interface.java \
 	sopc2dts/lib/components/MemoryBlock.java \
 	sopc2dts/lib/components/SopcComponentDescription.java \
@@ -52,6 +53,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/TSEMonolithic.java \
 	sopc2dts/lib/components/altera/InterfaceGenerator.java \
 	sopc2dts/lib/components/altera/InterruptBridge.java \
+	sopc2dts/lib/components/altera/InterruptLatencyCounter.java \
 	sopc2dts/lib/components/altera/hps/ClockManager.java \
 	sopc2dts/lib/components/altera/hps/ClockManagerV.java \
 	sopc2dts/lib/components/altera/hps/SocFpgaGateClock.java \
