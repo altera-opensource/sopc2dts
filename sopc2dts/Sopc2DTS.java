@@ -69,7 +69,6 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter showStreaming = new CLParameter(""+false);
 
 	protected static final String programName = "sopc2dts";
-	protected static final String programVersion = "0.3";
 	private Vector<String> vInfoFileNames = new Vector<String>();
 
 	/**
@@ -391,6 +390,10 @@ public class Sopc2DTS implements LogListener {
 	
 	public void printVersion()
 	{
+		String programVersion = Package.getPackage("sopc2dts").getImplementationVersion();
+		if(programVersion==null) {
+			programVersion = "unknown-version";
+		}
 		System.out.println(programName + " - " + programVersion);
 	}
 	
