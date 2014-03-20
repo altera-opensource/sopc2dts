@@ -99,7 +99,7 @@ CLASSES=$(SOURCES:.java=.class)
 
 all: sopc2dts.jar
 
-sopc2dts.jar: $(CLASSES) manifest sopc_components_*.xml Makefile
+sopc2dts.jar: $(CLASSES) sopc_components_*.xml Makefile
 	echo "Implementation-Version: `git describe --tag --dirty`" > manifest
 	jar -cmef manifest Sopc2DTS sopc2dts.jar *.java *.class sopc2dts sopc_components_*.xml
 	rm manifest
