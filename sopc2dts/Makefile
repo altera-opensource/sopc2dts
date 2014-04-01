@@ -97,16 +97,22 @@ SOURCES=Sopc2DTS.java \
 
 CLASSES=$(SOURCES:.java=.class)
 
+ifeq ($(wildcard git-version),)
+	SOPC2DTS_VERSION=$(shell git describe --tag --dirty)
+else
+	SOPC2DTS_VERSION=$(shell cat git-version)
+endif
+
 all: sopc2dts.jar
 
 sopc2dts.jar: $(CLASSES) sopc_components_*.xml Makefile
-	echo "Implementation-Version: `git describe --tag --dirty`" > manifest
+	echo "Implementation-Version: ${SOPC2DTS_VERSION}${SOPC2DTS_EXTRA_VERSION}" > manifest
 	jar -cmef manifest Sopc2DTS sopc2dts.jar *.java *.class sopc2dts sopc_components_*.xml
-	rm manifest
+	rm -f manifest
 
 %.class: %.java
 	javac $<
 
 clean:
-	rm -f $(CLASSES)
+	rm -f $(CLASSES) manifest
 	rm -f sopc2dts.jar
