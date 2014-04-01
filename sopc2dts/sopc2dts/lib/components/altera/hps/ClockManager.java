@@ -160,7 +160,7 @@ public abstract class ClockManager extends BasicComponent {
 	public DTNode toDTNode(BoardInfo bi, Connection conn) {
 		DTNode node = super.toDTNode(bi, conn);
 		if(!(virtualMaster.getConnections().isEmpty() && vGateClocks.isEmpty() && vPeripheralClocks.isEmpty())) {
-			DTNode clockNode = new DTNode("clocks");
+			DTNode clockNode = new DTNode("clock_tree");
 			clockNode.addProperty(new DTProperty("#size-cells",0L));
 			clockNode.addProperty(new DTProperty("#address-cells",1L));
 			for(Connection vconn : virtualMaster.getConnections()) {
