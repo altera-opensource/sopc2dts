@@ -39,12 +39,21 @@ public class AvalonSystem extends BasicElement {
 	protected int versionMinor = 0;
 	protected File sourceFile;
 	private String systemName;
+	private static String sopc2dtsVer = "unknown";
 	protected Vector<BasicComponent> vSystemComponents = new Vector<BasicComponent>();
 
 	public AvalonSystem(String name, String version, File f) {
 		sourceFile = f;
 		systemName = name;
 		setVersion(version);
+	}
+	public void setSopc2DtsVer(String ver)
+	{
+		sopc2dtsVer = ver;
+	}
+	public static String getSopc2DtsVer()
+	{
+		return sopc2dtsVer;
 	}
 	public boolean addSystemComponent(BasicComponent comp) {
 		return vSystemComponents.add(comp);

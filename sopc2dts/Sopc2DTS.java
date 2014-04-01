@@ -69,6 +69,7 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter showStreaming = new CLParameter(""+false);
 
 	protected static final String programName = "sopc2dts";
+	private static String programVersion = Package.getPackage("sopc2dts").getImplementationVersion();;
 	private Vector<String> vInfoFileNames = new Vector<String>();
 
 	/**
@@ -114,6 +115,10 @@ public class Sopc2DTS implements LogListener {
 		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dtb,dtb-hex8,dtb-hex32,dtb-char-arr,dts,uboot,kernel}"));
 		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
 		vOptions.add(new CommandLineOption("sopc-parameters", 	null,sopcParameters, true, false,"What sopc-parameters to include in DTS", "{node,cmacro,all}"));
+
+		if(programVersion==null) {
+			programVersion = "unknown-version";
+		}
 	}
 	protected int go()
 	{
@@ -199,6 +204,7 @@ public class Sopc2DTS implements LogListener {
 			{
 				try {
 					AvalonSystem sys = BasicSystemLoader.loadSystem(f);
+					sys.setSopc2DtsVer(programVersion);
 					if(bInfo.getPov().length()==0)
 					{
 						for(int i=0; (i<sys.getSystemComponents().size()) && (bInfo.getPov().length()==0); i++)
@@ -390,10 +396,6 @@ public class Sopc2DTS implements LogListener {
 	
 	public void printVersion()
 	{
-		String programVersion = Package.getPackage("sopc2dts").getImplementationVersion();
-		if(programVersion==null) {
-			programVersion = "unknown-version";
-		}
 		System.out.println(programName + " - " + programVersion);
 	}
 	
