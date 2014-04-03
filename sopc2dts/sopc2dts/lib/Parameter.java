@@ -76,6 +76,10 @@ public class Parameter {
 	{
 		return value;
 	}
+	public DataType getType()
+	{
+		return dataType;
+	}
 	public boolean getValueAsBoolean() {
 		if(value==null) return false;
 		if(value.length()==0) return false;

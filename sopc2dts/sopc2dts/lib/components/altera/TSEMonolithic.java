@@ -27,11 +27,14 @@ import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
+import sopc2dts.lib.Parameter;
 import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropNumVal;
+import sopc2dts.lib.devicetree.DTPropStringVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class TSEMonolithic extends SICTrippleSpeedEthernet {
@@ -43,14 +46,11 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	
 	public TSEMonolithic(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
-		scdMSGDMA = new SopcComponentDescription(scd.getClassNames()[0], scd.getGroup(), scd.getVendor(), "tse-msgdma");
+		scdMSGDMA = new SopcComponentDescription(scd.getClassNames()[0], scd.getGroup(), "altr", "tse-msgdma");
+		scdMSGDMA.addCompatibleVersion("1.0");
 	}
-	@Override 
-	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	private DTNode toSGDMANode(DTNode node, BICEthernet be)
 	{
-		DTNode node = super.toDTNode(bi, conn);
-		BICEthernet be = bi.getEthernetForChip(getInstanceName());
-		node.addProperty(new DTProperty("phy-mode", getPhyModeString()));
 		if(be.getMiiID()==null)
 		{
 			//Always needed for this driver! (atm)
@@ -58,14 +58,76 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		} else {
 			node.addProperty(new DTProperty("ALTR,mii-id", Long.valueOf(be.getMiiID())));
 		}
+
+		return node;
+	}
+
+	private void doFifoDepth(String fifo, int fifo_width)
+	{
+		Parameter param = getParamByName(EMBSW_DTS_PARAMS+"ALTR,"+fifo);
+		if (param != null) {
+			Logger.logln(fifo +" is "+param.getValue() + " "+fifo_width, LogLevel.DEBUG);
+
+			String val = Integer.toString((Integer.parseInt(param.getValue()) * fifo_width));
+			addParam(new Parameter(EMBSW_DTS_PARAMS+fifo, val, param.getType()));
+		}	
+	}
+	@Override 
+	public DTNode toDTNode(BoardInfo bi, Connection conn)
+	{
+		int fifo_width = 1;
+		Parameter param = getParamByName(EMBSW_CMACRO+".FIFO_WIDTH");
+		if (param != null) {
+			fifo_width = Integer.parseInt(param.getValue())/8;
+		}
+		
+		doFifoDepth("rx-fifo-depth", fifo_width);
+		doFifoDepth("tx-fifo-depth", fifo_width);
+
+		DTNode node = super.toDTNode(bi, conn);		
+		
+		param = getParamByName("enable_sup_addr");
+		if ((param != null) && (param.getValueAsBoolean())) {
+			node.addProperty(new DTProperty("altr,has-supplementary-unicast"));	
+			node.addProperty(new DTProperty("altr,enable-sup-addr",1));
+		} else {
+			node.addProperty(new DTProperty("altr,enable-sup-addr",0));
+		}
+		
+		param = getParamByName("ena_hash");
+		if ((param != null) && (param.getValueAsBoolean())) {
+			node.addProperty(new DTProperty("altr,has-hash-multicast-filter"));	
+			node.addProperty(new DTProperty("altr,enable-hash",1));
+		} else {
+			node.addProperty(new DTProperty("altr,enable-hash",0));
+		}
+		
+
+		node.addProperty(new DTProperty("phy-mode", getPhyModeString()));		
+
+		BICEthernet be = bi.getEthernetForChip(getInstanceName());
+		
 		if(be.getPhyID()!=null)
 		{
-			node.addProperty(new DTProperty("ALTR,mii-id", Long.valueOf(be.getPhyID())));
+			node.addProperty(new DTProperty("phy-addr", Long.valueOf(be.getPhyID())));
+			/* the following binding is supported by old sgdma driver and v1 of msgdma */
+			node.addProperty(new DTProperty("ALTR,phy-addr", Long.valueOf(be.getPhyID())));
 		}
-		if(dmaType == TSEDmaType.mSGDMA) {
-			node.addProperty(new DTProperty("ALTR,enable-sup-addr", 0L));
-			node.addProperty(new DTProperty("ALTR,ena-hash", 0L));
+		
+		if (dmaType == TSEDmaType.SGDMA) {
+			toSGDMANode(node, be);
+		}		
+		param = getParamByName("useMDIO");
+		
+		if ((param != null) && param.getValueAsBoolean()){
+			DTNode mdioNode = new DTNode("mdio", getInstanceName()+"_mdio");
+			mdioNode.addProperty(new DTProperty("compatible", new DTPropStringVal( "altr,tse-mdio")));
+			mdioNode.addProperty(new DTProperty("#address-cells", new DTPropNumVal(1)));
+			mdioNode.addProperty(new DTProperty("#size-cells", new DTPropNumVal(0)));
+			
+			node.addChild(mdioNode);
 		}
+		
 		return node;
 	}
 	protected boolean encapsulateDMAEngine(AvalonSystem sys, BasicComponent dma, String name) {
