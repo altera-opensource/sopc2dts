@@ -115,7 +115,8 @@ public abstract class ClockManager extends BasicComponent {
 						sfPll.addClockInput(getClockParentIntfByName(clkParentName, sys));
 					}
 					for(ClockManagerPClk pClk : pll.pclks) {
-						SocFpgaPeripClock sfpClk = new SocFpgaPeripClock(pClk.name, pClk.name, null, pll.addr + pClk.addr,pClk.fixedDivider);
+						SocFpgaPeripClock sfpClk = 
+							new SocFpgaPeripClock(pClk.name, pClk.name, null, pll.addr + pClk.addr,pClk.fixedDivider, pClk.divReg);
 						sfPll.addClockOutput(sfpClk);
 						sys.addSystemComponent(sfpClk);
 						transferClockConnections(sfpClk.getClockInterface(true));
@@ -143,7 +144,7 @@ public abstract class ClockManager extends BasicComponent {
 			}
 			if(cmPeripheralClks!=null){
 				for (ClockManagerPClk fpClk : cmPeripheralClks) {
-					SocFpgaPeripClock sfpClk = new SocFpgaPeripClock(fpClk.name, fpClk.name, null, 0x1234567, fpClk.fixedDivider);
+					SocFpgaPeripClock sfpClk = new SocFpgaPeripClock(fpClk.name, fpClk.name, null, 0x1234567, fpClk.fixedDivider,fpClk.divReg);
 					sys.addSystemComponent(sfpClk);
 					transferClockConnections(sfpClk.getClockInterface(true));
 					vPeripheralClocks.add(sfpClk);
@@ -160,7 +161,7 @@ public abstract class ClockManager extends BasicComponent {
 	public DTNode toDTNode(BoardInfo bi, Connection conn) {
 		DTNode node = super.toDTNode(bi, conn);
 		if(!(virtualMaster.getConnections().isEmpty() && vGateClocks.isEmpty() && vPeripheralClocks.isEmpty())) {
-			DTNode clockNode = new DTNode("clock_tree");
+			DTNode clockNode = new DTNode("clocks");
 			clockNode.addProperty(new DTProperty("#size-cells",0L));
 			clockNode.addProperty(new DTProperty("#address-cells",1L));
 			for(Connection vconn : virtualMaster.getConnections()) {
@@ -207,12 +208,18 @@ public abstract class ClockManager extends BasicComponent {
 		String name;
 		long addr;
 		Long fixedDivider;
+		long[] divReg;
 		String[] clkParents;
 
-		protected ClockManagerPClk(String n, long a, Long div, String[] parents) {
+		protected ClockManagerPClk(String n, long a, Long fixed, String[] parents) {
+			this(n,a,fixed, null, parents);
+		}
+
+		protected ClockManagerPClk(String n, long a, Long fixed, long[] divreg, String[] parents) {
 			name = n;
 			addr = a;
-			fixedDivider = div;
+			fixedDivider = fixed;
+			divReg = divreg;
 			clkParents = parents;
 		}
 	}
