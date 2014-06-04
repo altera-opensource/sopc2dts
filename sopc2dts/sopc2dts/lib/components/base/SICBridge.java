@@ -153,6 +153,12 @@ public class SICBridge extends BasicComponent {
 			return false;
 		}
 		Connection masterConn;
+		boolean isAddrSpanExtender;
+		if (getClassName().equalsIgnoreCase("altera_address_span_extender")) {
+			isAddrSpanExtender = true;
+		} else {
+			isAddrSpanExtender = false;
+		}
 		while(slaveIntf.getConnections().size()>0)
 		{
 			masterConn = slaveIntf.getConnections().firstElement();
@@ -168,6 +174,9 @@ public class SICBridge extends BasicComponent {
 						" to " + conn.getSlaveModule().getInstanceName(), LogLevel.DEBUG);
 				conn.setMasterInterface(masterConn.getMasterInterface());
 				masterConn.getMasterInterface().getConnections().add(conn);
+				if (isAddrSpanExtender) {
+					conn.getSlaveInterface().setInterfaceValue(slaveIntf.getInterfaceValue());
+				}
 				conn.getSlaveInterface().getConnections().add(conn);
 				Logger.logln("Connection from " + conn.getMasterModule().getInstanceName() + 
 						" to " + conn.getSlaveModule().getInstanceName(), LogLevel.DEBUG);
