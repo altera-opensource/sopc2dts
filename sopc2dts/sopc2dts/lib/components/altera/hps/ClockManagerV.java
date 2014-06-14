@@ -72,7 +72,7 @@ public class ClockManagerV extends ClockManager {
 							new ClockManagerPClk[] {
 									new ClockManagerPClk("cfg_s2f_usr0_clk",0x1C, null, null),
 									new ClockManagerPClk("main_qspi_clk",	0x14, null, null),
-									new ClockManagerPClk("dbg_base_clk",	0x10, null, new long[]{0xe8, 0, 9}, null),
+									new ClockManagerPClk("dbg_base_clk",	0x10, null, new long[]{0xe8, 0, 9}, new String[]{ hpsName + "_eosc1"}),
 									new ClockManagerPClk("mpuclk",			0x08, null, new long[]{0xe0, 0, 9}, null),
 									new ClockManagerPClk("mainclk",			0x0C, null, new long[]{0xe4, 0, 9}, null),
 									new ClockManagerPClk("main_nand_sdmmc_clk",0x18, null, null),
