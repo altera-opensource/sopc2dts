@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2013 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -33,6 +33,6 @@ public class DTPropByteVal extends DTPropVal {
 	}
 	@Override
 	public String toString() {
-		return String.format("%02X", val&0xFF);
+		return String.format("%02x", val&0xFF);
 	}
 }

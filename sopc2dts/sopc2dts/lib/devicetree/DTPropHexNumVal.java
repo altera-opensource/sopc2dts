@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2013 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,15 +29,15 @@ public class DTPropHexNumVal extends DTPropNumVal {
 	{
 		if(val<0)
 		{
-			return String.format("0x%08X", val+0x100000000L);			
+			return String.format("0x%08x", val+0x100000000L);			
 /*		} else if(val<0x100)
 		{
-			return String.format("0x%02X", val);
+			return String.format("0x%02x", val);
 		} else if(val<0x10000)
 		{
-			return String.format("0x%04X", val);
+			return String.format("0x%04x", val);
 */		} else {
-			return String.format("0x%08X", val);
+			return String.format("0x%08x", val);
 		}
 	}
 }

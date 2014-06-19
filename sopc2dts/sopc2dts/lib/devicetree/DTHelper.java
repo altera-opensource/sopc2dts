@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -114,7 +114,7 @@ public class DTHelper {
 		boolean valueFound = false;
 		for(int i=(val.length-1); i>=0; i--) {
 			if(valueFound) {
-				res += String.format("%08X", val[i]);
+				res += String.format("%08x", val[i]);
 			} else {
 				if(val[i]!=0) {
 					res += Long.toHexString(val[i]);

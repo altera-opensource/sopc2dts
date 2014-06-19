@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -77,11 +77,11 @@ public class SICBridge extends BasicComponent {
 			//Aaarrrrghhh!!!!
 			String msg = "Unable to translate this address for you. Master:";
 			for(long l : mAddr) {
-				msg += String.format(" %08X", l);
+				msg += String.format(" %08x", l);
 			}
 			msg += " slave:";
 				for(long l : sAddr) {
-					msg += String.format(" %08X", l);
+					msg += String.format(" %08x", l);
 				}
 			Logger.logln(this,msg, LogLevel.ERROR);
 		}

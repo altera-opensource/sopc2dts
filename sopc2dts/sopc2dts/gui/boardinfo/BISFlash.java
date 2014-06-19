@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -149,9 +149,9 @@ public class BISFlash extends BISSubComponentTable {
 				//Part-name
 				case 1: return fp.getName();
 				//Base-addr
-				case 2: return String.format("0x%08X", fp.getAddress());
+				case 2: return String.format("0x%08x", fp.getAddress());
 				//Size
-				case 3: return String.format("0x%08X", fp.getSize());
+				case 3: return String.format("0x%08x", fp.getSize());
 				default: return null;
 				}
 			} else {
