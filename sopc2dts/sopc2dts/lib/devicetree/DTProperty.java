@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import sopc2dts.Logger;
+import sopc2dts.Logger.LogLevel;
 
 public class DTProperty extends DTElement {
 	public static final int OF_DT_PROP = 0x03;
@@ -133,7 +134,7 @@ public class DTProperty extends DTElement {
 		String nlStr = "";
 		for(DTPropVal val : vValues) {
 			if((numValsPerRow>0) && ((valNum%numValsPerRow)==0)) {
-				nlStr = "\n" + indent(indent+1);
+				nlStr = val.closing+",\n" + indent(indent+1)+val.opening;
 			} else {
 				nlStr = "";
 			}
@@ -141,8 +142,10 @@ public class DTProperty extends DTElement {
 				res += " = " + val.opening;
 			} else if (!val.isTypeCompatible(prevVal.type)) {
 				res += prevVal.closing + "," + nlStr + val.opening;
-			} else {
+			} else if (nlStr.length() == 0) {
 				res += val.seperator + nlStr;
+			} else {
+				res += nlStr;
 			}
 			res += val.toString();
 			prevVal = val;
