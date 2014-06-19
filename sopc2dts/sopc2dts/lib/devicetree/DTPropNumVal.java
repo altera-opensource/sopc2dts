@@ -22,7 +22,7 @@ package sopc2dts.lib.devicetree;
 public class DTPropNumVal extends DTPropVal {
 	long val;
 	public DTPropNumVal(long v) {
-		super(DTPropType.NUMBER, "< ", " >", " ");
+		super(DTPropType.NUMBER, "<", ">", " ");
 		val = v;
 	}
 	@Override

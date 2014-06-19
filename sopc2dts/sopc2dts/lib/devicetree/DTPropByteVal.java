@@ -22,7 +22,7 @@ package sopc2dts.lib.devicetree;
 public class DTPropByteVal extends DTPropVal {
 	int val;
 	public DTPropByteVal(int v) {
-		super(DTPropType.BYTE, "[ ", " ]", " ");
+		super(DTPropType.BYTE, "[", "]", " ");
 		val = v;
 	}
 	@Override

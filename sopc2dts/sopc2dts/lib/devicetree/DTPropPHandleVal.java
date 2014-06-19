@@ -32,7 +32,7 @@ public class DTPropPHandleVal extends DTPropVal {
 		this(lab,0);
 	}
 	public DTPropPHandleVal(String lab, long ph) {
-		super(DTPropType.PHANDLE, "< ", " >", " ");
+		super(DTPropType.PHANDLE, "<", ">", " ");
 		label = lab;
 		pHandle = ph;
 	}
