@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2013 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,13 +19,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.altera;
 
+import java.util.Vector;
+
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.Connection;
+import sopc2dts.lib.BoardInfo.RangesStyle;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.base.SICBridge;
+import sopc2dts.lib.devicetree.DTHelper;
 
 public class MultiBridge extends SICBridge {
 	String[] hps2fpgaBridgeNames = new String[]{ "h2f", "h2f_lw" }; 
@@ -104,4 +108,38 @@ public class MultiBridge extends SICBridge {
 		}
 		return super.translateAddress(mAddr, nsAddr);
 	}
+	@Override
+	protected Vector<Long> getDtRanges(Connection conn, RangesStyle rangesStyle) {
+		if(rangesStyle == RangesStyle.FOR_EACH_CHILD) {
+			return super.getDtRanges(conn, rangesStyle);
+		} else {
+			Vector<Long> vRanges = new Vector<Long>();
+			Vector<Interface> vUsedSlaveIfs = new Vector<Interface>();
+			for(Interface master : getInterfaces())
+			{
+				if(master.isMemoryMaster())
+				{
+					for(Connection childConn : master.getConnections())
+					{
+						Interface mif = getInterfaceByName("axi_" + childConn.getMasterInterface().getName());
+						if((mif!=null) && (!vUsedSlaveIfs.contains(mif))) {
+							vUsedSlaveIfs.add(mif);
+							for(int i=0; i<hps2fpgaBridgeNames.length; i++) {
+								if (mif.getName().equalsIgnoreCase("axi_" + hps2fpgaBridgeNames[i])) {
+									vRanges.add(new Long(i));
+									for(int j=0; j<getAddressCellCount(true)-1; j++) {
+										vRanges.add(0L);
+									}
+									DTHelper.addAllLongs(vRanges, mif.getConnections().firstElement().getConnValue());
+									DTHelper.addAllLongs(vRanges, mif.getInterfaceValue());
+								}
+							}
+						}
+					}
+				}
+			}
+			return vRanges;
+		}
+	}
+	
 }

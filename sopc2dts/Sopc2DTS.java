@@ -62,6 +62,7 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter bootargs = new CLParameter("");
 	protected CLParameter sopcParameters = new CLParameter("none");
 	protected CLParameter sort = new CLParameter("");
+	protected CLParameter ranges = new CLParameter("");
 	protected CLParameter gui = new CLParameter("" + false);
 	protected CLParameter showClocks = new CLParameter(""+false);
 	protected CLParameter showConduit = new CLParameter(""+false);
@@ -96,6 +97,7 @@ public class Sopc2DTS implements LogListener {
 	public Sopc2DTS() {
 		Logger.addLogListener(this);
 		vOptions.add(new CommandLineOption("board", 	"b", boardFileName, 	true, false,"board description file (can be used multiple times)", "boardinfo file"));
+		vOptions.add(new CommandLineOption("bridge-ranges",	 null, ranges,		true, false,"What to describe in bridges address translations", "{none,bridge,child}"));
 		vOptions.add(new CommandLineOption("bridge-removal", null, bridgeRemoval, 	true, false,"Bridge removal strategy", "{all,balanced,none}"));
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
@@ -155,6 +157,9 @@ public class Sopc2DTS implements LogListener {
 		bInfo.setIncludeTime(!Boolean.parseBoolean(excludeTimeStamp.value));
 		if(sort.value.length()>0) {
 			bInfo.setSortType(sort.value);
+		}
+		if(ranges.value.length()>0) {
+			bInfo.setRangesStyle(ranges.value);
 		}
 		if(sopcParameters.value.equalsIgnoreCase("none"))
 		{

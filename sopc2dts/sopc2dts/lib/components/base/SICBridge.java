@@ -26,6 +26,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.BoardInfo.RangesStyle;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.MemoryBlock;
 import sopc2dts.lib.components.SopcComponentDescription;
@@ -87,22 +88,38 @@ public class SICBridge extends BasicComponent {
 		}
 		return null; //mAddr;
 	}
-	protected Vector<Long> getDtRanges(Connection conn)
+	protected Vector<Long> getDtRanges(Connection conn, RangesStyle rangesStyle)
 	{
 		Vector<Long> vRanges = new Vector<Long>();
-		for(Interface master : getInterfaces())
-		{
-			if(master.isMemoryMaster())
+		switch(rangesStyle) {
+		case NONE:	
+			if(getAddressCellCount(true) == getAddressCellCount(false))	{
+				//Don't need translation for same-sized bridges
+				break;
+			}
+		case FOR_BRIDGE: {
+			for(int i=0; i<getAddressCellCount(true); i++) {
+				vRanges.add(0L);
+			}
+			DTHelper.addAllLongs(vRanges, conn.getConnValue());
+			DTHelper.addAllLongs(vRanges, conn.getSlaveInterface().getInterfaceValue());
+		} break;
+		case FOR_EACH_CHILD: {
+			for(Interface master : getInterfaces())
 			{
-				for(Connection childConn : master.getConnections())
+				if(master.isMemoryMaster())
 				{
-					Interface childIf=childConn.getSlaveInterface();
-					long[] addr = translateAddress(conn, childConn);
-					DTHelper.addAllLongs(vRanges, childConn.getConnValue());
-					DTHelper.addAllLongs(vRanges, addr);
-					DTHelper.addAllLongs(vRanges, childIf.getInterfaceValue());
+					for(Connection childConn : master.getConnections())
+					{
+						Interface childIf=childConn.getSlaveInterface();
+						long[] addr = translateAddress(conn, childConn);
+						DTHelper.addAllLongs(vRanges, childConn.getConnValue());
+						DTHelper.addAllLongs(vRanges, addr);
+						DTHelper.addAllLongs(vRanges, childIf.getInterfaceValue());
+					}
 				}
 			}
+		} break;
 		}
 		return vRanges;
 	}
@@ -111,7 +128,7 @@ public class SICBridge extends BasicComponent {
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{
 		DTNode dtn = super.toDTNode(bi, conn);
-		Vector<Long> vRanges = getDtRanges(conn);
+		Vector<Long> vRanges = getDtRanges(conn, bi.getRangesStyle());
 		dtn.addProperty(new DTProperty("#address-cells", (long) getAddressCellCount(true)));
 		dtn.addProperty(new DTProperty("#size-cells", (long) getSizeCellCount(true)));
 		if(vRanges.isEmpty())
@@ -234,7 +251,7 @@ public class SICBridge extends BasicComponent {
 		return false;
 	}
 
-	private int getAddressCellCount(boolean masterSide) {
+	protected int getAddressCellCount(boolean masterSide) {
 		for(Interface intf : vInterfaces) {
 			if(intf.isMemory() && intf.isMaster() == masterSide) {
 				return intf.getPrimaryWidth();

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -49,6 +49,7 @@ import sopc2dts.lib.components.base.FlashPartition;
 public class BoardInfo implements ContentHandler {
 	public enum PovType { CPU, PCI };
 	public enum SortType { NONE, ADDRESS, NAME, LABEL };
+	public enum RangesStyle { NONE, FOR_BRIDGE, FOR_EACH_CHILD };
 	FlashPartition part;
 	private File sourceFile;
 	String currTag;
@@ -70,6 +71,7 @@ public class BoardInfo implements ContentHandler {
 	BoardInfoComponent currBic;
 	private String pov = "";
 	private PovType povType = PovType.CPU;
+	private RangesStyle rangesStyle = RangesStyle.FOR_EACH_CHILD;
 	private SortType sortType = SortType.NONE;
 	private BasicComponent.parameter_action dumpParameters = BasicComponent.parameter_action.NONE;
 	HashMap<String, Vector<FlashPartition>> mFlashPartitions = 
@@ -114,8 +116,8 @@ public class BoardInfo implements ContentHandler {
 					String name = atts.getValue("name");
 					String value = atts.getValue("value");
 					if(value!=null) {
-					Logger.logln("alias "+name+ " " + value,LogLevel.INFO);
-					vAliases.add(new Parameter(name, value, Parameter.DataType.STRING));
+						Logger.logln("alias "+name+ " " + value,LogLevel.INFO);
+						vAliases.add(new Parameter(name, value, Parameter.DataType.STRING));
 					} else if((value=atts.getValue("label")) != null) {
 						Logger.logln("alias "+name+ " " + value,LogLevel.INFO);
 						vAliasRefs.add(new Parameter(name, value, Parameter.DataType.STRING));						
@@ -224,7 +226,7 @@ public class BoardInfo implements ContentHandler {
 		if(pov!=null)
 		{
 			this.pov = pov;
-		} 
+		}
 	}
 	public String getPov() {
 		return pov;
@@ -315,6 +317,9 @@ public class BoardInfo implements ContentHandler {
 	public PovType getPovType() {
 		return povType;
 	}
+	public RangesStyle getRangesStyle() {
+		return rangesStyle;
+	}
 	public SortType getSortType() {
 		return sortType;
 	}
@@ -338,6 +343,20 @@ public class BoardInfo implements ContentHandler {
 				povTypeName.equalsIgnoreCase("pcie"))
 		{
 			setPovType(PovType.PCI);
+		}
+	}
+	public void setRangesStyle(RangesStyle rangesStyle) {
+		this.rangesStyle = rangesStyle;
+	}
+	public void setRangesStyle(String rangesStyleName) {
+		if(rangesStyleName.equalsIgnoreCase("child")) {
+			setRangesStyle(RangesStyle.FOR_EACH_CHILD);
+		} else if (rangesStyleName.equalsIgnoreCase("bridge")) {
+			setRangesStyle(RangesStyle.FOR_BRIDGE);
+		} else if (rangesStyleName.equalsIgnoreCase("none")) {
+			setRangesStyle(RangesStyle.NONE);
+		} else {
+			Logger.logln("Unsupported ranges-style '" + rangesStyleName + "'", LogLevel.WARNING);
 		}
 	}
 	public void setSortType(SortType sortType) {
