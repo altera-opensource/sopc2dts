@@ -68,6 +68,7 @@ import sopc2dts.lib.components.base.SICSpiMaster;
 import sopc2dts.lib.components.base.SICUnknown;
 import sopc2dts.lib.components.labx.LabXEthernet;
 import sopc2dts.lib.components.nxp.USBHostControllerISP1xxx;
+import sopc2dts.lib.components.snps.DwGpio;
 
 public class SopcComponentLib implements ContentHandler {
 	private SopcComponentDescription currScd;
@@ -240,7 +241,12 @@ public class SopcComponentLib implements ContentHandler {
 				return new SICEthernet(comp);
 			} else if (scd.getGroup().equalsIgnoreCase("gpio") &&
 					!(comp instanceof GpioController)) {
-				return new GpioController(comp);
+
+				if (comp.getClassName().equalsIgnoreCase("dw_gpio")) {
+					return new DwGpio(comp);
+				} else {
+					return new GpioController(comp);
+				}
 			}
 		}
 		return comp;

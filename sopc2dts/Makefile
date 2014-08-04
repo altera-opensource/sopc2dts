@@ -69,6 +69,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/base/SICSpiMaster.java \
 	sopc2dts/lib/components/base/SICUnknown.java \
 	sopc2dts/lib/components/nxp/USBHostControllerISP1xxx.java \
+	sopc2dts/lib/components/snps/DwGpio.java \
 	sopc2dts/lib/devicetree/DTBlob.java \
 	sopc2dts/lib/devicetree/DTElement.java \
 	sopc2dts/lib/devicetree/DTNode.java \
