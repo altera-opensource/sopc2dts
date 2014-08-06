@@ -420,11 +420,14 @@ public class BasicComponent extends BasicElement {
 			for(Interface cs : vClockSlaves) {
 				if(!cs.getConnections().isEmpty()) {
 					BasicComponent mcomp = cs.getConnections().firstElement().getMasterModule();
-					DTPropVal[] phvs = mcomp.getClockMasterPH(cs.getConnections().firstElement().getMasterInterface());
-					for(DTPropVal phv : phvs) {
-						prop.addValue(phv);
+					if (!mcomp.getScd().getGroup().equalsIgnoreCase("ignore")) {
+
+						DTPropVal[] phvs = mcomp.getClockMasterPH(cs.getConnections().firstElement().getMasterInterface());
+						for(DTPropVal phv : phvs) {
+							prop.addValue(phv);
+						}
+						vNames.add(cs.getName());
 					}
-					vNames.add(cs.getName());
 				}
 			}
 			if(vNames.size()>1) {
