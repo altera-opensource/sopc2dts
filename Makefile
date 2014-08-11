@@ -56,6 +56,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/InterruptLatencyCounter.java \
 	sopc2dts/lib/components/altera/hps/ClockManager.java \
 	sopc2dts/lib/components/altera/hps/ClockManagerV.java \
+	sopc2dts/lib/components/altera/hps/ClockManagerA10.java \
 	sopc2dts/lib/components/altera/hps/SocFpgaGateClock.java \
 	sopc2dts/lib/components/altera/hps/SocFpgaPeripClock.java \
 	sopc2dts/lib/components/altera/hps/SocFpgaPllClock.java \

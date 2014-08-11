@@ -98,10 +98,15 @@
 	<S2DComponent classname="clock_source" group="clock"></S2DComponent>
         <S2DComponent classname="altera_clock_bridge" group="ignore"></S2DComponent>
 	<S2DComponent classname="hps_clk_src" group="remove"></S2DComponent>
+	<S2DComponent classname="arria10_hps_clk_src" group="remove"></S2DComponent>
 	<S2DComponent classname="alter_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_interface_generator" group="ignore"></S2DComponent>
+	<S2DComponent classname="altera_arria10_interface_generator" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_hps" group="ignore"></S2DComponent>
+	<S2DComponent classname="altera_arria10_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_hps_io" group="ignore"></S2DComponent>
+	<S2DComponent classname="altera_arria10_hps_io" group="ignore"></S2DComponent>
+	<S2DComponent classname="altera_emif_a10_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_jtag_avalon_master" group="remove"></S2DComponent>
 	<S2DComponent classname="altera_irq_bridge" group="ignore"/>
 	<S2DComponent classname="intr_capturer" group="remove"></S2DComponent>

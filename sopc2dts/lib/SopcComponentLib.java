@@ -54,6 +54,7 @@ import sopc2dts.lib.components.altera.VIPFrameBuffer;
 import sopc2dts.lib.components.altera.VIPMixer;
 import sopc2dts.lib.components.altera.hps.ClockManager;
 import sopc2dts.lib.components.altera.hps.ClockManagerV;
+import sopc2dts.lib.components.altera.hps.ClockManagerA10;
 import sopc2dts.lib.components.arm.CortexA9GIC;
 import sopc2dts.lib.components.base.ClockSource;
 import sopc2dts.lib.components.base.CpuComponent;
@@ -195,11 +196,11 @@ public class SopcComponentLib implements ContentHandler {
 			return new USBHostControllerISP1xxx(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_generic_tristate_controller")) {
 			return new GenericTristateController(className, instanceName, version);
-		} else if (className.equalsIgnoreCase("arm_gic")) {
+		} else if (className.endsWith("arm_gic")) {
 			return new CortexA9GIC(instanceName, version);
 		} else if (className.equalsIgnoreCase("labx_ethernet")) {
 			return new LabXEthernet(className, instanceName, version, getScdByClassName(className));
-		} else if (className.equalsIgnoreCase("hps_bridge_avalon")) {
+		} else if (className.endsWith("hps_bridge_avalon")) {
 			return new MultiBridge(className, instanceName, version, getScdByClassName(className));
 		} else {
 			return castToGroupSpecificObject(
@@ -223,7 +224,11 @@ public class SopcComponentLib implements ContentHandler {
 				return new ClockSource(comp);
 			} else if ((scd.getGroup().equalsIgnoreCase("clkmgr")) &&
 				!(comp instanceof ClockManager)) {
-			return new ClockManagerV(comp);
+				if (comp.getClassName().equalsIgnoreCase("baum_clkmgr")) {
+					return new ClockManagerA10(comp);
+				} else {
+					return new ClockManagerV(comp);
+				}
 			} else if (scd.getGroup().equalsIgnoreCase("flash") &&
 					!(comp instanceof SICFlash)) {
 				return new SICFlash(comp);
