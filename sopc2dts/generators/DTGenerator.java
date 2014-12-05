@@ -293,7 +293,7 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 	}
 	DTNode getMemoryNode(BoardInfo bi, BasicComponent master, int addrCells, int sizeCells)
 	{
-		DTNode memNode = new DTNode("memory@0");
+		DTNode memNode = new DTNode("memory");
 		DTProperty dtpReg = new DTProperty("reg");
 		dtpReg.getValues().clear();
 		dtpReg.setNumValuesPerRow(addrCells + sizeCells);
