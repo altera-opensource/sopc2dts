@@ -19,7 +19,7 @@
 		<parameter sopcName="embeddedsw.CMacro.HARDWARE_MULX_PRESENT"
 			dtsVName="has-mulx" forceType="boolean">
 		</parameter>
-		<parameter sopcName="embeddedsw.CMacro.INITDA_SUPPORTED" dtsVName="has-initda"></parameter>
+		<parameter sopcName="embeddedsw.CMacro.INITDA_SUPPORTED" dtsVName="has-initda" forceType="BOOLEAN_TRUE_WHEN_PRESENT"></parameter>
 		<parameter dtsVName="has-flushda" sopcName="embeddedsw.CMacro.FLUSHDA_SUPPORTED"></parameter>
 		<parameter dtsVName="has-jmpi" sopcName="embeddedsw.CMacro.HAS_JMPI_INSTRUCTION"></parameter>
 		<parameter dtsVName="has-mmu" sopcName="embeddedsw.CMacro.MMU_PRESENT"></parameter>

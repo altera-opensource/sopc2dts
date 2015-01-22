@@ -26,7 +26,7 @@ import sopc2dts.lib.devicetree.DTPropVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class Parameter {
-	public enum DataType { NUMBER, UNSIGNED, BOOLEAN, STRING };
+	public enum DataType { NUMBER, UNSIGNED, BOOLEAN, STRING, BOOLEAN_TRUE_WHEN_PRESENT };
 	String name;
 	String value;
 	DataType dataType = DataType.BOOLEAN;
@@ -37,6 +37,10 @@ public class Parameter {
 		this.dataType = t;
 		switch(t)
 		{
+		case BOOLEAN_TRUE_WHEN_PRESENT: {
+			this.dataType = DataType.BOOLEAN;
+			this.value = "true";
+		} break;
 		case UNSIGNED: {
 			if(value.charAt(0) == '-')
 			{
@@ -55,6 +59,8 @@ public class Parameter {
 		if(dtName == null) 
 		{
 			return null;
+		} else if(dtName.equalsIgnoreCase("BOOLEAN_TRUE_WHEN_PRESENT")) {
+			return DataType.BOOLEAN_TRUE_WHEN_PRESENT;
 		} else if(dtName.equalsIgnoreCase("BOOLEAN") ||
 				dtName.equalsIgnoreCase("BOOL"))
 		{
@@ -121,6 +127,9 @@ public class Parameter {
 		case NUMBER: {
 			propVal = new DTPropNumVal(Long.decode(value));
 		} break;
+		case BOOLEAN_TRUE_WHEN_PRESENT:
+			/* No value needed */
+			break;
 		case BOOLEAN: {
 			if(!getValueAsBoolean())
 			{
