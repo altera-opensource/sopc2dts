@@ -52,7 +52,10 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 				k.equalsIgnoreCase("avalon_tristate_master") ||
 				k.equalsIgnoreCase("tristate_conduit_master") ||
 				k.equalsIgnoreCase("altera_axi_master")||
-				k.equalsIgnoreCase("altera_axi4_master"))
+				k.equalsIgnoreCase("altera_axi4_master")||
+				k.equalsIgnoreCase("apb_master") ||
+				k.equalsIgnoreCase("axi4_master")||
+				k.equalsIgnoreCase("axi4lite_master"))
 		{
 			type = SystemDataType.MEMORY_MAPPED;
 			isMaster = true;
@@ -60,7 +63,12 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 				k.equalsIgnoreCase("avalon_tristate_slave") ||
 				k.equalsIgnoreCase("tristate_conduit_slave") ||
 				k.equalsIgnoreCase("altera_axi_slave") ||
-				k.equalsIgnoreCase("altera_axi4_slave"))
+				k.equalsIgnoreCase("altera_axi4_slave") ||
+				k.equalsIgnoreCase("altera_axi4lite_slave")||
+				k.equalsIgnoreCase("axi4_slave")||
+				k.equalsIgnoreCase("axi4lite_slave")||
+				k.equalsIgnoreCase("apb_slave") ||
+				k.equalsIgnoreCase("ahb_slave"))
 		{
 			type = SystemDataType.MEMORY_MAPPED;
 			isMaster = false;
