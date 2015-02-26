@@ -84,7 +84,7 @@ public class ClockSource extends BasicComponent {
 					getScd().getCompatibles(version).toArray(new String[]{}))); 
 			node.addProperty(new DTProperty("#clock-cells", 1L));
 			for(Interface clkIf : vClkMasters) {
-				node.addChild(createClockOutputNode(clkIf, subIdx++, getInstanceName() + "-" + clkIf.getName()));
+				node.addChild(createClockOutputNode(clkIf, subIdx++, getInstanceName() + "_" + clkIf.getName()));
 			}
 			return node;
 		}

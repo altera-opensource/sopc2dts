@@ -61,6 +61,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/hps/SocFpgaPeripClock.java \
 	sopc2dts/lib/components/altera/hps/SocFpgaPllClock.java \
 	sopc2dts/lib/components/altera/hps/VirtualClockElement.java \
+	sopc2dts/lib/components/base/ClockSource.java \
 	sopc2dts/lib/components/base/FlashPartition.java \
 	sopc2dts/lib/components/base/GpioController.java \
 	sopc2dts/lib/components/base/SCDSelfDescribing.java \
