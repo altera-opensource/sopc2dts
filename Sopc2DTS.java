@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -39,6 +39,7 @@ import sopc2dts.generators.SopcCreateHeaderFilesImitator;
 import sopc2dts.gui.Sopc2DTSGui;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.BoardInfo.AltrStyle;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SICBridge;
 import sopc2dts.parsers.BasicSystemLoader;
@@ -63,6 +64,8 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter sopcParameters = new CLParameter("none");
 	protected CLParameter sort = new CLParameter("");
 	protected CLParameter ranges = new CLParameter("");
+	protected CLParameter forceALTR = new CLParameter("" + false);
+	protected CLParameter forcealtr = new CLParameter("" + false);
 	protected CLParameter gui = new CLParameter("" + false);
 	protected CLParameter showClocks = new CLParameter(""+false);
 	protected CLParameter showConduit = new CLParameter(""+false);
@@ -101,6 +104,8 @@ public class Sopc2DTS implements LogListener {
 		vOptions.add(new CommandLineOption("bridge-removal", null, bridgeRemoval, 	true, false,"Bridge removal strategy", "{all,balanced,none}"));
 		vOptions.add(new CommandLineOption("help",		"h", showHelp,			false,false,"Show this usage info and exit",null));
 		vOptions.add(new CommandLineOption("verbose",	"v", verbose,			false,false,"Show Lots of debugging info", null));
+		vOptions.add(new CommandLineOption("force-ALTR",null,forceALTR,			false,false,"Try to make sure all compatibles and property names use uppercase 'ALTR'", null));
+		vOptions.add(new CommandLineOption("force-altr",null,forcealtr,			false,false,"Try to make sure all compatibles and property names use lowercase 'altr'", null));
 		vOptions.add(new CommandLineOption("gui",		"g", gui,				false,false,"Run in gui mode", null));
 		vOptions.add(new CommandLineOption("clocks",	"c", showClocks,		false,false,"Show clocks in Device Tree Source / graph", null));
 		vOptions.add(new CommandLineOption("conduits",	null, showConduit,		false,false,"Show conduit interfaces in graph", null));
@@ -182,6 +187,11 @@ public class Sopc2DTS implements LogListener {
 		}
 		if (Boolean.parseBoolean(showStreaming.value)) {
 			bInfo.showStreaming();
+		}
+		if (Boolean.parseBoolean(forcealtr.value)) {
+			bInfo.setAltrStyle(AltrStyle.FORCE_LOWER);
+		} else if (Boolean.parseBoolean(forceALTR.value)) {
+			bInfo.setAltrStyle(AltrStyle.FORCE_UPPER);			
 		}
 		if(Boolean.parseBoolean(gui.value))
 		{

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2014 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -50,6 +50,7 @@ public class BoardInfo implements ContentHandler {
 	public enum PovType { CPU, PCI };
 	public enum SortType { NONE, ADDRESS, NAME, LABEL };
 	public enum RangesStyle { NONE, FOR_BRIDGE, FOR_EACH_CHILD };
+	public enum AltrStyle { AUTO, FORCE_UPPER, FORCE_LOWER };
 	FlashPartition part;
 	private File sourceFile;
 	String currTag;
@@ -69,6 +70,7 @@ public class BoardInfo implements ContentHandler {
 	
 	String bootArgs;
 	BoardInfoComponent currBic;
+	private AltrStyle altrStyle = AltrStyle.AUTO;
 	private String pov = "";
 	private PovType povType = PovType.CPU;
 	private RangesStyle rangesStyle = RangesStyle.FOR_EACH_CHILD;
@@ -501,6 +503,9 @@ public class BoardInfo implements ContentHandler {
 	public Vector<Parameter> getAliasRefs() {
 		return vAliasRefs;
     }
+	public AltrStyle getAltrStyle() {
+		return altrStyle;
+	}
 	public boolean isIncludeTime() {
 		return includeTime;
 	}
@@ -527,6 +532,9 @@ public class BoardInfo implements ContentHandler {
 	}
 	public void showStreaming() {
 		this.showStreaming = true;
+	}
+	public void setAltrStyle(AltrStyle altrStyle) {
+		this.altrStyle = altrStyle;
 	}
 	public void setIncludeTime(boolean includeTime) {
 		this.includeTime = includeTime;

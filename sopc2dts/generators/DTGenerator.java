@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@ import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.BoardInfo.AltrStyle;
 import sopc2dts.lib.BoardInfo.SortType;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.Parameter;
@@ -47,6 +48,7 @@ import sopc2dts.lib.devicetree.DTPropHexNumVal;
 import sopc2dts.lib.devicetree.DTPropNumVal;
 import sopc2dts.lib.devicetree.DTPropPHandleVal;
 import sopc2dts.lib.devicetree.DTPropStringVal;
+import sopc2dts.lib.devicetree.DTPropVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public abstract class DTGenerator extends AbstractSopcGenerator {
@@ -140,6 +142,9 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 			}
 		}
 		doDTAppend(rootNode,bi);
+		if(bi.getAltrStyle()!=AltrStyle.AUTO) {
+			fixALTRaltrCompatibleMess(rootNode, (bi.getAltrStyle() == AltrStyle.FORCE_LOWER ? "altr" : "ALTR"));
+		}
 		return rootNode;
 	}
 	private void doDTAppend(DTNode rootNode, BoardInfo bi) {
@@ -218,6 +223,31 @@ public abstract class DTGenerator extends AbstractSopcGenerator {
 					parent.addProperty(prop, true);
 				}
 			}
+		}
+	}
+
+	void fixALTRaltrCompatibleMess(DTNode node, String aLtR) {
+		for(DTProperty prop : node.getProperties()) {
+			if(prop.getName().length()>5) {
+				if(prop.getName().substring(0, 5).equalsIgnoreCase("altr,")) {
+					prop.setName(aLtR + prop.getName().substring(4));
+				}
+				if(prop.getName().equals("compatible")) {
+					for(DTPropVal v : prop.getValues()) {
+						if(v instanceof DTPropStringVal) {
+							DTPropStringVal sv = (DTPropStringVal)v;
+							if(sv.getStringValue().length()>5) {
+								if(sv.getStringValue().substring(0, 5).equalsIgnoreCase("altr,")) {
+									sv.setStringValue(aLtR + sv.getStringValue().substring(4));
+								}							
+							}
+						}
+					}
+				}
+			}
+		}
+		for(DTNode child : node.getChildren()) {
+			fixALTRaltrCompatibleMess(child, aLtR);
 		}
 	}
 
