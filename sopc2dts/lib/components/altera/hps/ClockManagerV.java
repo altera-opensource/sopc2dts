@@ -25,8 +25,18 @@ import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.components.BasicComponent;
+import sopc2dts.lib.components.SopcComponentDescription;
+import sopc2dts.lib.components.altera.hps.ClockManager.ClockManagerGateClk;
 
 public class ClockManagerV extends ClockManager {
+	static final SopcComponentDescription scdPLL = 
+		new SopcComponentDescription("socfpga-pll", "socfpga-pll", "altr", "socfpga-pll-clock");
+	
+	static final SopcComponentDescription scdPClk = 
+		new SopcComponentDescription("socfpga-perip-clk", "socfpga-perip-clk", "altr", "socfpga-perip-clk");
+	
+	static final SopcComponentDescription scdGClk = 
+		new SopcComponentDescription("socfpga-gate-clk", "socfpga-gate-clk", "altr", "socfpga-gate-clk");
 
 	public ClockManagerV(BasicComponent bc) {
 		super(bc);
@@ -124,5 +134,17 @@ public class ClockManagerV extends ClockManager {
 			Logger.logln(this, "Failed to determine the HPS we belong to", LogLevel.WARNING);
 			return false;
 		}
+	}
+	protected SocFpgaPllClock getSocFpgaPllClock(String cName, String iName, String ver)
+	{
+		return new SocFpgaPllClock(cName, iName, ver, scdPLL);
+	}
+	protected SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg)
+	{
+		return new SocFpgaPeripClock(cName, iName, ver, reg, div, divreg, scdPClk);
+	}
+	protected SocFpgaGateClock getSocFpgaGateClock(ClockManagerGateClk cmgClk, String ver)
+	{
+		return new SocFpgaGateClock(cmgClk, ver, scdGClk);
 	}
 }

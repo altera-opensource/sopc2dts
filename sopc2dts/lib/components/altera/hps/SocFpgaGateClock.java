@@ -27,12 +27,12 @@ import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class SocFpgaGateClock extends VirtualClockElement {
-	static SopcComponentDescription scdGClk = new SopcComponentDescription("socfpga-gate-clk", "socfpga-gate-clk", "altr", "socfpga-gate-clk");
+	
 	long[] gateReg;
 	long[] divReg;
 	Long fixedDivider;
 
-	public SocFpgaGateClock(ClockManagerGateClk cmGClk, String version) {
+	public SocFpgaGateClock(ClockManagerGateClk cmGClk, String version, SopcComponentDescription scdGClk) {
 		super(cmGClk.name, cmGClk.name,version,scdGClk);
 		gateReg = null;
 		divReg = cmGClk.divReg;

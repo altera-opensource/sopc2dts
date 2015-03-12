@@ -23,10 +23,11 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropHexNumVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class SocFpgaPeripClock extends VirtualClockElement {
-	static SopcComponentDescription scdPClk = new SopcComponentDescription("socfpga-perip-clk", "socfpga-perip-clk", "altr", "socfpga-perip-clk");
+	
 	Long fixedDivider;
 	long[] divReg;
 	/* Constructor for discovered pll */
@@ -35,13 +36,14 @@ public class SocFpgaPeripClock extends VirtualClockElement {
 		super(cName, iName, ver, scd);
 	}
 	/* Constructor for virtual pll */
-	public SocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg) {
+	public SocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg, SopcComponentDescription scdPClk) {
 		super(cName, iName, ver, scdPClk, reg);
 		fixedDivider = div;
 		divReg = divreg;
 	}
 	public DTNode toDTNode(BoardInfo bi, Connection conn) {
 		DTNode node = super.toDTNode(bi, conn);
+		node.addProperty(new DTProperty("reg", new DTPropHexNumVal(getRegOffset())), true);
 		if(fixedDivider!=null) {
 			node.addProperty(new DTProperty("fixed-divider", fixedDivider.longValue()));
 		}

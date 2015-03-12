@@ -51,7 +51,11 @@ public abstract class ClockManager extends BasicComponent {
 
 	protected abstract String getFirstSupportedVersion();
 	protected abstract boolean preRemovalChecks(AvalonSystem sys);
+	protected abstract SocFpgaPllClock getSocFpgaPllClock(String cName, String iName, String ver);
+	protected abstract SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg);
+	protected abstract SocFpgaGateClock getSocFpgaGateClock(ClockManagerGateClk cmgClk, String ver);
 
+	
 	protected void transferClockConnections(Interface newClockMaster) {
 		Interface oldClockMaster = getInterfaceByName(newClockMaster.getOwner().getInstanceName());
 		if(oldClockMaster != null) {
@@ -106,7 +110,7 @@ public abstract class ClockManager extends BasicComponent {
 			}
 			if(cmPLLs!=null) {
 				for(ClockManagerPll pll : cmPLLs) {
-					SocFpgaPllClock sfPll = new SocFpgaPllClock(pll.name, pll.name, null);
+					SocFpgaPllClock sfPll = getSocFpgaPllClock(pll.name, pll.name, null);
 					Interface reg = sfPll.getRegInterface(false);
 					Connection conn = new Connection(virtualMaster, reg, true);
 					conn.setConnValue(new long[]{ pll.addr });
@@ -116,7 +120,7 @@ public abstract class ClockManager extends BasicComponent {
 					}
 					for(ClockManagerPClk pClk : pll.pclks) {
 						SocFpgaPeripClock sfpClk = 
-							new SocFpgaPeripClock(pClk.name, pClk.name, null, pll.addr + pClk.addr,pClk.fixedDivider, pClk.divReg);
+							getSocFpgaPeripClock(pClk.name, pClk.name, null, pll.addr + pClk.addr,pClk.fixedDivider, pClk.divReg);
 						sfPll.addClockOutput(sfpClk);
 						if (pClk.clkParents != null) {
 							for (String parent : pClk.clkParents) {
@@ -128,12 +132,23 @@ public abstract class ClockManager extends BasicComponent {
 					}
 				}
 			}
+			if(cmPeripheralClks!=null){
+				for (ClockManagerPClk fpClk : cmPeripheralClks) {
+					SocFpgaPeripClock sfpClk = getSocFpgaPeripClock(fpClk.name, fpClk.name, null, fpClk.addr, fpClk.fixedDivider,fpClk.divReg);
+					sys.addSystemComponent(sfpClk);
+					transferClockConnections(sfpClk.getClockInterface(true));
+					vPeripheralClocks.add(sfpClk);
+					for(String parent : fpClk.clkParents) {
+						sfpClk.addClockInput(getClockParentIntfByName(parent,sys));
+					}
+				}
+			}
 			if(cmGGroups!=null) {
 				for(ClockManagerGateGroup grp : cmGGroups) {
 					long gateReg = grp.reg;
 					long gateRegBit = 0;
 					for(ClockManagerGateClk cmgClk : grp.clks) {
-						SocFpgaGateClock sfgClk = new SocFpgaGateClock(cmgClk,null);
+						SocFpgaGateClock sfgClk = getSocFpgaGateClock(cmgClk,null);
 						if(cmgClk.hasGate) {
 							sfgClk.gateReg = new long[]{gateReg, gateRegBit};
 							gateRegBit++;
@@ -147,17 +162,7 @@ public abstract class ClockManager extends BasicComponent {
 					}
 				}
 			}
-			if(cmPeripheralClks!=null){
-				for (ClockManagerPClk fpClk : cmPeripheralClks) {
-					SocFpgaPeripClock sfpClk = new SocFpgaPeripClock(fpClk.name, fpClk.name, null, 0x1234567, fpClk.fixedDivider,fpClk.divReg);
-					sys.addSystemComponent(sfpClk);
-					transferClockConnections(sfpClk.getClockInterface(true));
-					vPeripheralClocks.add(sfpClk);
-					for(String parent : fpClk.clkParents) {
-						sfpClk.addClockInput(getClockParentIntfByName(parent,sys));
-					}
-				}
-			}
+
 			return true;
 		} else {
 			return false;

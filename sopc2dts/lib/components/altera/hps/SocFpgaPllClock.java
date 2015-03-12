@@ -30,15 +30,9 @@ import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class SocFpgaPllClock extends VirtualClockElement {
-	static SopcComponentDescription scdPLL = new SopcComponentDescription("socfpga-pll", "socfpga-pll", "altr", "socfpga-pll-clock");
-
-	/* Constructor for discovered pll */
-	public SocFpgaPllClock(String cName, String iName, String ver,
-			SopcComponentDescription scd) {
-		super(cName, iName, ver, scd);
-	}
+	
 	/* Constructor for virtual pll */
-	public SocFpgaPllClock(String cName, String iName, String ver) {
+	public SocFpgaPllClock(String cName, String iName, String ver, SopcComponentDescription scdPLL) {
 		super(cName, iName, ver, scdPLL);
 		Interface mmIf = new Interface(MM_MASTER_NAME, SystemDataType.MEMORY_MAPPED, true,this);
 		mmIf.setSecondaryWidth(0);
