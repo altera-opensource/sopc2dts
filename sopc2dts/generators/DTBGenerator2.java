@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,7 @@ package sopc2dts.generators;
 
 import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.BoardInfo;
+import sopc2dts.lib.BoardInfo.PovType;
 import sopc2dts.lib.devicetree.DTBlob;
 import sopc2dts.lib.devicetree.DTNode;
 
@@ -31,8 +32,8 @@ import sopc2dts.lib.devicetree.DTNode;
  * dtc.
  * 
  * @note This generator uses it's own dtb creation process, not the "official"
- * dtc. When in doubt, generate a DTS using DTSGenerator2 or even DTSGenerator,
- * pass that to dtc and compare the results.
+ * dtc. When in doubt, generate a DTS using DTSGenerator2, pass that to dtc and 
+ * compare the results.
  * 
  * @author Walter Goossens
  *
@@ -55,7 +56,7 @@ public class DTBGenerator2 extends DTGenerator {
 	@Override
 	public byte[] getBinaryOutput(BoardInfo bi)
 	{
-		DTBlob dtb = new DTBlob();
+		DTBlob dtb = new DTBlob((bi.getPovType() != PovType.CPU ? 0x100 : 0));
 		DTNode root = getDTOutput(bi);
 		root.setName("");
 		dtb.setRootNode(root);

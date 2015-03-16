@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2012 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2012 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -26,13 +26,19 @@ import sopc2dts.lib.devicetree.DTPropVal.DTPropType;
 public class DTBlob {
 	public static final int DTB_VERSION = 17;
 	public static final int DTB_COMPAT_VERSION = 16;
-	public static final long OF_DT_HEADER = 0xD00DFEED;
+	public static final long OF_DT_HEADER = 0xD00DFEEDL;
 	public static final int OF_DT_END = 0x09;
 	static final int HEADER_SIZE = 40;
 	long nextPHandle = 1;
 	Vector<String> vStrings = new Vector<String>();
 	DTNode rootNode;
 	
+	public DTBlob() {
+		this(0);
+	}
+	public DTBlob(long pHandleOffset) {
+		nextPHandle = pHandleOffset +1;
+	}
 	public byte[] getBytes()
 	{
 		byte[] mrm = getMemReserveMap();
