@@ -3,6 +3,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/LogListener.java sopc2dts/Logger.java \
 	sopc2dts/generators/AbstractSopcGenerator.java \
 	sopc2dts/generators/DTBGenerator2.java \
+	sopc2dts/generators/DTBHex32Generator.java \
 	sopc2dts/generators/DTBHex8Generator.java \
 	sopc2dts/generators/DTGenerator.java \
 	sopc2dts/generators/DTSGenerator2.java \
