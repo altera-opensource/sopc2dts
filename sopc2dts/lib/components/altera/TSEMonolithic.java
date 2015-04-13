@@ -39,7 +39,7 @@ import sopc2dts.lib.devicetree.DTProperty;
 
 public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	SopcComponentDescription scdMSGDMA;
-	enum TSEDmaType { UNKNOWN, SGDMA, mSGDMA };
+	enum TSEDmaType { UNKNOWN, SGDMA, mSGDMA, COMPOSED_mSGDMA };
 	BasicComponent rx_dma, tx_dma;
 	BasicComponent desc_mem;
 	TSEDmaType dmaType = TSEDmaType.UNKNOWN;
@@ -135,9 +135,12 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		if(dma!=null) {
 			if(dma instanceof SICSgdma) {
 				changed = encapsulateSGDMA(sys,(SICSgdma)dma, name);
+			} else if (dmaType == TSEDmaType.COMPOSED_mSGDMA) {
+				changed = encapsulateSharedMSGDMA(sys, dma,name, "response");
 			} else {
 				changed = encapsulateMSGDMA(sys, dma,name);
 			}
+
 			if(changed) {
 				sys.removeSystemComponent(dma);
 			}
@@ -160,6 +163,37 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		intf.setOwner(this);
 		return true;
 	}
+	protected boolean encapsulateSharedMSGDMA(AvalonSystem sys, BasicComponent dispatcher, String name, String response)
+	{
+		//CSR MM interface
+		Interface intf = dispatcher.getInterfaceByName("CSR");
+		dispatcher.removeInterface(intf);
+		intf.setName(name + "_csr");
+		vInterfaces.add(intf);
+		intf.setOwner(this);
+
+		//Descriptor_Slave MM interface
+		intf = dispatcher.getInterfaceByName("Descriptor_Slave");
+		dispatcher.removeInterface(intf);
+		intf.setName(name + "_desc");
+		vInterfaces.add(intf);
+		intf.setOwner(this);
+		//IRQ
+		intf = dispatcher.getInterfaceByName("csr_irq");
+		dispatcher.removeInterface(intf);
+		intf.setName(name + "_irq");
+		vInterfaces.add(intf);
+		intf.setOwner(this);
+
+		intf = dispatcher.getInterfaceByName(response);
+		if (intf != null) {
+			dispatcher.removeInterface(intf);
+			intf.setName("rx_resp");
+			vInterfaces.add(intf);
+			intf.setOwner(this);
+		}
+		return true;
+	}
 	protected boolean encapsulateMSGDMA(AvalonSystem sys, BasicComponent dma, String name)
 	{
 		boolean changed = false;
@@ -177,36 +211,9 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 			Logger.logln(this, "mSGDMA dispatcher " + dispatcher.getInstanceName() + " seems to be in use. TSE needs twe separate engines for rx and tx", LogLevel.WARNING);
 		} else if (dispatcher.getClassName().equalsIgnoreCase("modular_sgdma_dispatcher")) {
 			Logger.logln(this, "Found dispatcher " + dispatcher.getInstanceName() + " connected to " + dma.getInstanceName(), LogLevel.INFO);
-			
-			Vector<Interface> vif = dispatcher.getInterfaces();
 
-			//CSR MM interface
-			Interface intf = dispatcher.getInterfaceByName("CSR");
-			dispatcher.removeInterface(intf);
-			intf.setName(name + "_csr");
-			vInterfaces.add(intf);
-			intf.setOwner(this);
+			encapsulateSharedMSGDMA(sys, dispatcher, name, "Response_Slave");
 			
-			//Descriptor_Slave MM interface
-			intf = dispatcher.getInterfaceByName("Descriptor_Slave");
-			dispatcher.removeInterface(intf);
-			intf.setName(name + "_desc");
-			vInterfaces.add(intf);
-			intf.setOwner(this);
-			//IRQ
-			intf = dispatcher.getInterfaceByName("csr_irq");
-			dispatcher.removeInterface(intf);
-			intf.setName(name + "_irq");
-			vInterfaces.add(intf);
-			intf.setOwner(this);
-			
-			intf = dispatcher.getInterfaceByName("Response_Slave");
-			if (intf != null) {
-				dispatcher.removeInterface(intf);
-				intf.setName("rx_resp");
-				vInterfaces.add(intf);
-				intf.setOwner(this);
-			}
 			sys.removeSystemComponent(dispatcher); /* dma will be removed by caller */
 
 			changed = true;
@@ -243,7 +250,12 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 			dmaType = TSEDmaType.mSGDMA;
 			dma = comp;
 			Logger.logln(this, "Found " + sRxTx + " mSGDMA engine", LogLevel.INFO);
-		} else if((comp instanceof SICSgdma) && (dmaType != TSEDmaType.mSGDMA))
+		} else if (comp.getClassName().equalsIgnoreCase("altera_msgdma")
+					&& (dmaType != TSEDmaType.mSGDMA) && (dmaType != TSEDmaType.SGDMA)) {
+			dmaType = TSEDmaType.COMPOSED_mSGDMA;
+			dma = comp;
+			Logger.logln(this, "Found " + sRxTx + " Composed mSGDMA engine", LogLevel.INFO);
+		} else if((comp instanceof SICSgdma) && (dmaType != TSEDmaType.mSGDMA) && (dmaType != TSEDmaType.COMPOSED_mSGDMA))
 		{
 			dmaType = TSEDmaType.SGDMA;
 			dma = comp;
@@ -256,7 +268,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 	}
 	@Override
 	public SopcComponentDescription getScd() {
-		if(dmaType == TSEDmaType.mSGDMA) {
+		if ((dmaType == TSEDmaType.mSGDMA) || (dmaType == TSEDmaType.COMPOSED_mSGDMA)) {
 			return scdMSGDMA;
 		} else {
 			return super.getScd();
@@ -275,7 +287,7 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		{
 			tx_dma = findDMAEngine(false);
 			bChanged |= encapsulateDMAEngine(sys, tx_dma, "tx");
-			}
+		}
 		if((desc_mem == null)&&(dmaType == TSEDmaType.SGDMA))
 		{
 			if(rx_dma == null)
