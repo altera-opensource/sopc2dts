@@ -133,7 +133,16 @@ public class SopcInfoInterface extends SopcInfoElementWithParams {
 		String assVal = getParamValue("addressSpan");
 		if(assVal!=null)
 		{
-			span = Long.decode(assVal);
+			if((assVal.equalsIgnoreCase("18446744073709551616")) ||
+				(assVal.equalsIgnoreCase("0x10000000000000000"))) {
+				/* Make a special case for slave interfaces that span the
+				 * entire 64bits spectrum.
+				 */
+				bi.setSecondaryWidth(3);
+				return new long[]{ 1l, 0l, 0l };
+			} else {
+				span = Long.decode(assVal);
+			}
 		}
 		assVal = getParamValue("addressAlignment");
 		if((assVal!=null)&&(assVal.equals("NATIVE")))
