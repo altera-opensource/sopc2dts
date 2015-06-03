@@ -78,7 +78,7 @@ public class ClockSource extends BasicComponent {
 		if(vClkMasters.size()==1) {
 			return createClockOutputNode(vClkMasters.get(0), clockIndex, getInstanceName());
 		} else {
-			DTNode node = new DTNode(getScd().getGroup() + "@0x" + clockIndex, getInstanceName());
+			DTNode node = new DTNode(getInstanceName(), getInstanceName());
 			long subIdx = 0;
 			node.addProperty(new DTProperty("compatible", 
 					getScd().getCompatibles(version).toArray(new String[]{}))); 
