@@ -139,7 +139,7 @@ public class ClockManagerV extends ClockManager {
 	{
 		return new SocFpgaPllClock(cName, iName, ver, scdPLL);
 	}
-	protected SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg)
+	protected SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, Long reg, Long div, long[]divreg)
 	{
 		return new SocFpgaPeripClock(cName, iName, ver, reg, div, divreg, scdPClk);
 	}

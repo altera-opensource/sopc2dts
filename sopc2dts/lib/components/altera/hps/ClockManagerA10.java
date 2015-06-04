@@ -60,6 +60,7 @@ public class ClockManagerA10 extends ClockManager {
 			}
 		}
 		if(hpsName != null) {
+			String noc_free_clk[] = new String[]{ "noc_free_clk"};
 			String osc1 = hpsName + "_eosc1";
 			String cb_intosc_ls = hpsName + "_cb_intosc_ls_clk";
 			String cb_intosc_hs = hpsName + "_cb_intosc_hs_div2_clk";
@@ -110,9 +111,9 @@ public class ClockManagerA10 extends ClockManager {
 			cmGGroups = new ClockManagerGateGroup[] {
 				new ClockManagerGateGroup(0x48, new ClockManagerGateClk[] {
 					new ClockManagerGateClk("mpu_periph_clk", 	true, null, new Long(4), new String[]{ "mpu_free_clk"}),
-					new ClockManagerGateClk("l4_main_clk", 	true, new long[]{0xa8, 0, 2}, null, new String[]{ "noc_free_clk"}),
-					new ClockManagerGateClk("l4_mp_clk", 	true, new long[]{0xa8, 8, 2}, null, new String[]{ "noc_free_clk"}),
-					new ClockManagerGateClk("l4_sp_clk", 	true, new long[]{0xa8, 16, 2}, null, new String[]{ "noc_free_clk"}),
+					new ClockManagerGateClk("l4_main_clk", 	true, new long[]{0xa8, 0, 2}, null, noc_free_clk),
+					new ClockManagerGateClk("l4_mp_clk", 	true, new long[]{0xa8, 8, 2}, null, noc_free_clk),
+					new ClockManagerGateClk("l4_sp_clk", 	true, new long[]{0xa8, 16, 2}, null, noc_free_clk),
 				}),
 				new ClockManagerGateGroup(0xc8, new ClockManagerGateClk[] {
 					new ClockManagerGateClk("emac0_clk", true, null, null, new String[]{}),
@@ -134,7 +135,7 @@ public class ClockManagerA10 extends ClockManager {
 				new ClockManagerPClk("noc_free_clk", 0x64, null, null, new String[]{"main_noc_base_clk", "peri_noc_base_clk", osc1, cb_intosc_hs, f2s_free_clk}),
 				new ClockManagerPClk("s2f_usr1_clk", 0x104, null, null, new String[]{"main_s2f_usr1_clk", "peri_s2f_usr1_clk", osc1, cb_intosc_hs, f2s_free_clk}),
 				new ClockManagerPClk("sdmmc_free_clk", 0xf8, new Long(4), null, new String[]{"main_sdmmc_clk", "peri_sdmmc_clk", osc1, cb_intosc_hs, f2s_free_clk}),
-				//new ClockManagerPClk("l4_sys_free_clk", 0x0, null, null, new String[]{"main_noc_base_clk", "peri_noc_base_clk", osc1, cb_intosc_hs, f2s_free_clk}),
+				new ClockManagerPClk("l4_sys_free_clk", null, new Long(4), null, noc_free_clk),
 	};
 			return true;
 		} else {
@@ -150,7 +151,7 @@ public class ClockManagerA10 extends ClockManager {
 		return new SocFpgaPllClock(cName, iName, ver, scdPLL);
 	}
 
-	protected SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg)
+	protected SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, Long reg, Long div, long[]divreg)
 	{
 		return new SocFpgaPeripClock(cName, iName, ver, reg, div, divreg, scdPClk);
 	}

@@ -52,7 +52,7 @@ public abstract class ClockManager extends BasicComponent {
 	protected abstract String getFirstSupportedVersion();
 	protected abstract boolean preRemovalChecks(AvalonSystem sys);
 	protected abstract SocFpgaPllClock getSocFpgaPllClock(String cName, String iName, String ver);
-	protected abstract SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg);
+	protected abstract SocFpgaPeripClock getSocFpgaPeripClock(String cName, String iName, String ver, Long reg, Long div, long[]divreg);
 	protected abstract SocFpgaGateClock getSocFpgaGateClock(ClockManagerGateClk cmgClk, String ver);
 
 	
@@ -216,7 +216,7 @@ public abstract class ClockManager extends BasicComponent {
 	}
 	protected class ClockManagerPClk {
 		String name;
-		long addr;
+		Long addr;
 		Long fixedDivider;
 		long[] divReg;
 		String[] clkParents;
@@ -226,6 +226,13 @@ public abstract class ClockManager extends BasicComponent {
 		}
 
 		protected ClockManagerPClk(String n, long a, Long fixed, long[] divreg, String[] parents) {
+			name = n;
+			addr = new Long(a);
+			fixedDivider = fixed;
+			divReg = divreg;
+			clkParents = parents;
+		}
+		protected ClockManagerPClk(String n, Long a, Long fixed, long[] divreg, String[] parents) {
 			name = n;
 			addr = a;
 			fixedDivider = fixed;

@@ -36,14 +36,17 @@ public class SocFpgaPeripClock extends VirtualClockElement {
 		super(cName, iName, ver, scd);
 	}
 	/* Constructor for virtual pll */
-	public SocFpgaPeripClock(String cName, String iName, String ver, long reg, Long div, long[]divreg, SopcComponentDescription scdPClk) {
+	public SocFpgaPeripClock(String cName, String iName, String ver, Long reg, Long div, long[]divreg, SopcComponentDescription scdPClk) {
 		super(cName, iName, ver, scdPClk, reg);
 		fixedDivider = div;
 		divReg = divreg;
 	}
 	public DTNode toDTNode(BoardInfo bi, Connection conn) {
 		DTNode node = super.toDTNode(bi, conn);
-		node.addProperty(new DTProperty("reg", new DTPropHexNumVal(getRegOffset())), true);
+		Long reg = getRegOffset();
+		if (reg != null) {
+			node.addProperty(new DTProperty("reg", new DTPropHexNumVal(reg.longValue())), true);
+		}
 		if(fixedDivider!=null) {
 			node.addProperty(new DTProperty("fixed-divider", fixedDivider.longValue()));
 		}

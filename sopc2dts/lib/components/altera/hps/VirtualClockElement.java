@@ -37,7 +37,7 @@ public abstract class VirtualClockElement extends BasicComponent{
 	protected static final String CLOCK_OUTPUT_NAME = "virtual-clk-output";
 	protected static final String MM_SLAVE_NAME = "virtual-reg";
 	protected static final String MM_MASTER_NAME = "virtual-mm-master";
-	long regOffset;
+	Long regOffset = null;
 	
 	protected VirtualClockElement(BasicComponent bc) {
 		super(bc);
@@ -47,15 +47,25 @@ public abstract class VirtualClockElement extends BasicComponent{
 			SopcComponentDescription scd) {
 		this(cName,iName,ver,scd,0L);
 	}
-	public VirtualClockElement(String cName, String iName, String ver,
-			SopcComponentDescription scd, long reg) {
-		super(cName, iName, ver, scd);
+
+	private void init() {
 		Interface mmIf = new Interface(MM_SLAVE_NAME, SystemDataType.MEMORY_MAPPED, false,this);
 		mmIf.setSecondaryWidth(0);
 		mmIf.setInterfaceValue(new long[]{});
 		vInterfaces.add(mmIf);
 		Interface clkIf = new Interface(CLOCK_OUTPUT_NAME, SystemDataType.CLOCK, true,this);
 		vInterfaces.add(clkIf);
+	}
+	public VirtualClockElement(String cName, String iName, String ver,
+			SopcComponentDescription scd, long reg) {
+		super(cName, iName, ver, scd);
+		init();
+		regOffset = new Long(reg);
+	}
+	public VirtualClockElement(String cName, String iName, String ver,
+		SopcComponentDescription scd, Long reg) {
+		super(cName, iName, ver, scd);
+		init();
 		regOffset = reg;
 	}
 	protected Interface getClockInterface(boolean isMaster) {
@@ -81,12 +91,12 @@ public abstract class VirtualClockElement extends BasicComponent{
 		return mmIf;		
 	}
 
-	public long getRegOffset() {
+	public Long getRegOffset() {
 		return regOffset;
 	}
 
 	public void setRegOffset(long regOffset) {
-		this.regOffset = regOffset;
+		this.regOffset = new Long(regOffset);
 	}
 	
 	public DTNode toDTNode(BoardInfo bi, Connection conn) {
@@ -114,8 +124,12 @@ public abstract class VirtualClockElement extends BasicComponent{
 	}
 	@Override
 	protected long[] getAddrFromConnection(Connection conn) {
-		if(conn == null) {
-			return new long[] {regOffset};			
+		if (conn == null) {
+			if (regOffset != null) {
+				return new long[] {regOffset.longValue()};	
+			} else {
+				return new long[]{};
+			}
 		} else {
 			return super.getAddrFromConnection(conn);
 		}
