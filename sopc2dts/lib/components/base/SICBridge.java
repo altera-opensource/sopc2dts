@@ -353,9 +353,20 @@ public class SICBridge extends BasicComponent {
 		}
 		return false;
 	}
+
+	private static SICBridge loopCheck = null;
+
 	public Vector<MemoryBlock> getMemoryMap(Connection conn)
 	{
+
 		Vector<MemoryBlock> vBridgedMap = new Vector<MemoryBlock>();
+		if (loopCheck == null) {
+			loopCheck = this;
+		} else if (loopCheck == this) {
+			Logger.logln(this, "Warning, bridge loop detected and not reflected in device tree.", LogLevel.WARNING);
+			return vBridgedMap;
+		}
+
 		for(Interface bridgeMaster : getInterfaces(SystemDataType.MEMORY_MAPPED, true))
 		{
 			vBridgedMap.addAll(bridgeMaster.getMemoryMap());
@@ -364,6 +375,9 @@ public class SICBridge extends BasicComponent {
 		{
 			//Offset with bridges base.
 			mb.setStart(translateAddress(conn.getConnValue(),mb.getBase()));
+		}
+		if (loopCheck == this) {
+			loopCheck = null;
 		}
 		return vBridgedMap;
 	}
