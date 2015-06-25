@@ -217,4 +217,7 @@
 		<parameter dtsName="beats-per-pixel" sopcName="NUMBER_OF_CHANNELS_IN_SEQUENCE"></parameter>
 		<parameter dtsName="mem-word-width" sopcName="MEM_PORT_WIDTH"></parameter>
 	</S2DComponent>
+	<S2DComponent classname="altera_pcie_av_hip_avmm" group="pcie_mm" compatDevice="pcie-mm-arriaV">
+		<CompatibleVersion value="12.1"></CompatibleVersion>
+	</S2DComponent>
 </SOPC2DTS_COMPONENTLIB>
