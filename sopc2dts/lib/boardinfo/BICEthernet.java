@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,7 @@ public class BICEthernet extends BoardInfoComponent {
 	int[] mac = { 0, 0, 0, 0, 0, 0 };
 
 	public BICEthernet(String iName) {
-		super(iName);
+		super(TAG_NAME, iName);
 	}
 	public BICEthernet(String tag, Attributes atts) {
 		super(tag, atts);

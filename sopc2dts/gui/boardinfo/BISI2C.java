@@ -161,14 +161,14 @@ public class BISI2C extends BISSubComponentTable {
 			vChips.add(c);
 			for(TableModelListener l : vListeners)
 			{
-				l.tableChanged(new TableModelEvent(this, vChips.size()-1));
+				l.tableChanged(new TableModelEvent(this));
 			}
 		}
 		protected void removeSubComponent(int index) {
 			vChips.remove(index);
 			for(TableModelListener l : vListeners)
 			{
-				l.tableChanged(new TableModelEvent(this, index, vChips.size()-1));
+				l.tableChanged(new TableModelEvent(this));
 			}
 		}
 

@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2013 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ public class BICI2C extends BoardInfoComponent {
 	Vector<I2CSlave> vSlaves = new Vector<I2CSlave>();
 
 	public BICI2C(String iName) {
-		super(iName);
+		super(TAG_NAME, iName);
 	}
 	public BICI2C(String tag, Attributes atts) {
 		super(tag, atts);

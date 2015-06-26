@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,14 +28,14 @@ public abstract class BoardInfoComponent implements ContentHandler {
 	String instanceName;
 	String xmlTagName;
 
-	public BoardInfoComponent(String iName)
+	protected BoardInfoComponent(String tag, String iName)
 	{
 		instanceName = iName;
+		xmlTagName = tag;
 	}
 	public BoardInfoComponent(String tag, Attributes atts)
 	{
-		this(atts.getValue("name"));
-		xmlTagName = tag;
+		this(tag,atts.getValue("name"));
 	}
 	public abstract String getXml();
 

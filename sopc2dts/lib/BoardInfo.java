@@ -241,11 +241,18 @@ public class BoardInfo implements ContentHandler {
 	}
 	public BoardInfoComponent getBicForChip(String instanceName)
 	{
+		return getBicForChip(instanceName,null);
+	}
+	public BoardInfoComponent getBicForChip(String instanceName, String tagName) 
+	{
 		for(BoardInfoComponent bic : vBics)
 		{
-			if(instanceName.equalsIgnoreCase(bic.getInstanceName()))
+			if(((instanceName == null) && (bic.getInstanceName() == null)) ||
+				((instanceName != null) && instanceName.equalsIgnoreCase(bic.getInstanceName())))
 			{
-				return bic;
+				if((tagName == null) || (tagName.equalsIgnoreCase(bic.getXmlTagName()))) {
+					return bic;					
+				}
 			}
 		}
 		return null;
@@ -264,7 +271,7 @@ public class BoardInfo implements ContentHandler {
 	}
 	public BICEthernet getEthernetForChip(String instanceName)
 	{
-		BoardInfoComponent bic = getBicForChip(instanceName);
+		BoardInfoComponent bic = getBicForChip(instanceName, BICEthernet.TAG_NAME);
 		if(bic!=null)
 		{
 			if(bic instanceof BICEthernet)
@@ -379,18 +386,13 @@ public class BoardInfo implements ContentHandler {
 		mFlashPartitions.put(instanceName, vParts);
 	}
 	public void setI2CBusForchip(String instanceName, Vector<I2CSlave> vSlaves) {
-		for(BoardInfoComponent bic : vBics) {
-			if(bic instanceof BICI2C) {
-				BICI2C bi2c = (BICI2C)bic;
-				if(instanceName == null) {
-					if (bi2c.getInstanceName()==null) {
-						bi2c.setSlaves(vSlaves);
-					}
-				} else if(instanceName.equalsIgnoreCase(bi2c.getInstanceName())) {
-					bi2c.setSlaves(vSlaves);
-				}
-			}
+		BoardInfoComponent bic = getBicForChip(instanceName, BICI2C.TAG_NAME);
+		if(bic == null) {
+			bic = new BICI2C(instanceName);
+			vBics.add(bic);
 		}
+		BICI2C bi2c = (BICI2C)bic;
+		bi2c.setSlaves(vSlaves);
 	}
 	public boolean isValidIRQMaster(BasicComponent comp) {
 		for(String imi : vIrqMasterClassIgnore) {

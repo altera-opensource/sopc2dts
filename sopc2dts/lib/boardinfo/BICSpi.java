@@ -1,7 +1,7 @@
 /*
 sopc2dts - Devicetree generation for Altera systems
 
-Copyright (C) 2011 - 2013 Walter Goossens <waltergoossens@home.nl>
+Copyright (C) 2011 - 2015 Walter Goossens <waltergoossens@home.nl>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,7 @@ public class BICSpi extends BoardInfoComponent {
 	public static final String TAG_NAME = "SpiMaster";
 	Vector<SpiSlave> vSlaves = new Vector<SpiSlave>();
 	public BICSpi(String iName) {
-		super(iName);
+		super(TAG_NAME, iName);
 	}
 	public BICSpi(String tag, Attributes atts) {
 		super(tag, atts);
