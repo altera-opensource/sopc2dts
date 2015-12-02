@@ -19,12 +19,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package sopc2dts.lib.components.base;
 
+import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTProperty;
+import sopc2dts.lib.devicetree.DTPropPHandleVal;
 /*
  * This class handles all default network stuff, subclasses can override 
  * defaults declared in this class, or just don't and keep 'm simple.
@@ -32,6 +34,8 @@ import sopc2dts.lib.devicetree.DTProperty;
  * rather a convenience class to help the lazy people such as myself.
  */
 public class SICEthernet extends BasicComponent {
+	protected enum PhyMode { MII, GMII, RGMII, SGMII, NONE };
+	private PhyMode phymode = PhyMode.NONE;
 
 	public SICEthernet(String cName, String iName, String version, SopcComponentDescription scd) {
 		super(cName, iName, version, scd);
@@ -40,7 +44,25 @@ public class SICEthernet extends BasicComponent {
 	public SICEthernet(BasicComponent comp) {
 		super(comp);
 	}
-
+	protected void setPhyMode(PhyMode pm)
+	{
+		phymode = pm;
+	}
+	protected PhyMode getPhyMode()
+	{
+		return phymode;
+	}
+	protected String getPhyModeString()
+	{
+		switch(getPhyMode())
+		{
+		case MII:	return "mii";
+		case GMII:	return "gmii";
+		case RGMII:	return "rgmii";
+		case SGMII:	return "sgmii";
+		default:	return "unknown";
+		}
+	}
 	@Override
 	public DTNode toDTNode(BoardInfo bi, Connection conn)
 	{
@@ -50,6 +72,18 @@ public class SICEthernet extends BasicComponent {
 		DTProperty dtpb = new DTProperty("local-mac-address");
 		dtpb.addByteValues(getMacAddress(bi));
 		node.addProperty(dtpb);
+		
+		for (Connection iconn : getConnections(SystemDataType.CONDUIT, false)) {
+			if (iconn.getSlaveModule().getClassName().equalsIgnoreCase("altera_gmii_to_sgmii_converter")) {
+				node.addProperty(new DTProperty("altr,gmii_to_sgmii_converter", 
+						new DTPropPHandleVal(iconn.getSlaveModule().getInstanceName())));
+				setPhyMode(PhyMode.SGMII);
+
+			}
+		}
+		if (phymode != PhyMode.NONE) {
+			node.addProperty(new DTProperty("phy-mode", getPhyModeString()));
+		}
 		return node;
 	}
 	protected int[] getMacAddress(BoardInfo bi)

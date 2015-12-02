@@ -103,8 +103,6 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		}
 		
 
-		node.addProperty(new DTProperty("phy-mode", getPhyModeString()));		
-
 		BICEthernet be = bi.getEthernetForChip(getInstanceName());
 		
 		if(be.getPhyID()!=null)

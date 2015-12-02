@@ -21,13 +21,15 @@ package sopc2dts.lib.components.altera;
 
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
+import sopc2dts.lib.AvalonSystem;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SICEthernet;
 
 public class SICTrippleSpeedEthernet extends SICEthernet {
-	enum PhyMode { MII, GMII, RGMII, SGMII };
+
+	private boolean removed = false;
 
 	public SICTrippleSpeedEthernet(String cName, String iName, String ver, SopcComponentDescription scd) {
 		super(cName, iName, ver, scd);
@@ -51,38 +53,35 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 		}
 		return null;
 	}
-	protected PhyMode getPhyMode()
+
+	@Override
+	public boolean removeFromSystemIfPossible(AvalonSystem sys)
 	{
-		String phyModeString = getParamValByName("ifGMII");
-		String phyModeStringsgmii = getParamValByName("enable_sgmii");
-		PhyMode pm = PhyMode.RGMII;
-		if(phyModeStringsgmii.equals("true"))
-		{
-			Logger.logln("enable_sgmii");	
-		        pm = PhyMode.SGMII;
-                } else {
-			if(phyModeString.equals("MII"))
+		if (!removed) {
+			removed = true;
+			String phyModeString = getParamValByName("ifGMII");
+			String phyModeStringsgmii = getParamValByName("enable_sgmii");
+			setPhyMode(PhyMode.RGMII);
+			if(phyModeStringsgmii.equals("true"))
 			{
-				pm = PhyMode.MII;
-			} else if(phyModeString.equals("MII_GMII"))
-			{
-				pm = PhyMode.GMII;
-			} else if(phyModeString.equals("RGMII"))
-			{
-				pm = PhyMode.RGMII;
+				Logger.logln("enable_sgmii");	
+			        setPhyMode(PhyMode.SGMII);
+			} else {
+				if(phyModeString.equals("MII"))
+				{
+					setPhyMode(PhyMode.MII);
+				} else if(phyModeString.equals("MII_GMII"))
+				{
+					setPhyMode(PhyMode.GMII);
+				} else if(phyModeString.equals("RGMII"))
+				{
+					setPhyMode(PhyMode.RGMII);
+				}
 			}
-		}
-		return pm;
-	}
-	protected String getPhyModeString()
-	{
-		switch(getPhyMode())
-		{
-		case MII:	return "mii";
-		case GMII:	return "gmii";
-		case RGMII:	return "rgmii";
-		case SGMII:	return "sgmii";
-		default:	return "unknown";
+			return true;
+		} else {
+			return false;
 		}
 	}
+
 }
