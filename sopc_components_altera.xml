@@ -101,7 +101,7 @@
 	<S2DComponent classname="arria10_hps_clk_src" group="remove"></S2DComponent>
 	<S2DComponent classname="alter_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_interface_generator" group="ignore"></S2DComponent>
-	<S2DComponent classname="altera_arria10_interface_generator" group="ignore"></S2DComponent>
+	<S2DComponent classname="altera_arria10_interface_generator" group="interfaces"/>
 	<S2DComponent classname="altera_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_arria10_hps" group="ignore"></S2DComponent>
 	<S2DComponent classname="altera_hps_io" group="ignore"></S2DComponent>

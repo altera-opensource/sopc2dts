@@ -53,6 +53,7 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/altera/SICTrippleSpeedEthernet.java \
 	sopc2dts/lib/components/altera/TSEMonolithic.java \
 	sopc2dts/lib/components/altera/InterfaceGenerator.java \
+	sopc2dts/lib/components/altera/A10InterfaceGenerator.java \
 	sopc2dts/lib/components/altera/InterruptBridge.java \
 	sopc2dts/lib/components/altera/InterruptLatencyCounter.java \
 	sopc2dts/lib/components/altera/hps/ClockManager.java \
@@ -66,7 +67,8 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/base/FlashPartition.java \
 	sopc2dts/lib/components/base/GpioController.java \
 	sopc2dts/lib/components/base/SCDSelfDescribing.java \
-	sopc2dts/lib/components/base/SICBridge.java sopc2dts/lib/components/base/SICFlash.java \
+	sopc2dts/lib/components/base/SICBridge.java \
+	sopc2dts/lib/components/base/SICFlash.java \
 	sopc2dts/lib/components/base/SICI2CMaster.java \
 	sopc2dts/lib/components/base/SICEthernet.java \
 	sopc2dts/lib/components/base/SICSpiMaster.java \
