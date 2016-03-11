@@ -47,6 +47,7 @@ import sopc2dts.lib.components.altera.InterfaceGenerator;
 import sopc2dts.lib.components.altera.InterruptBridge;
 import sopc2dts.lib.components.altera.InterruptLatencyCounter;
 import sopc2dts.lib.components.altera.MultiBridge;
+import sopc2dts.lib.components.altera.PCIeRootPort;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
@@ -174,7 +175,11 @@ public class SopcComponentLib implements ContentHandler {
 			className.equalsIgnoreCase("altera_eth_tse"))
 		{
 			//return new TSEModular(getScdByClassName(className), instanceName, version);			
-			return new TSEMonolithic(className, instanceName, version, getScdByClassName(className));			
+			return new TSEMonolithic(className, instanceName, version, getScdByClassName(className));
+		} else if (className.equalsIgnoreCase("altera_pcie_a10_hip") ||
+				className.equalsIgnoreCase("altera_pcie_cv_hip_avmm") ||
+				className.equalsIgnoreCase("altera_pcie_av_hip_avmm")) {
+			return new PCIeRootPort(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_avalon_sgdma")) {
 			return new SICSgdma(className, instanceName, version, getScdByClassName(className));
 		} else if (className.equalsIgnoreCase("altera_avalon_epcs_flash_controller")) {
