@@ -47,7 +47,6 @@ SOURCES=Sopc2DTS.java \
 	sopc2dts/lib/components/SopcComponentDescription.java \
 	sopc2dts/lib/components/arm/CortexA9GIC.java \
 	sopc2dts/lib/components/altera/GenericTristateController.java \
-	sopc2dts/lib/components/altera/PCIeRootPort.java \
 	sopc2dts/lib/components/altera/SICEpcs.java \
 	sopc2dts/lib/components/altera/SICLan91c111.java \
 	sopc2dts/lib/components/altera/SICSgdma.java \
