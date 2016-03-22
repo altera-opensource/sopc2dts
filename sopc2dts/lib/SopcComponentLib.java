@@ -47,6 +47,7 @@ import sopc2dts.lib.components.altera.InterfaceGenerator;
 import sopc2dts.lib.components.altera.InterruptBridge;
 import sopc2dts.lib.components.altera.InterruptLatencyCounter;
 import sopc2dts.lib.components.altera.MultiBridge;
+import sopc2dts.lib.components.altera.PCIeCompiler;
 import sopc2dts.lib.components.altera.SICEpcs;
 import sopc2dts.lib.components.altera.SICLan91c111;
 import sopc2dts.lib.components.altera.SICSgdma;
@@ -255,6 +256,8 @@ public class SopcComponentLib implements ContentHandler {
 				} else {
 					return new GpioController(comp);
 				}
+			} else if (scd.getGroup().equalsIgnoreCase("pcie")) {
+				return PCIeCompiler.getPCIeComponent(comp);
 			}
 		}
 		return comp;
