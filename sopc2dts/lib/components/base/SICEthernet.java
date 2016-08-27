@@ -75,7 +75,9 @@ public class SICEthernet extends BasicComponent {
 		
 		for (Connection iconn : getConnections(SystemDataType.CONDUIT, false)) {
 			if (iconn.getSlaveModule().getClassName().equalsIgnoreCase("altera_gmii_to_sgmii_converter")) {
-				node.addProperty(new DTProperty("altr,gmii_to_sgmii_converter", 
+				node.addProperty(new DTProperty("altr,gmii-to-sgmii-converter",
+						new DTPropPHandleVal(iconn.getSlaveModule().getInstanceName())));
+				node.addProperty(new DTProperty("altr,gmii_to_sgmii_converter",
 						new DTPropPHandleVal(iconn.getSlaveModule().getInstanceName())));
 				setPhyMode(PhyMode.SGMII);
 
