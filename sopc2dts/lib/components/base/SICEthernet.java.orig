@@ -23,7 +23,6 @@ import sopc2dts.lib.AvalonSystem.SystemDataType;
 import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.Connection;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.boardinfo.BICEthernet;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.devicetree.DTNode;
 import sopc2dts.lib.devicetree.DTProperty;
@@ -100,8 +99,5 @@ public class SICEthernet extends BasicComponent {
 	protected int getMaxFrameSize()
 	{
 		return 1518;
-	}
-	protected DTNode getMdioNode(BICEthernet be) {
-		return null;
 	}
 }

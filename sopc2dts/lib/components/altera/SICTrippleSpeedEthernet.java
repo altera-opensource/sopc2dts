@@ -22,10 +22,18 @@ package sopc2dts.lib.components.altera;
 import sopc2dts.Logger;
 import sopc2dts.Logger.LogLevel;
 import sopc2dts.lib.AvalonSystem;
+import sopc2dts.lib.Parameter;
+import sopc2dts.lib.boardinfo.BICEthernet;
+import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
-import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SICEthernet;
+import sopc2dts.lib.devicetree.DTNode;
+import sopc2dts.lib.devicetree.DTPropHexNumVal;
+import sopc2dts.lib.devicetree.DTPropNumVal;
+import sopc2dts.lib.devicetree.DTPropPHandleVal;
+import sopc2dts.lib.devicetree.DTPropStringVal;
+import sopc2dts.lib.devicetree.DTProperty;
 
 public class SICTrippleSpeedEthernet extends SICEthernet {
 
@@ -82,6 +90,39 @@ public class SICTrippleSpeedEthernet extends SICEthernet {
 		} else {
 			return false;
 		}
+	}
+
+	private boolean isMdioMaster() {
+		Parameter param = getParamByName("useMDIO");
+		if(param == null) {
+			param = getParamByName(EMBSW_CMACRO+".USE_MDIO");
+		}
+		if(param != null) {
+			return param.getValueAsBoolean();
+		}
+
+		return false;
+	}
+
+	@Override
+	protected DTNode getMdioNode(BICEthernet be) {
+		if(this.isMdioMaster()) {
+			DTNode mdioNode = new DTNode("mdio", getInstanceName()+"_mdio");
+			mdioNode.addProperty(new DTProperty("compatible", new DTPropStringVal( "altr,tse-mdio")));
+			mdioNode.addProperty(new DTProperty("#address-cells", new DTPropNumVal(1)));
+			mdioNode.addProperty(new DTProperty("#size-cells", new DTPropNumVal(0)));
+
+			if(be.getPhyID() != null) {
+				DTNode mdioPhyNode = new DTNode("phy", getInstanceName()+"_phy");
+				mdioPhyNode.addProperty(new DTProperty("reg", new DTPropHexNumVal(be.getPhyID())));
+				mdioNode.addProperty(new DTProperty("phy-handle", new DTPropPHandleVal(getInstanceName()+"_phy")));
+				mdioNode.addChild(mdioPhyNode);
+			}
+
+			return mdioNode;
+		}
+
+		return null;
 	}
 
 }

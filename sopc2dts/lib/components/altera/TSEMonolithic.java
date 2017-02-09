@@ -33,8 +33,6 @@ import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.Interface;
 import sopc2dts.lib.components.SopcComponentDescription;
 import sopc2dts.lib.devicetree.DTNode;
-import sopc2dts.lib.devicetree.DTPropNumVal;
-import sopc2dts.lib.devicetree.DTPropStringVal;
 import sopc2dts.lib.devicetree.DTProperty;
 
 public class TSEMonolithic extends SICTrippleSpeedEthernet {
@@ -114,16 +112,10 @@ public class TSEMonolithic extends SICTrippleSpeedEthernet {
 		
 		if (dmaType == TSEDmaType.SGDMA) {
 			toSGDMANode(node, be);
-		}		
-		param = getParamByName("useMDIO");
-		
-		if ((param != null) && param.getValueAsBoolean()){
-			DTNode mdioNode = new DTNode("mdio", getInstanceName()+"_mdio");
-			mdioNode.addProperty(new DTProperty("compatible", new DTPropStringVal( "altr,tse-mdio")));
-			mdioNode.addProperty(new DTProperty("#address-cells", new DTPropNumVal(1)));
-			mdioNode.addProperty(new DTProperty("#size-cells", new DTPropNumVal(0)));
-			
-			node.addChild(mdioNode);
+		}
+		DTNode mdio_node = this.getMdioNode(be);
+		if(mdio_node != null) {
+			node.addChild(mdio_node);
 		}
 		
 		return node;
