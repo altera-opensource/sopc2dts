@@ -96,7 +96,7 @@
 		<CompatibleVersion value="1.0"></CompatibleVersion>
 	</S2DComponent>
 	<S2DComponent classname="clock_source" group="clock"></S2DComponent>
-        <S2DComponent classname="altera_clock_bridge" group="ignore"></S2DComponent>
+        <S2DComponent classname="altera_clock_bridge" group="clock"></S2DComponent>
 	<S2DComponent classname="hps_clk_src" group="remove"></S2DComponent>
 	<S2DComponent classname="arria10_hps_clk_src" group="remove"></S2DComponent>
 	<S2DComponent classname="alter_hps" group="ignore"></S2DComponent>
