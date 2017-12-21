@@ -146,7 +146,7 @@ public class BasicComponent extends BasicElement {
 	}
 	public DTNode toDTNode(BoardInfo bi,Connection conn)
 	{
-		DTNode node = new DTNode(getScd().getGroup() + "@0x" + getAddrFromConnectionStr(conn), instanceName);
+		DTNode node = new DTNode(getScd().getGroup() + "@" + getAddrFromConnectionStr(conn), instanceName);
 		DTProperty p;
 		if((getScd().getGroup().equalsIgnoreCase("cpu"))||(getScd().getGroup().equalsIgnoreCase("memory")))
 		{
