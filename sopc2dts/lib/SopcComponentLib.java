@@ -146,15 +146,20 @@ public class SopcComponentLib implements ContentHandler {
 				if(dirContents[i].endsWith(".xml")&&
 						dirContents[i].startsWith("sopc_components_"))
 				{
-					try {
-						Logger.logln("Loaded " + loadComponentLib(new InputSource(
-								new BufferedReader(new FileReader(dirContents[i]))))
-								 + " components from " + dirContents[i], LogLevel.DEBUG);
-					} catch (FileNotFoundException e) {
-						Logger.logException(e);
-					}
+					loadComponentLibFile(dirContents[i]);
 				}
 			}
+		}
+	}
+
+	public void loadComponentLibFile(String filename)
+	{
+		try {
+			Logger.logln("Loaded " + loadComponentLib(new InputSource(
+					new BufferedReader(new FileReader(filename))))
+					 + " components from " + filename, LogLevel.DEBUG);
+		} catch (FileNotFoundException e) {
+			Logger.logException(e);
 		}
 	}
 

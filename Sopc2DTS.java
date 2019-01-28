@@ -42,6 +42,7 @@ import sopc2dts.lib.BoardInfo;
 import sopc2dts.lib.BoardInfo.AltrStyle;
 import sopc2dts.lib.components.BasicComponent;
 import sopc2dts.lib.components.base.SICBridge;
+import sopc2dts.lib.SopcComponentLib;
 import sopc2dts.parsers.BasicSystemLoader;
 
 
@@ -71,10 +72,12 @@ public class Sopc2DTS implements LogListener {
 	protected CLParameter showConduit = new CLParameter(""+false);
 	protected CLParameter showReset = new CLParameter(""+false);
 	protected CLParameter showStreaming = new CLParameter(""+false);
+	protected CLParameter extraComponentLibs = new CLParameter("");
 
 	protected static final String programName = "sopc2dts";
 	private static String programVersion = Package.getPackage("sopc2dts").getImplementationVersion();;
 	private Vector<String> vInfoFileNames = new Vector<String>();
+	private Vector<String> vExtraComponentLibs = new Vector<String>();
 
 	/**
 	 * @param args
@@ -122,6 +125,7 @@ public class Sopc2DTS implements LogListener {
 		vOptions.add(new CommandLineOption("type", 		"t", outputType, 		true, false,"The type of output to generate", "{dtb,dtb-hex8,dtb-hex32,dtb-char-arr,dts,uboot,kernel}"));
 		vOptions.add(new CommandLineOption("bootargs", 	null,bootargs,	 		true, false,"Default kernel arguments for the \"chosen\" section of the DTS", "kernel-args"));
 		vOptions.add(new CommandLineOption("sopc-parameters", 	null,sopcParameters, true, false,"What sopc-parameters to include in DTS", "{node,cmacro,all}"));
+		vOptions.add(new CommandLineOption("extra-component-libs",	"e", extraComponentLibs, 	true, false,"Extra component libraries (see source for examples) (can be used many times)", "sopc component xml file"));
 
 		if(programVersion==null) {
 			programVersion = "unknown-version";
@@ -133,6 +137,10 @@ public class Sopc2DTS implements LogListener {
 		BoardInfo bInfo = null;
 		Sopc2DTSGui s2dgui = null;
 		File f;
+		for(String fn : vExtraComponentLibs)
+		{
+			SopcComponentLib.getInstance().loadComponentLibFile(fn);
+		}
 		if(vInfoFileNames.size()>0)
 		{
 
@@ -509,6 +517,8 @@ public class Sopc2DTS implements LogListener {
 						}
 					} else if (parameter==boardFileName) {
 						vInfoFileNames.add(parameter.value);
+					} else if (parameter==extraComponents) {
+						vExtraComponents.add(parameter.value);
 					}
 					Logger.logln("Scanned option " + option + '(' + shortOption + ") with" +
 							(hasValue ? " value " + parameter.value : "out value."), 
