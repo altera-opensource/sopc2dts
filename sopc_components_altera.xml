@@ -74,6 +74,10 @@
 	<S2DComponent classname="altera_address_span_extender"
 		group="bridge" compatDevice="avalon">
 	</S2DComponent>
+	<S2DComponent classname="altera_merlin_master_translator"
+		group="bridge" compatDevice="avalon">
+		<compatible name="simple-bus"></compatible>
+	</S2DComponent>
 	<S2DComponent classname="altera_reset_bridge" group="ignore"/>
 	<S2DComponent classname="altera_avalon_clock_crossing,altera_avalon_mm_clock_crossing_bridge,altera_avalon_pipeline_bridge,altera_avalon_mm_bridge,M64_32_bridge"
 		group="bridge" compatDevice="avalon">
