@@ -517,8 +517,8 @@ public class Sopc2DTS implements LogListener {
 						}
 					} else if (parameter==boardFileName) {
 						vInfoFileNames.add(parameter.value);
-					} else if (parameter==extraComponents) {
-						vExtraComponents.add(parameter.value);
+					} else if (parameter==extraComponentLibs) {
+						vExtraComponentLibs.add(parameter.value);
 					}
 					Logger.logln("Scanned option " + option + '(' + shortOption + ") with" +
 							(hasValue ? " value " + parameter.value : "out value."), 
